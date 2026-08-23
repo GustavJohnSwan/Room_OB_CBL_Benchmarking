@@ -1,0 +1,115 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:7277619518155210742",
+      "lastPropertyId": "6:1722607336607585790",
+      "name": "EntryAttachmentOb_B",
+      "properties": [
+        {
+          "id": "1:4669915733890154961",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:9080275433003317364",
+          "name": "fileNameOb",
+          "type": 9
+        },
+        {
+          "id": "3:3785730700124033329",
+          "name": "mimeTypeOb",
+          "type": 9
+        },
+        {
+          "id": "4:3411003435657426476",
+          "name": "fileSizeOb",
+          "type": 6
+        },
+        {
+          "id": "5:958158896821355176",
+          "name": "uriPathOb",
+          "type": 9
+        },
+        {
+          "id": "6:1722607336607585790",
+          "name": "dataAddedOb",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:964411921810571392",
+      "lastPropertyId": "4:4993483652571488268",
+      "name": "EntryOb_B",
+      "properties": [
+        {
+          "id": "1:1650713685605892887",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:333953959552715211",
+          "name": "dateOb",
+          "type": 9
+        },
+        {
+          "id": "3:3687823108969463561",
+          "name": "entryOb",
+          "type": 9
+        },
+        {
+          "id": "4:4993483652571488268",
+          "name": "timeMinutesOb",
+          "type": 5
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:2148514214685218224",
+      "lastPropertyId": "4:961741248477762020",
+      "name": "ExtraDataOb_B",
+      "properties": [
+        {
+          "id": "1:3707539728928969518",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1006117525279287415",
+          "name": "reminderTypeOb",
+          "type": 9
+        },
+        {
+          "id": "3:4506116459159695702",
+          "name": "repeatOb",
+          "type": 9
+        },
+        {
+          "id": "4:961741248477762020",
+          "name": "repeatDetailsOb",
+          "type": 9
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:2148514214685218224",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

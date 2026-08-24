@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.BBL_OB_CBL_Room
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.BenchmarkViewModel
 
 @Composable
 fun BenchmarkScreen(
-    viewModel: BBL_OB_CBL_Room = viewModel()
+    viewModel: BenchmarkViewModel = viewModel()
 ) {
 
     var benchmarkStatus by remember { mutableStateOf("Ready") }
@@ -59,8 +59,8 @@ fun BenchmarkScreen(
             }
 
             item {
-                Button(onClick = { viewModel.insertEntryBulk() }) {
-                    Text("Run ObjectBox Bulk Insert")
+                Button(onClick = { viewModel.loadDataSet() }) {
+                    Text("Perform JSON dataset operations")
                 }
             }
         }

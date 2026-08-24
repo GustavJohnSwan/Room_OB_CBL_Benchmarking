@@ -1,0 +1,914 @@
+[
+    {
+        "fixtureId": 1,
+        "date": "2026-03-18",
+        "title": "uRzr34FddKL2duiNpbYCDHk",
+        "time": 1072,
+        "extraData": null
+    },
+    {
+        "fixtureId": 2,
+        "date": "2026-12-16",
+        "title": "7ZRDlW5m",
+        "time": 758,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=53;BYDAY=1FR"
+        }
+    },
+    {
+        "fixtureId": 3,
+        "date": "2026-11-30",
+        "title": "NQuKbTv1inpRJHRnJUfe320g0L",
+        "time": 1176,
+        "extraData": null
+    },
+    {
+        "fixtureId": 4,
+        "date": "2026-10-11",
+        "title": "KdCFG9IPHmNoDWY2LXtgmYJ9",
+        "time": 275,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 5,
+        "date": "2026-02-12",
+        "title": "Z6laPCz2Eerf5PcfXOvMWWq8M",
+        "time": 1257,
+        "extraData": null
+    },
+    {
+        "fixtureId": 6,
+        "date": "2026-06-22",
+        "title": "K94u",
+        "time": 1374,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=29;UNTIL=20261019T000000Z;BYMONTHDAY=9"
+        }
+    },
+    {
+        "fixtureId": 7,
+        "date": "2026-01-05",
+        "title": "rC90SHMMnOUdhnt8XUjhGHe52",
+        "time": 825,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 8,
+        "date": "2026-11-23",
+        "title": "PQElR",
+        "time": 1376,
+        "extraData": null
+    },
+    {
+        "fixtureId": 9,
+        "date": "2026-10-08",
+        "title": "FIIsgh8HyIWzQUt3mRt1Fz25YtGisQ",
+        "time": 986,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": "Daily",
+            "repeatDetails": "FREQ=DAILY;INTERVAL=25"
+        }
+    },
+    {
+        "fixtureId": 10,
+        "date": "2026-03-11",
+        "title": "1dIOZVDqQrMRXQVtT0nazQBwKH",
+        "time": 439,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Yearly",
+            "repeatDetails": "FREQ=YEARLY;COUNT=84;BYMONTH=11;BYMONTHDAY=26"
+        }
+    },
+    {
+        "fixtureId": 11,
+        "date": "2026-02-10",
+        "title": "uHgP3z0MHicZt9avL1upylY",
+        "time": 1108,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Yearly",
+            "repeatDetails": "FREQ=YEARLY;COUNT=33;BYMONTH=3;BYMONTHDAY=15"
+        }
+    },
+    {
+        "fixtureId": 12,
+        "date": "2026-08-11",
+        "title": "7USERmzr5d7ZTvVvnUv762o",
+        "time": 515,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Daily",
+            "repeatDetails": "FREQ=DAILY;INTERVAL=88;COUNT=6"
+        }
+    },
+    {
+        "fixtureId": 13,
+        "date": "2026-05-30",
+        "title": "K9efY7BOx1QskJhoHAumHo",
+        "time": 687,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 14,
+        "date": "2026-05-13",
+        "title": "uPi9PnY1sCgI2E1MhAUHGSZ",
+        "time": 1344,
+        "extraData": null
+    },
+    {
+        "fixtureId": 15,
+        "date": "2026-10-25",
+        "title": "bzPUc57g40siinWTK",
+        "time": 1343,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=90;UNTIL=20261124T000000Z;BYDAY=1MO"
+        }
+    },
+    {
+        "fixtureId": 16,
+        "date": "2026-12-22",
+        "title": "hw",
+        "time": 1056,
+        "extraData": null
+    },
+    {
+        "fixtureId": 17,
+        "date": "2026-09-08",
+        "title": "qSC8zVlJlUU9GwnbTu",
+        "time": 834,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 18,
+        "date": "2026-02-04",
+        "title": "QC4gNQaygQHIZQFXKsV5NrbBspFsEi",
+        "time": 1278,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=80;UNTIL=20260522T000000Z;BYDAY=TU,TH,SA,MO,FR,WE,SU"
+        }
+    },
+    {
+        "fixtureId": 19,
+        "date": "2026-07-11",
+        "title": "yTAtbl5aKDFtm",
+        "time": 1188,
+        "extraData": null
+    },
+    {
+        "fixtureId": 20,
+        "date": "2026-03-15",
+        "title": "Lc4",
+        "time": 642,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=45;BYDAY=MO,TH,TU,WE,SU,FR"
+        }
+    },
+    {
+        "fixtureId": 21,
+        "date": "2026-06-25",
+        "title": "HTxv4eVIsSvSU",
+        "time": 534,
+        "extraData": {
+            "reminderType": "10 mins before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 22,
+        "date": "2026-11-06",
+        "title": "O8c41X8cahWYol4hj69x95xf",
+        "time": 886,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=71;BYDAY=WE,TU,SU,SA,MO"
+        }
+    },
+    {
+        "fixtureId": 23,
+        "date": "2026-03-08",
+        "title": "4ezIqr6zNHDAHIBYHOu",
+        "time": 585,
+        "extraData": null
+    },
+    {
+        "fixtureId": 24,
+        "date": "2026-06-22",
+        "title": "YJg558jCSUBfjINIpdNKJZeyD0",
+        "time": 1231,
+        "extraData": null
+    },
+    {
+        "fixtureId": 25,
+        "date": "2026-03-28",
+        "title": "YHbO8E1358Qj2fZ4TYS",
+        "time": 1263,
+        "extraData": {
+            "reminderType": "10 mins before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 26,
+        "date": "2026-05-13",
+        "title": "3f71pfkmAXl7F7ZZIk",
+        "time": 852,
+        "extraData": null
+    },
+    {
+        "fixtureId": 27,
+        "date": "2026-10-21",
+        "title": "v8HcVoDb26MtD8Q6EzlB3x9zntvHu",
+        "time": 872,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=79;COUNT=1;BYDAY=TH,MO"
+        }
+    },
+    {
+        "fixtureId": 28,
+        "date": "2026-08-14",
+        "title": "m1KBHW7VSrJ5Bo27AVD",
+        "time": 526,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 29,
+        "date": "2026-05-28",
+        "title": "v",
+        "time": 1218,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=35;COUNT=21;BYDAY=-1WE"
+        }
+    },
+    {
+        "fixtureId": 30,
+        "date": "2026-03-28",
+        "title": "WxrqFVs3",
+        "time": 602,
+        "extraData": null
+    },
+    {
+        "fixtureId": 31,
+        "date": "2026-12-30",
+        "title": "RA",
+        "time": 1337,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 32,
+        "date": "2026-07-13",
+        "title": "6ua",
+        "time": 1052,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 33,
+        "date": "2026-08-01",
+        "title": "j8YklRbyCfdBdS46HrgUrpzWx",
+        "time": 1412,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 34,
+        "date": "2026-11-06",
+        "title": "YcNpM8bCXF23HfLuq7yt91ioNEX",
+        "time": 700,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 35,
+        "date": "2026-10-03",
+        "title": "XFp9WZwIXq1w",
+        "time": 1342,
+        "extraData": {
+            "reminderType": "10 mins before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 36,
+        "date": "2026-08-15",
+        "title": "pJvx3AtkLC7WC",
+        "time": 481,
+        "extraData": null
+    },
+    {
+        "fixtureId": 37,
+        "date": "2026-10-09",
+        "title": "W71VJTe",
+        "time": 989,
+        "extraData": null
+    },
+    {
+        "fixtureId": 38,
+        "date": "2026-08-06",
+        "title": "BJO3q76",
+        "time": 503,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=96;UNTIL=20270128T000000Z;BYMONTHDAY=15"
+        }
+    },
+    {
+        "fixtureId": 39,
+        "date": "2026-09-16",
+        "title": "Irz8",
+        "time": 981,
+        "extraData": null
+    },
+    {
+        "fixtureId": 40,
+        "date": "2026-08-10",
+        "title": "RFaZpF9ft2X7AfXHVBH7951eokGCuj",
+        "time": 603,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 41,
+        "date": "2026-09-17",
+        "title": "4q0RB",
+        "time": 509,
+        "extraData": {
+            "reminderType": "10 mins before",
+            "repeatType": "Daily",
+            "repeatDetails": "FREQ=DAILY;INTERVAL=12;UNTIL=20270601T000000Z"
+        }
+    },
+    {
+        "fixtureId": 42,
+        "date": "2026-11-17",
+        "title": "uvr",
+        "time": 453,
+        "extraData": null
+    },
+    {
+        "fixtureId": 43,
+        "date": "2026-01-31",
+        "title": "YBorNq5duclcafH",
+        "time": 655,
+        "extraData": null
+    },
+    {
+        "fixtureId": 44,
+        "date": "2026-08-03",
+        "title": "ioW3QW31i0br0c",
+        "time": 926,
+        "extraData": null
+    },
+    {
+        "fixtureId": 45,
+        "date": "2026-05-24",
+        "title": "IMDSow5wYsmpuCrpHaYZZpf0y",
+        "time": 1379,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=12;COUNT=26;BYDAY=SU,TH,TU,SA,MO,WE"
+        }
+    },
+    {
+        "fixtureId": 46,
+        "date": "2026-01-05",
+        "title": "hsP",
+        "time": 946,
+        "extraData": null
+    },
+    {
+        "fixtureId": 47,
+        "date": "2026-07-28",
+        "title": "hvZ76aga5Pl9if",
+        "time": 1415,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=62;UNTIL=20261116T000000Z;BYMONTHDAY=2"
+        }
+    },
+    {
+        "fixtureId": 48,
+        "date": "2026-07-15",
+        "title": "yY7bvK0X2glnFXMW0OIx",
+        "time": 954,
+        "extraData": null
+    },
+    {
+        "fixtureId": 49,
+        "date": "2026-06-13",
+        "title": "JZpQOoXP2C0",
+        "time": 547,
+        "extraData": null
+    },
+    {
+        "fixtureId": 50,
+        "date": "2026-08-12",
+        "title": "csGcuhDl2FrpR",
+        "time": 899,
+        "extraData": null
+    },
+    {
+        "fixtureId": 51,
+        "date": "2026-01-27",
+        "title": "m6X",
+        "time": 1357,
+        "extraData": null
+    },
+    {
+        "fixtureId": 52,
+        "date": "2026-10-22",
+        "title": "b5pc9FVxnPXmWrlvfBjg4nkc3x",
+        "time": 1029,
+        "extraData": null
+    },
+    {
+        "fixtureId": 53,
+        "date": "2026-04-23",
+        "title": "L0zkQvApOx5SL",
+        "time": 611,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=30;COUNT=31;BYMONTHDAY=11"
+        }
+    },
+    {
+        "fixtureId": 54,
+        "date": "2026-06-10",
+        "title": "dVmTW7OWeW4gK7CWiGOTfDUbMHMJI",
+        "time": 1036,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=54;UNTIL=20270610T000000Z;BYDAY=FR,WE,MO,SA,SU"
+        }
+    },
+    {
+        "fixtureId": 55,
+        "date": "2026-08-19",
+        "title": "1ufBaXSMH2",
+        "time": 1105,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 56,
+        "date": "2026-11-29",
+        "title": "phSVU33StV87arCo4N0",
+        "time": 985,
+        "extraData": null
+    },
+    {
+        "fixtureId": 57,
+        "date": "2026-07-14",
+        "title": "aexyZR",
+        "time": 907,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=68;UNTIL=20270520T000000Z;BYDAY=SA,TU,WE,MO,SU"
+        }
+    },
+    {
+        "fixtureId": 58,
+        "date": "2026-06-11",
+        "title": "6C1s3bCaxs",
+        "time": 728,
+        "extraData": null
+    },
+    {
+        "fixtureId": 59,
+        "date": "2026-10-23",
+        "title": "62EQXiY9I9kslz",
+        "time": 820,
+        "extraData": null
+    },
+    {
+        "fixtureId": 60,
+        "date": "2026-01-15",
+        "title": "v09EeIal4ZoMX",
+        "time": 1225,
+        "extraData": null
+    },
+    {
+        "fixtureId": 61,
+        "date": "2026-09-13",
+        "title": "hiWF70TB97xwEyPCphZM3Qpxyhm",
+        "time": 1141,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 62,
+        "date": "2026-12-18",
+        "title": "t73",
+        "time": 1113,
+        "extraData": null
+    },
+    {
+        "fixtureId": 63,
+        "date": "2026-05-25",
+        "title": "X3Z0CarA8ofYpwtWi",
+        "time": 491,
+        "extraData": null
+    },
+    {
+        "fixtureId": 64,
+        "date": "2026-06-05",
+        "title": "h2jVqCHorJm20Alz6CtQqJRVsP5Jz",
+        "time": 786,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=56;BYDAY=1WE"
+        }
+    },
+    {
+        "fixtureId": 65,
+        "date": "2026-12-18",
+        "title": "4XcjwCeG6FSeNlas9P8bV1GS",
+        "time": 535,
+        "extraData": {
+            "reminderType": "10 mins before",
+            "repeatType": "Daily",
+            "repeatDetails": "FREQ=DAILY;INTERVAL=71"
+        }
+    },
+    {
+        "fixtureId": 66,
+        "date": "2026-11-30",
+        "title": "gTO4gxhN",
+        "time": 1216,
+        "extraData": null
+    },
+    {
+        "fixtureId": 67,
+        "date": "2026-11-04",
+        "title": "BNGRNrpmxvqEgPZkJZavYY0VQDM",
+        "time": 994,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=34;BYDAY=FR,SU,TH,MO,TU"
+        }
+    },
+    {
+        "fixtureId": 68,
+        "date": "2026-01-01",
+        "title": "uigxhuXHIqB",
+        "time": 1372,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Yearly",
+            "repeatDetails": "FREQ=YEARLY;BYMONTH=8;BYMONTHDAY=20"
+        }
+    },
+    {
+        "fixtureId": 69,
+        "date": "2026-10-24",
+        "title": "zxmMeJodCA8",
+        "time": 1246,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 70,
+        "date": "2026-02-20",
+        "title": "mDaP3fgPcBdAhwg5lTTuphYJ76w",
+        "time": 1409,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 71,
+        "date": "2026-10-23",
+        "title": "y",
+        "time": 511,
+        "extraData": null
+    },
+    {
+        "fixtureId": 72,
+        "date": "2026-06-23",
+        "title": "4zjKNFKFZyMfu94pX",
+        "time": 540,
+        "extraData": null
+    },
+    {
+        "fixtureId": 73,
+        "date": "2026-04-05",
+        "title": "1ZysBXtBpfqxVojAB1d5VVhpM",
+        "time": 1293,
+        "extraData": null
+    },
+    {
+        "fixtureId": 74,
+        "date": "2026-02-01",
+        "title": "6V47Uibbr6O2bQ",
+        "time": 1030,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Yearly",
+            "repeatDetails": "FREQ=YEARLY;UNTIL=20261116T000000Z;BYMONTH=3;BYMONTHDAY=24"
+        }
+    },
+    {
+        "fixtureId": 75,
+        "date": "2026-08-31",
+        "title": "DPflh7g",
+        "time": 977,
+        "extraData": null
+    },
+    {
+        "fixtureId": 76,
+        "date": "2026-05-23",
+        "title": "y0wYxSbuIZ5PA6gFgaGTdV",
+        "time": 816,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=18;UNTIL=20260805T000000Z;BYDAY=1FR"
+        }
+    },
+    {
+        "fixtureId": 77,
+        "date": "2026-01-21",
+        "title": "cW8g2tSMvDy1ZwOrHUGVS6p",
+        "time": 944,
+        "extraData": null
+    },
+    {
+        "fixtureId": 78,
+        "date": "2026-04-15",
+        "title": "evRjuGCJMJLaRYUL9glXjP2fGuX95",
+        "time": 679,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=38;COUNT=66;BYDAY=1SU"
+        }
+    },
+    {
+        "fixtureId": 79,
+        "date": "2026-05-22",
+        "title": "GQ0maBisEhEH86J8Pp8VFC90LmUabj",
+        "time": 1170,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=41;BYMONTHDAY=1"
+        }
+    },
+    {
+        "fixtureId": 80,
+        "date": "2026-04-19",
+        "title": "LLVqcSAJ",
+        "time": 777,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": "Yearly",
+            "repeatDetails": "FREQ=YEARLY;COUNT=51;BYMONTH=6;BYMONTHDAY=5"
+        }
+    },
+    {
+        "fixtureId": 81,
+        "date": "2026-02-19",
+        "title": "A4VJGeblKI6yHdNVSSS8W0dA",
+        "time": 454,
+        "extraData": null
+    },
+    {
+        "fixtureId": 82,
+        "date": "2026-05-15",
+        "title": "Q3rJurYmbiHyG",
+        "time": 1135,
+        "extraData": null
+    },
+    {
+        "fixtureId": 83,
+        "date": "2026-01-16",
+        "title": "TZATI94m59DoRy4dAGJXpVWZ5",
+        "time": 1074,
+        "extraData": null
+    },
+    {
+        "fixtureId": 84,
+        "date": "2026-09-21",
+        "title": "3GZ7cq2YIcdcqUSkjoeoG1kn",
+        "time": 1300,
+        "extraData": null
+    },
+    {
+        "fixtureId": 85,
+        "date": "2026-07-22",
+        "title": "aOmzeIBGv09jpoqSMKYSowI",
+        "time": 1428,
+        "extraData": {
+            "reminderType": "1 day before",
+            "repeatType": "Yearly",
+            "repeatDetails": "FREQ=YEARLY;COUNT=78;BYMONTH=11;BYMONTHDAY=22"
+        }
+    },
+    {
+        "fixtureId": 86,
+        "date": "2026-08-17",
+        "title": "zV8tNxLNwFHbYmyvMAipRhx9K",
+        "time": 685,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 87,
+        "date": "2026-04-21",
+        "title": "rHC",
+        "time": 488,
+        "extraData": null
+    },
+    {
+        "fixtureId": 88,
+        "date": "2026-12-03",
+        "title": "xBXE7dEO0Q7rdcVw9yjD6",
+        "time": 1346,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 89,
+        "date": "2026-03-09",
+        "title": "XXvhO2vYi",
+        "time": 584,
+        "extraData": null
+    },
+    {
+        "fixtureId": 90,
+        "date": "2026-05-15",
+        "title": "aOEPvUILSaeZBgeihJjQfxb",
+        "time": 608,
+        "extraData": null
+    },
+    {
+        "fixtureId": 91,
+        "date": "2026-09-03",
+        "title": "3SYodiqIEXdY5ZNz4jzCz5i5df",
+        "time": 707,
+        "extraData": {
+            "reminderType": "10 mins before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 92,
+        "date": "2026-03-04",
+        "title": "WotuoDg8mfrdbwJ6MKy",
+        "time": 962,
+        "extraData": {
+            "reminderType": "1 hour before",
+            "repeatType": "Monthly",
+            "repeatDetails": "FREQ=MONTHLY;INTERVAL=21;UNTIL=20260327T000000Z;BYDAY=4TU"
+        }
+    },
+    {
+        "fixtureId": 93,
+        "date": "2026-12-28",
+        "title": "ZTAnKOhlHTDCQlrCQHlkYZff8qdxB",
+        "time": 1133,
+        "extraData": null
+    },
+    {
+        "fixtureId": 94,
+        "date": "2026-12-03",
+        "title": "EDPkB5krQzNvccZN6sJOFIC8dfHdki",
+        "time": 950,
+        "extraData": null
+    },
+    {
+        "fixtureId": 95,
+        "date": "2026-05-27",
+        "title": "WajbzJMY",
+        "time": 1399,
+        "extraData": {
+            "reminderType": null,
+            "repeatType": "Weekly",
+            "repeatDetails": "FREQ=WEEKLY;INTERVAL=66;COUNT=42;BYDAY=TU,MO,TH,WE"
+        }
+    },
+    {
+        "fixtureId": 96,
+        "date": "2026-12-17",
+        "title": "WKkHsV3ZNn",
+        "time": 820,
+        "extraData": null
+    },
+    {
+        "fixtureId": 97,
+        "date": "2026-04-09",
+        "title": "26u6",
+        "time": 801,
+        "extraData": null
+    },
+    {
+        "fixtureId": 98,
+        "date": "2026-10-30",
+        "title": "adGvjevJ1pt",
+        "time": 1214,
+        "extraData": null
+    },
+    {
+        "fixtureId": 99,
+        "date": "2026-02-22",
+        "title": "pp5GE",
+        "time": 421,
+        "extraData": {
+            "reminderType": "10 mins before",
+            "repeatType": null,
+            "repeatDetails": null
+        }
+    },
+    {
+        "fixtureId": 100,
+        "date": "2026-01-05",
+        "title": "Cn2cQhW",
+        "time": 811,
+        "extraData": {
+            "reminderType": "At time of event",
+            "repeatType": "Daily",
+            "repeatDetails": "FREQ=DAILY;INTERVAL=14;COUNT=89"
+        }
+    }
+]

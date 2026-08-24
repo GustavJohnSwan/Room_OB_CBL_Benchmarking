@@ -1,16 +1,26 @@
 package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import com.bignerdranch.android.room_ob_cbl_benchmarking.DAO.OB_DAO
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.ObjectBoxProvider
-import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 
-class BBL_OB_CBL_Room (application: Application) : AndroidViewModel(application){
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.OB_DAO
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetReader
+
+
+class BenchmarkViewModel (application: Application) : AndroidViewModel(application){
+
+    private val jsonAssetReader =
+        JsonAssetReader(application.applicationContext)
+
+    fun loadDataSet() {
+        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
+        val text = json_data_tests(jsonString)
+    }
+
+
 
 
     var benchmarkStatus by mutableStateOf("Ready")
@@ -23,7 +33,22 @@ class BBL_OB_CBL_Room (application: Application) : AndroidViewModel(application)
     private val repo = OB_DAO(store)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// _________________________________________________________________________________________________
+    // old c=test code
     // generate random entries (right now two fillins)
+    /*
     fun generateRandomEntries(): List<EntryOb_B> {
         val entries = listOf(
             EntryOb_B(
@@ -41,10 +66,13 @@ class BBL_OB_CBL_Room (application: Application) : AndroidViewModel(application)
         return entries
     }
 
+     */
+
     // INSERT BULK
     // date format YYYY-MM-DD
     // time format formula : H*60+M --> 10:30 --> 10*60+30 = 630
 
+    /*
     fun insertEntryBulk() {
         val entries = generateRandomEntries()
 
@@ -83,19 +111,9 @@ class BBL_OB_CBL_Room (application: Application) : AndroidViewModel(application)
                 "Stored: $entry"
             )
         }
-
-
-
     }
 
-
-
-
-
-
-
-
-
+     */
 
     /*
         fun universalPlaceholder() {

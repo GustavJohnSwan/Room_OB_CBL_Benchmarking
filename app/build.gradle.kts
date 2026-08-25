@@ -6,6 +6,7 @@ plugins {
 
     // Apply the ObjectBox plugin
     alias(libs.plugins.objectbox)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -82,4 +83,6 @@ dependencies {
     )
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.kotlinx.serialization.json)
 }

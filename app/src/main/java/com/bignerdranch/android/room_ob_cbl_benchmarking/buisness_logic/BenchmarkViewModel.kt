@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.OB_DAO
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetDeserializer
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetReader
 
 
@@ -15,9 +16,13 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     private val jsonAssetReader =
         JsonAssetReader(application.applicationContext)
 
+    private val jsonAssetDeserializer =
+        JsonAssetDeserializer()
+
     fun loadDataSet() {
         val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
         val text = json_data_tests(jsonString)
+        val dataObject = jsonAssetDeserializer.deserializeJson(jsonString)
     }
 
 

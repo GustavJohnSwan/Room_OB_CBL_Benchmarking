@@ -1,6 +1,7 @@
 package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,9 +22,11 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     fun loadDataSet() {
         val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
-        val text = json_data_tests(jsonString)
-        val dataObject = jsonAssetDeserializer.deserializeJson(jsonString)
+
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
     }
+
 
 
 
@@ -42,6 +45,106 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// _________________________________________________________________________________________________
+        // test code
+
+
+        /*
+        // testing if JSON file read worked
+        val text = json_data_tests(jsonString)
+        // testing if deserialization worked
+        Log.d("JsonDeserializer", "Count data objects in list : ${listOfDataObjects.size}")
+
+        Log.d("JsonDeserializer", "First event: ${listOfDataObjects.first()}")
+        Log.d("JsonDeserializer", "Last event: ${listOfDataObjects.last()}")
+
+        val firstEvent = listOfDataObjects.first()
+
+        Log.d("JsonDeserializer", "fixtureId: ${firstEvent.fixtureId}")
+        Log.d("JsonDeserializer", "date: ${firstEvent.date}")
+        Log.d("JsonDeserializer", "title: ${firstEvent.title}")
+        Log.d("JsonDeserializer", "time: ${firstEvent.time}")
+
+        val eventWithoutExtraData =
+            listOfDataObjects.firstOrNull { it.extraData == null }
+
+        Log.d(
+            "JsonDeserializer",
+            "Event without extraData: $eventWithoutExtraData"
+        )
+
+
+
+        val eventWithExtraData =
+            listOfDataObjects.firstOrNull { it.extraData != null }
+
+        Log.d(
+            "JsonDeserializer",
+            "Event with extraData: $eventWithExtraData"
+        )
+
+
+
+
+        val eventWithExtraData2 =
+            listOfDataObjects.firstOrNull { it.extraData != null }
+
+        val extraData = eventWithExtraData?.extraData
+
+        Log.d("JsonDeserializer", "reminderType: ${extraData?.reminderType}")
+        Log.d("JsonDeserializer", "repeatType: ${extraData?.repeatType}")
+        Log.d("JsonDeserializer", "repeatDetails: ${extraData?.repeatDetails}")
+
+
+
+
+        val recurringEvent =
+            listOfDataObjects.firstOrNull {
+                it.extraData?.repeatType != null
+            }
+
+        Log.d(
+            "JsonDeserializer",
+            "Recurring event: $recurringEvent"
+        )
+
+
+
+        val reminderEvent =
+            listOfDataObjects.firstOrNull {
+                it.extraData?.reminderType != null
+            }
+
+        Log.d(
+            "JsonDeserializer",
+            "Reminder event: $reminderEvent"
+        )
+
+
+         */
 
 
 

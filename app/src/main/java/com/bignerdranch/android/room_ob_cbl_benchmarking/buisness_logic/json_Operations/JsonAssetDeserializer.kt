@@ -6,10 +6,8 @@ import kotlinx.serialization.json.*
 
 class JsonAssetDeserializer() {
 
-    fun deserializeJson(jsonString: String): GeneratedEvent {
-        var obj = Json.decodeFromString<GeneratedEvent>(jsonString)
-
-        return obj
+    fun deserializeJson(jsonString: String): List<GeneratedEvent> {
+        return Json.decodeFromString<List<GeneratedEvent>>(jsonString)
     }
 
 

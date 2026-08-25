@@ -3,7 +3,7 @@ package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Op
 import android.content.Context
 
 
-class JsonAssetReader(context: Context) {
+class JsonAssetReader(private val context: Context) {
 
     fun loadJsonFromAssets(fileName: String): String {
 

@@ -7,7 +7,7 @@ class OB_Mapping () {
     fun map(listOfDataObjects: List<GeneratedEvent>) {
 
         listOfDataObjects.forEach {
-            GeneratedEvent.
+
         }
 
     }

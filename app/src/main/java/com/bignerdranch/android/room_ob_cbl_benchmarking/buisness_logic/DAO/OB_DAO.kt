@@ -7,7 +7,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B_
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 import io.objectbox.BoxStore
 
-class OB_DAO (store: BoxStore) {
+class OB_DAO (private val store: BoxStore) {
 
     // creating boxes for each database object
     val EOBBox = store.boxFor(EntryOb_B::class.java)
@@ -55,10 +55,34 @@ class OB_DAO (store: BoxStore) {
     }
 
 
+    // REMOVE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    fun deleteCompleteEntry(id: Long) {
+        val entry = EOBBox.get(id) ?: return
+        val extraDataId = entry.extradataob_b.targetId
 
-    // REMOVE ENTRY based on ID
-    fun removeEntryOb_B(id: Long) {
-        EOBBox.remove(id)
+        store.runInTx {
+            EOBBox.remove(id)
+
+            if (extraDataId != 0L) {
+                EDOBBox.remove(extraDataId)
+            }
+        }
+    }
+
+
+    // REMOVE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    fun deleteCompleteEntries(entries: List<EntryOb_B>) {
+
+        val entryIds = entries.map { it.id }
+
+        val extraDataIds = entries
+            .map { it.extradataob_b.targetId }
+            .filter { it != 0L }
+
+        store.runInTx {
+            EOBBox.removeByIds(entryIds)
+            EDOBBox.removeByIds(extraDataIds)
+        }
     }
 
 
@@ -67,6 +91,8 @@ class OB_DAO (store: BoxStore) {
         EOBBox.removeAll()
         EDOBBox.removeAll()
     }
+
+
 
 
 

@@ -10,13 +10,12 @@ class OB_Mapping (store: BoxStore) {
     val EOBBox = store.boxFor(EntryOb_B::class.java)
     val EDOBBox = store.boxFor(ExtraDataOb_B::class.java)
 
-    fun map(listOfDataObjects: List<GeneratedEvent>) {
+    fun map(listOfDataObjects: List<GeneratedEvent>): List<EntryOb_B> {
 
 
+        val listOfEntityDataObjects = mutableListOf<EntryOb_B>()
 
         listOfDataObjects.forEach {
-
-            // TEST IF THIS WORKES
 
             val entryEntity = EntryOb_B(
                 dateOb = it.date,
@@ -24,8 +23,21 @@ class OB_Mapping (store: BoxStore) {
                 timeMinutesOb = it.time
             )
 
-            EOBBox.put(entryEntity)
+            if (it.extraData != null) {
+                val extraEntity = ExtraDataOb_B(
+                    reminderTypeOb = it.extraData.reminderType,
+                    repeatOb = it.extraData.repeatType,
+                    repeatDetailsOb = it.extraData.repeatDetails
+                )
+
+                entryEntity.extradataob_b.target = extraEntity
+
+            }
+
+            listOfEntityDataObjects.add(entryEntity)
         }
+
+        return listOfEntityDataObjects
 
     }
 }

@@ -15,12 +15,27 @@ class OB_DAO (store: BoxStore) {
     val EAOBBox = store.boxFor(EntryAttachmentOb_B::class.java)
 
 
-    // benchmarking DAO functions
+    // _____________________________________________________________________________________________
+    // 27.08.26 DAO
 
-    // INSERT BULK (EntryOb only)
     fun insertEntriesBulk(entries: List<EntryOb_B>) {
         EOBBox.put(entries)
     }
+
+    fun deleteAllEntries() {
+        EOBBox.removeAll()
+    }
+
+
+    // benchmarking DAO functions
+
+    // INSERT BULK (EntryOb only)
+    /*
+    fun insertEntriesBulk(entries: List<EntryOb_B>) {
+        EOBBox.put(entries)
+    }
+
+     */
 
     // GET BULK (EntryOb only)
     fun getAllEntriesBulk(): List<EntryOb_B> {

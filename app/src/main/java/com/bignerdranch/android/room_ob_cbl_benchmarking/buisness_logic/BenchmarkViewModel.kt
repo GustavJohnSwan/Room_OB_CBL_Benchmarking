@@ -15,6 +15,10 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Ope
 
 class BenchmarkViewModel (application: Application) : AndroidViewModel(application){
 
+
+    private val store = ObjectBoxProvider.get()
+    private val repo = OB_DAO(store)
+
     private val jsonAssetReader =
         JsonAssetReader(application.applicationContext)
 
@@ -22,14 +26,31 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         JsonAssetDeserializer()
 
     private val ob_Mapping =
-        OB_Mapping()
+        OB_Mapping(store)
+
+    private val ob_DAO =
+        OB_DAO(store)
 
     fun loadDataSet() {
+
+
         val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
 
         val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
 
-        val entityObject = ob_Mapping.map(listOfDataObjects)
+        val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+        ob_DAO.deleteAllEntries()
+
+        ob_DAO.insertEntriesBulk(listOfEntityDataObjects)
+
+
+        val listOfAllObEntries = ob_DAO.getAllEntriesBulk()
+
+        listOfAllObEntries.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
 
     }
 
@@ -44,8 +65,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     //-------------------------------------------------------------------------
     // Objectbox
-    private val store = ObjectBoxProvider.get()
-    private val repo = OB_DAO(store)
+
 
 
 

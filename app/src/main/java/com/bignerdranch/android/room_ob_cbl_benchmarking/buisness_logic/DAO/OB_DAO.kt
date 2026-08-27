@@ -15,18 +15,66 @@ class OB_DAO (store: BoxStore) {
     val EAOBBox = store.boxFor(EntryAttachmentOb_B::class.java)
 
 
-    // _____________________________________________________________________________________________
-    // 27.08.26 DAO
 
+
+    // _____________________________________________________________________________________________
+    // Basic CRUD
+
+    // INSERT BULK
+    // also UPDATE BULK - if entries with the same ID already exist
+    // Function for JSON data set
+    // Data set insertion - inserts the provided data set from provided JSON file (100 - 100 000 entries)
+    // this function inserts main data entry AND if it has extra data associated with it, then that as well.
+    // No need for seperate EDOBBox.put()
     fun insertEntriesBulk(entries: List<EntryOb_B>) {
         EOBBox.put(entries)
     }
 
-    fun deleteAllEntries() {
-        EOBBox.removeAll()
+
+
+
+
+
+    // INSERT ENTRY - main data AND extra data if it exists.
+    // also UPDATE ENTRY - if entry with same ID already exists
+    // Extra data needs to be associated with main data using "entry.extradataob_b.target = extraEntity"
+    fun insertEntryOb_B(entry: EntryOb_B) {
+        EOBBox.put(entry)
     }
 
 
+    // GET BULK (EntryOb only, but ExtraDataOb_B can be and is accessed using it.extradataob_b.target)
+    fun getAllEntriesBulk(): List<EntryOb_B> {
+        return EOBBox.all
+    }
+
+
+    // GET ENTRY based on ID
+    fun getSpecificEntryOb_B(id: Long): EntryOb_B? {
+        return EOBBox.get(id)
+    }
+
+
+
+    // REMOVE ENTRY based on ID
+    fun removeEntryOb_B(id: Long) {
+        EOBBox.remove(id)
+    }
+
+
+    // DELETE ALL ObjectBox database entries
+    fun deleteAllEntries() {
+        EOBBox.removeAll()
+        EDOBBox.removeAll()
+    }
+
+
+
+
+
+
+
+    // _____________________________________________________________________________________________
     // benchmarking DAO functions
 
     // INSERT BULK (EntryOb only)
@@ -34,13 +82,14 @@ class OB_DAO (store: BoxStore) {
     fun insertEntriesBulk(entries: List<EntryOb_B>) {
         EOBBox.put(entries)
     }
-
      */
 
     // GET BULK (EntryOb only)
+    /*
     fun getAllEntriesBulk(): List<EntryOb_B> {
         return EOBBox.all
     }
+     */
 
     //----------------------------------------------------------------------------------------------
 
@@ -50,6 +99,7 @@ class OB_DAO (store: BoxStore) {
 
     //----------------------------------------------------------------------------------------------
     // first draft for basic DAO functions
+    /*
     fun insertEntryOb_B(entry: EntryOb_B): Long {
         EOBBox.put(entry)
         return entry.id
@@ -60,13 +110,18 @@ class OB_DAO (store: BoxStore) {
         return entry.id
     }
 
+
+
     fun getAllEntryOb_Bs(): List<EntryOb_B> {
         return EOBBox.all
     }
 
+
     fun getAllExtraDataOb_Bs(): List<ExtraDataOb_B> {
         return EDOBBox.all
     }
+
+
 
 
     // id is an argument for calling this function from buisness logic
@@ -94,6 +149,8 @@ class OB_DAO (store: BoxStore) {
         return "EntryOb_B $id removed"
     }
 
+
+
     fun removeEntryOb_BAll(): String {
         EOBBox.removeAll()
         return "All EntryOb_Bs removed"
@@ -102,6 +159,8 @@ class OB_DAO (store: BoxStore) {
     fun countExtraDataOb_Bs(): Long {
         return EDOBBox.count()
     }
+
+     */
 
 
 /*

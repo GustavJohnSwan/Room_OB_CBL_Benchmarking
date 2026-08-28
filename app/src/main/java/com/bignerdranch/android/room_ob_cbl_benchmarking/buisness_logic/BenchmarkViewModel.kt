@@ -11,9 +11,11 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.OB_D
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.data_mapping.OB_Mapping
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetDeserializer
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetReader
+import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
+import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 
 
-class BenchmarkViewModel (application: Application) : AndroidViewModel(application){
+class BenchmarkViewModel (application: Application) : AndroidViewModel(application) {
 
 
     private val store = ObjectBoxProvider.get()
@@ -33,7 +35,202 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     fun loadDataSet() {
 
+        // CLEARING THE DATABASE
+        ob_DAO.deleteAllEntries()
 
+        val allEntries = ob_DAO.getAllEntriesBulk()
+
+        allEntries.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
+
+
+        // TEST 1 - INSERT ENTRY & DELETE ENTRY
+
+        val testEntry0 = EntryOb_B(
+            dateOb = "2026-08-28",
+            entryOb = "Test event",
+            timeMinutesOb = 780
+        )
+
+        val testExtraData = ExtraDataOb_B(
+            reminderTypeOb = "10 mins before",
+            repeatOb = "Weekly",
+            repeatDetailsOb = "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE,FR"
+        )
+
+        testEntry0.extradataob_b.target = testExtraData
+
+        val entryId = ob_DAO.insertEntryOb_B(testEntry0)
+
+        val listOfAllObEntries2 = ob_DAO.getAllEntriesBulk()
+
+        val oneEntry = ob_DAO.getSpecificEntryOb_B(entryId)
+
+
+        val extraData = oneEntry?.extradataob_b?.target
+        Log.d("OB_TEST", "oneEntry : Main data: $oneEntry | Extra data: $extraData")
+
+        listOfAllObEntries2.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
+
+        ob_DAO.deleteEntry(entryId)
+
+        val listOfAllObEntries3 = ob_DAO.getAllEntriesBulk()
+
+        listOfAllObEntries3.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
+
+        Log.d("OB_TEST", "oneEntry : Main data: $oneEntry | Extra data: $extraData")
+
+
+
+
+
+        // TEST 2 - INSERT MANY ENTRIES & DELETE MANY ENTRIES
+
+        val testEntry1 = EntryOb_B(
+            dateOb = "2026-08-28",
+            entryOb = "Test event 1",
+            timeMinutesOb = 600
+        )
+
+        val testEntry2 = EntryOb_B(
+            dateOb = "2026-08-29",
+            entryOb = "Test event 2",
+            timeMinutesOb = 720
+        )
+
+        val testEntry3 = EntryOb_B(
+            dateOb = "2026-08-30",
+            entryOb = "Test event 3",
+            timeMinutesOb = 840
+        )
+
+        val extraData2 = ExtraDataOb_B(
+            reminderTypeOb = "10 mins before",
+            repeatOb = "Weekly",
+            repeatDetailsOb = "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE,FR"
+        )
+
+        testEntry2.extradataob_b.target = extraData2
+
+        val testEntries = listOf(
+            testEntry1, // no extra data
+            testEntry2, // has extra data
+            testEntry3  // no extra data
+        )
+
+       val entryIds = ob_DAO.insertEntriesBulk(testEntries)
+
+        val listOfAllObEntries4 = ob_DAO.getAllEntriesBulk()
+
+        listOfAllObEntries4.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
+
+        ob_DAO.deleteManyEntries(entryIds)
+
+        val listOfAllObEntries5 = ob_DAO.getAllEntriesBulk()
+
+        listOfAllObEntries5.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
+
+
+
+
+
+
+        // TEST 3 - INSERT BULK ENTRIES & DELETE BULK ENTRIES
+
+        val jsonString1 = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
+
+        val listOfDataObjects1 = jsonAssetDeserializer.deserializeJson(jsonString1)
+
+        val listOfEntityDataObjects1 = ob_Mapping.map(listOfDataObjects1)
+
+        ob_DAO.insertEntriesBulk(listOfEntityDataObjects1)
+
+        val listOfAllObEntries1 = ob_DAO.getAllEntriesBulk()
+
+        listOfAllObEntries1.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
+
+        ob_DAO.deleteAllEntries()
+
+        val listOfAllObEntries6 = ob_DAO.getAllEntriesBulk()
+
+        listOfAllObEntries6.forEach {
+            val extraData = it.extradataob_b.target
+            Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
+        }
+
+
+
+
+
+
+        // TEST 4 - UPDATE 1 ENTRY
+
+        val testEntry = EntryOb_B(
+            dateOb = "2026-08-28",
+            entryOb = "Update test",
+            timeMinutesOb = 600
+        )
+
+        val testExtra = ExtraDataOb_B(
+            reminderTypeOb = "10 mins before",
+            repeatOb = "Weekly",
+            repeatDetailsOb = "FREQ=WEEKLY;INTERVAL=1"
+        )
+
+        testEntry.extradataob_b.target = testExtra
+
+        val id = ob_DAO.insertEntryOb_B(testEntry)
+
+
+// Read persisted entry
+        val storedEntry = ob_DAO.getSpecificEntryOb_B(id)
+
+        Log.d(
+            "UPDATE_TEST",
+            "BEFORE: ${storedEntry?.extradataob_b?.target}"
+        )
+
+
+// Change ONLY existing ExtraData
+        storedEntry?.extradataob_b?.target?.reminderTypeOb = "1 hour before"
+
+
+// Call your ORIGINAL function again
+        if (storedEntry != null) {
+            ob_DAO.insertEntryOb_B(storedEntry)
+        }
+
+
+// Read again from database
+        val storedEntryAfter = ob_DAO.getSpecificEntryOb_B(id)
+
+        Log.d(
+            "UPDATE_TEST",
+            "AFTER: ${storedEntryAfter?.extradataob_b?.target}"
+        )
+
+
+
+        // _________________________________________________________________________________________
+
+        /*
         val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
 
         val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
@@ -54,45 +251,18 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     }
 
+         */
 
 
-
-
-
+        /*
     var benchmarkStatus by mutableStateOf("Ready")
         private set
 
-
-    //-------------------------------------------------------------------------
-    // Objectbox
+         */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //-------------------------------------------------------------------------
+        // Objectbox
 
 
 // _________________________________________________________________________________________________
@@ -174,16 +344,10 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
          */
 
 
-
-
-
-
-
-
 // _________________________________________________________________________________________________
-    // old c=test code
-    // generate random entries (right now two fillins)
-    /*
+        // old c=test code
+        // generate random entries (right now two fillins)
+        /*
     fun generateRandomEntries(): List<EntryOb_B> {
         val entries = listOf(
             EntryOb_B(
@@ -203,11 +367,11 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
      */
 
-    // INSERT BULK
-    // date format YYYY-MM-DD
-    // time format formula : H*60+M --> 10:30 --> 10*60+30 = 630
+        // INSERT BULK
+        // date format YYYY-MM-DD
+        // time format formula : H*60+M --> 10:30 --> 10*60+30 = 630
 
-    /*
+        /*
     fun insertEntryBulk() {
         val entries = generateRandomEntries()
 
@@ -250,7 +414,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
      */
 
-    /*
+        /*
         fun universalPlaceholder() {
 
 
@@ -284,4 +448,5 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         }
 
      */
+    }
 }

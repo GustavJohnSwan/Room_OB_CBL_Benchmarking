@@ -26,21 +26,54 @@ class OB_DAO (private val store: BoxStore) {
     // Data set insertion - inserts the provided data set from provided JSON file (100 - 100 000 entries)
     // this function inserts main data entry AND if it has extra data associated with it, then that as well.
     // No need for seperate EDOBBox.put()
-    fun insertEntriesBulk(entries: List<EntryOb_B>) {
+
+    // OUTDATED - for objectbox DAO, put() can be used for both inserting and updating entries.
+    // But if used that way, the function needs to be defined in a more universal way, using both EOBBox and EDOBBox
+
+    fun insertEntriesBulk(entries: List<EntryOb_B>): List<Long> {
         EOBBox.put(entries)
+
+        return entries.map { it.id }
     }
 
-
-
-
-
-
-    // INSERT ENTRY - main data AND extra data if it exists.
+        // INSERT ENTRY - main data AND extra data if it exists.
     // also UPDATE ENTRY - if entry with same ID already exists
     // Extra data needs to be associated with main data using "entry.extradataob_b.target = extraEntity"
-    fun insertEntryOb_B(entry: EntryOb_B) {
-        EOBBox.put(entry)
+    fun insertEntryOb_B(entry: EntryOb_B): Long {
+        return EOBBox.put(entry)
     }
+
+
+    fun putEntry(entry: EntryOb_B): Long {
+
+        val extraData = entry.extradataob_b.target
+
+        if (extraData != null && extraData.id != 0L) {
+            EDOBBox.put(extraData)
+        }
+
+        return EOBBox.put(entry)
+    }
+
+    fun putEntries(entries: List<EntryOb_B>): List<Long> {
+
+        val existingExtraData = entries
+            .mapNotNull { it.extradataob_b.target }
+            .filter { it.id != 0L }
+
+        if (existingExtraData.isNotEmpty()) {
+            EDOBBox.put(existingExtraData)
+        }
+
+        EOBBox.put(entries)
+
+        return entries.map { it.id }
+    }
+
+
+
+
+
 
 
     // GET BULK (EntryOb only, but ExtraDataOb_B can be and is accessed using it.extradataob_b.target)
@@ -55,8 +88,8 @@ class OB_DAO (private val store: BoxStore) {
     }
 
 
-    // REMOVE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
-    fun deleteCompleteEntry(id: Long) {
+    // DELETE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    fun deleteEntry(id: Long) {
         val entry = EOBBox.get(id) ?: return
         val extraDataId = entry.extradataob_b.targetId
 
@@ -70,10 +103,10 @@ class OB_DAO (private val store: BoxStore) {
     }
 
 
-    // REMOVE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
-    fun deleteCompleteEntries(entries: List<EntryOb_B>) {
+    // DELETE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    fun deleteManyEntries(entryIds: List<Long>) {
 
-        val entryIds = entries.map { it.id }
+        val entries = EOBBox.get(entryIds)
 
         val extraDataIds = entries
             .map { it.extradataob_b.targetId }
@@ -84,6 +117,8 @@ class OB_DAO (private val store: BoxStore) {
             EDOBBox.removeByIds(extraDataIds)
         }
     }
+
+
 
 
     // DELETE ALL ObjectBox database entries

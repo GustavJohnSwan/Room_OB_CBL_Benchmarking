@@ -62,7 +62,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         testEntry0.extradataob_b.target = testExtraData
 
-        val entryId = ob_DAO.insertEntryOb_B(testEntry0)
+        val entryId = ob_DAO.putEntry(testEntry0)
 
         val listOfAllObEntries2 = ob_DAO.getAllEntriesBulk()
 
@@ -126,7 +126,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
             testEntry3  // no extra data
         )
 
-       val entryIds = ob_DAO.insertEntriesBulk(testEntries)
+       val entryIds = ob_DAO.putEntries(testEntries)
 
         val listOfAllObEntries4 = ob_DAO.getAllEntriesBulk()
 
@@ -157,7 +157,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         val listOfEntityDataObjects1 = ob_Mapping.map(listOfDataObjects1)
 
-        ob_DAO.insertEntriesBulk(listOfEntityDataObjects1)
+        ob_DAO.putEntries(listOfEntityDataObjects1)
 
         val listOfAllObEntries1 = ob_DAO.getAllEntriesBulk()
 
@@ -196,7 +196,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         testEntry.extradataob_b.target = testExtra
 
-        val id = ob_DAO.insertEntryOb_B(testEntry)
+        val id = ob_DAO.putEntry(testEntry)
 
 
 // Read persisted entry
@@ -214,7 +214,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
 // Call your ORIGINAL function again
         if (storedEntry != null) {
-            ob_DAO.insertEntryOb_B(storedEntry)
+            ob_DAO.putEntry(storedEntry)
         }
 
 
@@ -239,7 +239,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         ob_DAO.deleteAllEntries()
 
-        ob_DAO.insertEntriesBulk(listOfEntityDataObjects)
+        ob_DAO.putEntries(listOfEntityDataObjects)
 
 
         val listOfAllObEntries = ob_DAO.getAllEntriesBulk()
@@ -387,7 +387,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
             )
         }
 
-        repo.insertEntriesBulk(entries)
+        repo.putEntries(entries)
 
         entries.forEach { entry ->
             Log.d(

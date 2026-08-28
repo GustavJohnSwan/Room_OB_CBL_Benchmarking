@@ -29,7 +29,7 @@ class OB_DAO (private val store: BoxStore) {
 
     // OUTDATED - for objectbox DAO, put() can be used for both inserting and updating entries.
     // But if used that way, the function needs to be defined in a more universal way, using both EOBBox and EDOBBox
-
+/*
     fun insertEntriesBulk(entries: List<EntryOb_B>): List<Long> {
         EOBBox.put(entries)
 
@@ -42,6 +42,8 @@ class OB_DAO (private val store: BoxStore) {
     fun insertEntryOb_B(entry: EntryOb_B): Long {
         return EOBBox.put(entry)
     }
+
+ */
 
 
     fun putEntry(entry: EntryOb_B): Long {

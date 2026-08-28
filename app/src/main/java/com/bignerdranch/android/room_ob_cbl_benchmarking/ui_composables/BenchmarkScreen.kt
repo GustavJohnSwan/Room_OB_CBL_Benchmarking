@@ -59,8 +59,33 @@ fun BenchmarkScreen(
             }
 
             item {
-                Button(onClick = { viewModel.loadDataSet() }) {
-                    Text("Perform JSON dataset operations")
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(1) }) {
+                    Text("Insert 100 entries into ObjectBox")
+                }
+            }
+            item {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(2) }) {
+                    Text("Insert 1000 entries into ObjectBox")
+                }
+            }
+            item {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(3) }) {
+                    Text("Insert 10 000 entries into ObjectBox")
+                }
+            }
+            item {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(4) }) {
+                    Text("Insert 50 000 entries into ObjectBox")
+                }
+            }
+            item {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(5) }) {
+                    Text("Insert 100 000 entries into ObjectBox")
+                }
+            }
+            item {
+                Button(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
+                    Text("Delete all entries from ObjectBox")
                 }
             }
         }

@@ -48,45 +48,63 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
                 val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
                 ob_DAO.putEntries(listOfEntityDataObjects)
+
+                Log.d("OB_TEST", "Inserted in ObjectBox ${listOfEntityDataObjects.count()} elements")
             }
             2 -> {
-                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A1000_S1.json")
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A1000_S2.json")
 
                 val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
 
                 val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
                 ob_DAO.putEntries(listOfEntityDataObjects)
+
+                Log.d("OB_TEST", "Inserted in ObjectBox ${listOfEntityDataObjects.count()} elements")
             }
             3 -> {
-                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A10000_S1.json")
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A10000_S3.json")
 
                 val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
 
                 val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
                 ob_DAO.putEntries(listOfEntityDataObjects)
+
+                Log.d("OB_TEST", "Inserted in ObjectBox ${listOfEntityDataObjects.count()} elements")
             }
             4 -> {
-                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A50000_S1.json")
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A50000_S4.json")
 
                 val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
 
                 val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
                 ob_DAO.putEntries(listOfEntityDataObjects)
+
+                Log.d("OB_TEST", "Inserted in ObjectBox ${listOfEntityDataObjects.count()} elements")
             }
             5 -> {
-                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100000_S1.json")
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100000_S5.json")
 
                 val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
 
                 val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
                 ob_DAO.putEntries(listOfEntityDataObjects)
+
+                Log.d("OB_TEST", "Inserted in ObjectBox ${listOfEntityDataObjects.count()} elements")
             }
             else -> "Error in insertDataSet_ObjectBox()"
         }
+    }
+
+    fun deleteAllEntries_ObjectBox() {
+        ob_DAO.deleteAllEntries()
+    }
+
+    fun findEntriesById() {
+
     }
 
 

@@ -33,6 +33,9 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     private val ob_DAO =
         OB_DAO(store)
 
+    var benchmarkStatus by mutableStateOf("Ready")
+        private set
+
     fun loadDataSet() {
 
         // CLEARING THE DATABASE
@@ -199,7 +202,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         val id = ob_DAO.putEntry(testEntry)
 
 
-// Read persisted entry
+        // Read persisted entry
         val storedEntry = ob_DAO.getSpecificEntryOb_B(id)
 
         Log.d(
@@ -208,23 +211,28 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         )
 
 
-// Change ONLY existing ExtraData
+        // Change ONLY existing ExtraData
         storedEntry?.extradataob_b?.target?.reminderTypeOb = "1 hour before"
 
 
-// Call your ORIGINAL function again
+        // Call your ORIGINAL function again
         if (storedEntry != null) {
             ob_DAO.putEntry(storedEntry)
         }
 
 
-// Read again from database
+        // Read again from database
         val storedEntryAfter = ob_DAO.getSpecificEntryOb_B(id)
 
         Log.d(
             "UPDATE_TEST",
             "AFTER: ${storedEntryAfter?.extradataob_b?.target}"
         )
+
+
+
+
+
 
 
 
@@ -254,11 +262,10 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
          */
 
 
-        /*
-    var benchmarkStatus by mutableStateOf("Ready")
-        private set
 
-         */
+
+
+
 
 
         //-------------------------------------------------------------------------

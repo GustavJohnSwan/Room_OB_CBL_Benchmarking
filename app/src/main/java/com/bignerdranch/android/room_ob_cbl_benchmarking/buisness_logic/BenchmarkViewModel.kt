@@ -36,6 +36,71 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     var benchmarkStatus by mutableStateOf("Ready")
         private set
 
+
+    fun insertDataSet_ObjectBox(variant: Int) {
+
+        when (variant) {
+            1 -> {
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
+
+                val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+                val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+                ob_DAO.putEntries(listOfEntityDataObjects)
+            }
+            2 -> {
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A1000_S1.json")
+
+                val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+                val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+                ob_DAO.putEntries(listOfEntityDataObjects)
+            }
+            3 -> {
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A10000_S1.json")
+
+                val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+                val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+                ob_DAO.putEntries(listOfEntityDataObjects)
+            }
+            4 -> {
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A50000_S1.json")
+
+                val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+                val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+                ob_DAO.putEntries(listOfEntityDataObjects)
+            }
+            5 -> {
+                val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100000_S1.json")
+
+                val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+                val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+                ob_DAO.putEntries(listOfEntityDataObjects)
+            }
+            else -> "Error in insertDataSet_ObjectBox()"
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    // THIS CODE WAS MOSTLY USED FOR READING, DE-SERIALIZING AND INSERTING JSON DATASET.
+    // THEN IT WAS USED TO TEST ALL BASIC CRUD FUNCTIONS ON THIS DATASET
     fun loadDataSet() {
 
         // CLEARING THE DATABASE
@@ -268,7 +333,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
 
 
-        //-------------------------------------------------------------------------
+// _________________________________________________________________________________________________
         // Objectbox
 
 

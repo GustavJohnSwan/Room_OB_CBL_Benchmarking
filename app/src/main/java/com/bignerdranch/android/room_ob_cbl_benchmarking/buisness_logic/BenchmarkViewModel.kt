@@ -18,19 +18,19 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 class BenchmarkViewModel (application: Application) : AndroidViewModel(application) {
 
 
-    private val store = ObjectBoxProvider.get()
-    private val repo = OB_DAO(store)
+    private var store = ObjectBoxProvider.get()
+    private var repo = OB_DAO(store)
 
-    private val jsonAssetReader =
+    private var jsonAssetReader =
         JsonAssetReader(application.applicationContext)
 
-    private val jsonAssetDeserializer =
+    private var jsonAssetDeserializer =
         JsonAssetDeserializer()
 
-    private val ob_Mapping =
+    private var ob_Mapping =
         OB_Mapping(store)
 
-    private val ob_DAO =
+    private var ob_DAO =
         OB_DAO(store)
 
     var benchmarkStatus by mutableStateOf("Ready")
@@ -101,6 +101,22 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     fun deleteAllEntries_ObjectBox() {
         ob_DAO.deleteAllEntries()
+    }
+
+    fun resetDataBase_ObjectBox() {
+        benchmarkStatus = "Resetting ObjectBox database..."
+
+        ObjectBoxProvider.reset(
+            getApplication<Application>().applicationContext
+        )
+
+        store = ObjectBoxProvider.get()
+
+        ob_DAO = OB_DAO(store)
+
+        ob_Mapping = OB_Mapping(store)
+
+        benchmarkStatus = "ObjectBox database reset"
     }
 
     fun findEntriesById() {

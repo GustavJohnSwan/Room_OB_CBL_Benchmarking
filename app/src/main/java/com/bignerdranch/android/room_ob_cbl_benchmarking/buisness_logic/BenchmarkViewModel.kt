@@ -41,15 +41,35 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         when (variant) {
             1 -> {
+
+                val existingEntries = ob_DAO.getAllEntriesBulk()
+
+                Log.d(
+                    "OB_RESET",
+                    "BEFORE INSERT -> count=${existingEntries.size}, " +
+                            "firstId=${existingEntries.firstOrNull()?.id}, " +
+                            "lastId=${existingEntries.lastOrNull()?.id}"
+                )
+
                 val jsonString = jsonAssetReader.loadJsonFromAssets("events_A100_S1.json")
 
                 val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
 
                 val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
-                ob_DAO.putEntries(listOfEntityDataObjects)
+                var ids = ob_DAO.putEntries(listOfEntityDataObjects)
 
                 Log.d("OB_TEST", "Inserted in ObjectBox ${listOfEntityDataObjects.count()} elements")
+
+                Log.d(
+                    "OB_RESET",
+                    "AFTER FRESH INSERT -> First ID: ${ids.first()}"
+                )
+
+                Log.d(
+                    "OB_RESET",
+                    "AFTER FRESH INSERT -> Last ID: ${ids.last()}"
+                )
             }
             2 -> {
                 val jsonString = jsonAssetReader.loadJsonFromAssets("events_A1000_S2.json")
@@ -104,17 +124,56 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     }
 
     fun resetDataBase_ObjectBox() {
+
         benchmarkStatus = "Resetting ObjectBox database..."
 
+        // Check what exists BEFORE reset
+        val entriesBeforeReset =
+            ob_DAO.getAllEntriesBulk()
+
+        Log.d(
+            "OB_RESET",
+            "BEFORE RESET -> Entry count: ${entriesBeforeReset.size}"
+        )
+
+        Log.d(
+            "OB_RESET",
+            "BEFORE RESET -> Entry IDs: ${entriesBeforeReset.map { it.id }}"
+        )
+
+
+        // FULL RESET
         ObjectBoxProvider.reset(
             getApplication<Application>().applicationContext
         )
 
-        store = ObjectBoxProvider.get()
+        Log.d(
+            "OB_RESET",
+            "Old ObjectBox database deleted and new database created"
+        )
 
-        ob_DAO = OB_DAO(store)
 
-        ob_Mapping = OB_Mapping(store)
+        // IMPORTANT:
+        // Get the new BoxStore
+        store =
+            ObjectBoxProvider.get()
+
+        // Recreate anything that used the OLD BoxStore
+        ob_DAO =
+            OB_DAO(store)
+
+        ob_Mapping =
+            OB_Mapping(store)
+
+
+        // Check new database
+        val entriesAfterReset =
+            ob_DAO.getAllEntriesBulk()
+
+        Log.d(
+            "OB_RESET",
+            "AFTER RESET -> Entry count: ${entriesAfterReset.size}"
+        )
 
         benchmarkStatus = "ObjectBox database reset"
     }

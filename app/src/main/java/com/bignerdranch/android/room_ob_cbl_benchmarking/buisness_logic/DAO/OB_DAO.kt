@@ -89,6 +89,10 @@ class OB_DAO (private val store: BoxStore) {
         return EOBBox.get(id)
     }
 
+    fun getEntriesByIDs(entryIds: List<Long>): List<EntryOb_B> {
+        return EOBBox.get(entryIds)
+    }
+
 
     // DELETE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
     fun deleteEntry(id: Long) {

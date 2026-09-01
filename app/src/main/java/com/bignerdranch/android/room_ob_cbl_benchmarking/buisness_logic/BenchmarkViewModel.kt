@@ -124,11 +124,58 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun findEntriesById() {
+    fun findEntriesById(IdListSize: Int) {
+
+        // default
         var jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A100.json")
+
+        when (IdListSize) {
+            1 -> jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A100.json")
+            2 -> jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A1000.json")
+            3 -> jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A10000.json")
+            4 -> jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A50000.json")
+            5 -> jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A100000.json")
+            else -> Log.d("ERROR", "ERROR in findEntriesById()")
+        }
+        //var jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A100.json")
 
         var listOfIDs = jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
 
+        Log.d("OB_TEST", "List of IDs :  ${listOfIDs}")
+
+        var foundEntries = ob_DAO.getEntriesByIDs(listOfIDs)
+
+        Log.d("OB_TEST", "Found ${foundEntries.count()} entries")
+
+        foundEntries.forEach { entry ->
+
+            Log.d(
+                "OB_TEST",
+                "Entry: id=${entry.id}, " +
+                        "date=${entry.dateOb}, " +
+                        "title=${entry.entryOb}, " +
+                        "time=${entry.timeMinutesOb}"
+            )
+
+            val extraData = entry.extradataob_b.target
+
+            if (extraData != null) {
+                Log.d(
+                    "OB_TEST",
+                    "ExtraData: " +
+                            "id=${extraData.id}, " +
+                            "reminder=${extraData.reminderTypeOb}, " +
+                            "repeat=${extraData.repeatOb}, " +
+                            "repeatDetails=${extraData.repeatDetailsOb}"
+                )
+            } else {
+                Log.d(
+                    "OB_TEST",
+                    "ExtraData: NONE"
+                )
+            }
+            Log.d("OB_TEST", "_________________________________________________________________________________")
+        }
 
     }
 

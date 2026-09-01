@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,19 +67,68 @@ fun BenchmarkScreen(
             }
 
             item {
-                Button(onClick = { viewModel.findEntriesById() }) {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(2) }) {
+                    Text("Insert 1k entries into ObjectBox")
+                }
+            }
+
+            item {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(3) }) {
+                    Text("Insert 10k entries into ObjectBox")
+                }
+            }
+
+            item {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(4) }) {
+                    Text("Insert 50k entries into ObjectBox")
+                }
+            }
+
+            item {
+                Button(onClick = { viewModel.insertDataSet_ObjectBox(5) }) {
+                    Text("Insert 100k entries into ObjectBox")
+                }
+            }
+
+            item {
+                FilledTonalButton(onClick = { viewModel.findEntriesById(1) }) {
                     Text("Find 100 IDs in ObjectBox database")
                 }
             }
 
             item {
-                Button(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
+                FilledTonalButton(onClick = { viewModel.findEntriesById(2) }) {
+                    Text("Find 1k IDs in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(onClick = { viewModel.findEntriesById(3) }) {
+                    Text("Find 10k IDs in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(onClick = { viewModel.findEntriesById(4) }) {
+                    Text("Find 50k IDs in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(onClick = { viewModel.findEntriesById(5) }) {
+                    Text("Find 100k IDs in ObjectBox database")
+                }
+            }
+
+
+            item {
+                OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
                     Text("Delete all entries from ObjectBox")
                 }
             }
 
             item {
-                Button(onClick = { viewModel.resetDataBase_ObjectBox() }) {
+                OutlinedButton(onClick = { viewModel.resetDataBase_ObjectBox() }) {
                     Text("Reset ObjectBox database")
                 }
             }

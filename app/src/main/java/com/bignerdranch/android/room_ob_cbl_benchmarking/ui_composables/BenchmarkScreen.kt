@@ -65,6 +65,12 @@ fun BenchmarkScreen(
             }
 
             item {
+                Button(onClick = { viewModel.findEntriesById() }) {
+                    Text("Find 100 IDs in ObjectBox database")
+                }
+            }
+
+            item {
                 Button(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
                     Text("Delete all entries from ObjectBox")
                 }

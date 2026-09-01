@@ -11,6 +11,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.OB_D
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.data_mapping.OB_Mapping
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetDeserializer
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetReader
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonIDsAssetDeserializer
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 
@@ -35,6 +36,10 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     var benchmarkStatus by mutableStateOf("Ready")
         private set
+
+
+    private var jsonIDsAssetDeserializer =
+        JsonIDsAssetDeserializer()
 
 
     fun insertDataSet_ObjectBox(variant: Int) {
@@ -119,10 +124,20 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         }
     }
 
+    fun findEntriesById() {
+        var jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A100.json")
+
+        var listOfIDs = jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
+
+
+    }
+
     fun deleteAllEntries_ObjectBox() {
         ob_DAO.deleteAllEntries()
     }
 
+
+    // remove dedicated testing log.d and functionality when no longer needed (the function its self is needed, but not all actions that are inside it)
     fun resetDataBase_ObjectBox() {
 
         benchmarkStatus = "Resetting ObjectBox database..."
@@ -178,9 +193,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         benchmarkStatus = "ObjectBox database reset"
     }
 
-    fun findEntriesById() {
 
-    }
 
 
 

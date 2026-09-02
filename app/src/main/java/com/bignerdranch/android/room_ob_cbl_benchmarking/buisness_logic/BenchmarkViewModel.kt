@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.OB_DAO
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.data_mapping.OB_Mapping
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.UpdateEntries_ObjectBox
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetDeserializer
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetReader
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonIDsAssetDeserializer
@@ -40,6 +41,9 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     private var jsonIDsAssetDeserializer =
         JsonIDsAssetDeserializer()
+
+    private var updateEntries_ObjectBox =
+        UpdateEntries_ObjectBox()
 
 
     fun insertDataSet_ObjectBox(variant: Int) {
@@ -176,6 +180,30 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
             }
             Log.d("OB_TEST", "_________________________________________________________________________________")
         }
+
+    }
+
+    fun updateEntriesById(IdAmount: Int) {
+        var entryAmount = ob_DAO.getAllEntriesBulk().count()
+
+        var jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A${entryAmount}.json")
+        var listOfIDs = jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
+
+        var listOfRelevantIDs = listOfIDs.take(IdAmount)
+
+        var listOfDataObjects = jsonAssetDeserializer.deserializeJson("eventsForUpdate_A100000_S6.json")
+
+        var listOfEntityDataObjects = ob_DAO.getEntriesByIDs(listOfRelevantIDs)
+
+        var updatedListOfEntityDataObjects = updateEntries_ObjectBox.update(listOfEntityDataObjects, listOfDataObjects)
+
+        ob_DAO.putEntries(updatedListOfEntityDataObjects)
+
+
+        //val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+
+
 
     }
 

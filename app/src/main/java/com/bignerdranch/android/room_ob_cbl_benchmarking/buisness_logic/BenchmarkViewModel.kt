@@ -191,14 +191,34 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
-        var listOfDataObjects = jsonAssetDeserializer.deserializeJson("eventsForUpdate_A100000_S6.json")
+        Log.d("OB_UPDATE_TEST", "List of IDs: $listOfRelevantIDs")
+        // breakpoint
+
+        val updateJsonString = jsonAssetReader.loadJsonFromAssets("eventsForUpdate_A100000_S6.json")
+
+        var listOfDataObjects = jsonAssetDeserializer.deserializeJson(updateJsonString)
+
+        Log.d("OB_UPDATE_TEST", "List of Data Objects: $listOfDataObjects")
+        // breakpoint
 
         var listOfEntityDataObjects = ob_DAO.getEntriesByIDs(listOfRelevantIDs)
 
+        Log.d("OB_UPDATE_TEST", "List of Original Entities : $listOfEntityDataObjects")
+        // breakpoint
+
         var updatedListOfEntityDataObjects = updateEntries_ObjectBox.update(listOfEntityDataObjects, listOfDataObjects)
+
+        Log.d("OB_UPDATE_TEST", "List of UPDATED Entities : $updatedListOfEntityDataObjects")
+        // breakpoint
 
         ob_DAO.putEntries(updatedListOfEntityDataObjects)
 
+
+        var listOfEntityDataObjectsUpdated = ob_DAO.getEntriesByIDs(listOfRelevantIDs)
+
+        Log.d("OB_UPDATE_TEST", "List of UPDATED Entities from database : $updatedListOfEntityDataObjects")
+        Log.d("OB_UPDATE_TEST", "________________________________ END OF UPDATE TESTING ________________________________")
+        // breakpoint
 
         //val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 

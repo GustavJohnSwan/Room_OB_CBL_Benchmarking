@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -119,6 +121,18 @@ fun BenchmarkScreen(
             item {
                 FilledTonalButton(onClick = { viewModel.findEntriesById(5) }) {
                     Text("Find 100k IDs in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.updateEntriesById(100) },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Green,
+                        contentColor = Color.Black
+                )
+                ) {
+                    Text("Update 100 entities by IDs in ObjectBox database")
                 }
             }
 

@@ -186,29 +186,134 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     fun updateEntriesById(IdAmount: Int) {
         var entryAmount = ob_DAO.getAllEntriesBulk().count()
 
+        // safety net
+        require(IdAmount <= entryAmount) {
+            "Cannot update $IdAmount entries because database contains only $entryAmount entries"
+        }
+
         var jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A${entryAmount}.json")
         var listOfIDs = jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
-        Log.d("OB_UPDATE_TEST", "List of IDs: $listOfRelevantIDs")
+        //Log.d("OB_UPDATE_TEST", "List of IDs: $listOfRelevantIDs")
+        // CHANGED: Keep simple summary log
+        Log.d(
+            "OB_UPDATE_TEST",
+            "Selected ${listOfRelevantIDs.size} IDs for UPDATE"
+        )
         // breakpoint
 
         val updateJsonString = jsonAssetReader.loadJsonFromAssets("eventsForUpdate_A100000_S6.json")
 
-        var listOfDataObjects = jsonAssetDeserializer.deserializeJson(updateJsonString)
+        // CHANGED:
+        // Deserialize the update dataset AND only take as many
+        // GeneratedEvents as we actually need for this test
+        val listOfDataObjects =
+            jsonAssetDeserializer
+                .deserializeJson(updateJsonString)
+                .take(IdAmount)
 
-        Log.d("OB_UPDATE_TEST", "List of Data Objects: $listOfDataObjects")
+        //var listOfDataObjects = jsonAssetDeserializer.deserializeJson(updateJsonString)
+
+        //Log.d("OB_UPDATE_TEST", "List of Data Objects: $listOfDataObjects")
         // breakpoint
 
         var listOfEntityDataObjects = ob_DAO.getEntriesByIDs(listOfRelevantIDs)
 
-        Log.d("OB_UPDATE_TEST", "List of Original Entities : $listOfEntityDataObjects")
+        // ============================================================
+        // CHANGED: FULL DUMP OF ORIGINAL DATABASE ENTITIES
+        // This MUST happen BEFORE update(), because update() modifies
+        // these existing objects in memory.
+        // ============================================================
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "================ BEFORE UPDATE ================"
+        )
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "COUNT = ${listOfEntityDataObjects.size}"
+        )
+
+        // CHANGED:
+        // Print ONE entity per Log.d().
+        // This prevents Android from truncating one enormous log message.
+        listOfEntityDataObjects.forEachIndexed { index, entry ->
+
+            // CHANGED: Access related ExtraData entity, if it exists
+            val extraData = entry.extradataob_b.target
+
+            Log.d(
+                "OB_UPDATE_DUMP",
+                "[$index] " +
+                        "ID=${entry.id} | " +
+                        "date=${entry.dateOb} | " +
+                        "title=${entry.entryOb} | " +
+                        "time=${entry.timeMinutesOb} | " +
+                        "extraID=${extraData?.id} | " +
+                        "reminder=${extraData?.reminderTypeOb} | " +
+                        "repeat=${extraData?.repeatOb} | " +
+                        "repeatDetails=${extraData?.repeatDetailsOb}"
+            )
+        }
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "================ END BEFORE UPDATE ================"
+        )
+
+
+
+
+        //Log.d("OB_UPDATE_TEST", "List of Original Entities : $listOfEntityDataObjects")
         // breakpoint
 
         var updatedListOfEntityDataObjects = updateEntries_ObjectBox.update(listOfEntityDataObjects, listOfDataObjects)
 
-        Log.d("OB_UPDATE_TEST", "List of UPDATED Entities : $updatedListOfEntityDataObjects")
+
+        // ============================================================
+        // CHANGED: FULL DUMP AFTER VALUES WERE CHANGED,
+        // BUT BEFORE putEntries()
+        // ============================================================
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "================ AFTER CHANGES - BEFORE PUT ================"
+        )
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "COUNT = ${updatedListOfEntityDataObjects.size}"
+        )
+
+        // CHANGED: Again print every entity separately
+        updatedListOfEntityDataObjects.forEachIndexed { index, entry ->
+
+            // CHANGED: Include ExtraData state after update logic
+            val extraData = entry.extradataob_b.target
+
+            Log.d(
+                "OB_UPDATE_DUMP",
+                "[$index] " +
+                        "ID=${entry.id} | " +
+                        "date=${entry.dateOb} | " +
+                        "title=${entry.entryOb} | " +
+                        "time=${entry.timeMinutesOb} | " +
+                        "extraID=${extraData?.id} | " +
+                        "reminder=${extraData?.reminderTypeOb} | " +
+                        "repeat=${extraData?.repeatOb} | " +
+                        "repeatDetails=${extraData?.repeatDetailsOb}"
+            )
+        }
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "================ END AFTER CHANGES - BEFORE PUT ================"
+        )
+
+        // Log.d("OB_UPDATE_TEST", "List of UPDATED Entities : $updatedListOfEntityDataObjects")
         // breakpoint
 
         ob_DAO.putEntries(updatedListOfEntityDataObjects)
@@ -216,8 +321,56 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         var listOfEntityDataObjectsUpdated = ob_DAO.getEntriesByIDs(listOfRelevantIDs)
 
-        Log.d("OB_UPDATE_TEST", "List of UPDATED Entities from database : $updatedListOfEntityDataObjects")
-        Log.d("OB_UPDATE_TEST", "________________________________ END OF UPDATE TESTING ________________________________")
+
+        // ============================================================
+        // CHANGED: FULL DATABASE DUMP AFTER putEntries()
+        // ============================================================
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "================ AFTER PUT - READ FROM DATABASE ================"
+        )
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "COUNT = ${listOfEntityDataObjectsUpdated.size}"
+        )
+
+        // CHANGED:
+        // Print every entity retrieved back from ObjectBox,
+        // including its ExtraData.
+        listOfEntityDataObjectsUpdated.forEachIndexed { index, entry ->
+
+            val extraData = entry.extradataob_b.target
+
+            Log.d(
+                "OB_UPDATE_DUMP",
+                "[$index] " +
+                        "ID=${entry.id} | " +
+                        "date=${entry.dateOb} | " +
+                        "title=${entry.entryOb} | " +
+                        "time=${entry.timeMinutesOb} | " +
+                        "extraID=${extraData?.id} | " +
+                        "reminder=${extraData?.reminderTypeOb} | " +
+                        "repeat=${extraData?.repeatOb} | " +
+                        "repeatDetails=${extraData?.repeatDetailsOb}"
+            )
+        }
+
+        Log.d(
+            "OB_UPDATE_DUMP",
+            "================ END AFTER PUT - READ FROM DATABASE ================"
+        )
+
+
+        // CHANGED: Clear end marker
+        Log.d(
+            "OB_UPDATE_TEST",
+            "________________________________ END OF UPDATE TESTING ________________________________"
+        )
+
+        //Log.d("OB_UPDATE_TEST", "List of UPDATED Entities from database : $updatedListOfEntityDataObjects")
+        //Log.d("OB_UPDATE_TEST", "________________________________ END OF UPDATE TESTING ________________________________")
         // breakpoint
 
         //val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)

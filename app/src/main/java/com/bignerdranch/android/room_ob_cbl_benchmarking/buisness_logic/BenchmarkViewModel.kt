@@ -420,10 +420,14 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     fun findNextEntryFromTodayToDate() {
         var todayDate = LocalDate.now().toString()
         var endDate = "2026-12-01"
-        var desiredEntry = ob_DAO.findNextEntry(todayDate, endDate)
+        var amount: Long = 10
+        var desiredEntry = ob_DAO.findNextEntry(todayDate, endDate, amount)
 
-        Log.d("OB_MEDIUM_QUERY_TEST", "Next entry from today ${todayDate} to ${endDate}")
-        Log.d("OB_MEDIUM_QUERY_TEST", "$desiredEntry")
+        Log.d("OB_MEDIUM_QUERY_TEST", "Next $amount entry/ies from today ${todayDate} to ${endDate}")
+        desiredEntry.forEach { entry ->
+            var reminder = entry.extradataob_b.target?.reminderTypeOb
+            Log.d("OB_MEDIUM_QUERY_TEST", "Entry : $entry ||| Reminder : $reminder")
+        }
     }
 
 

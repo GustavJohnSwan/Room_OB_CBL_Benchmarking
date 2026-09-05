@@ -5,6 +5,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryAttachmen
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B_
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
+import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B_
 import io.objectbox.BoxStore
 import io.objectbox.query.QueryBuilder
 
@@ -172,26 +173,28 @@ class OB_DAO (private val store: BoxStore) {
 
 
     // Find next entry from today to date in ObjectBox database
-    fun findNextEntry(startDate: String, endDate: String): EntryOb_B? {
-        val query = EOBBox.query(
+    fun findNextEntry(startDate: String, endDate: String, amount: Long): List<EntryOb_B> {
+        val queryBuilder = EOBBox.query(
             EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and
                     (
                     EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 )
         )
+
+        queryBuilder.link(EntryOb_B_.extradataob_b).apply(ExtraDataOb_B_.reminderTypeOb.notNull())
+
+
+            val query = queryBuilder
             .order(EntryOb_B_.dateOb)
             .order(EntryOb_B_.timeMinutesOb)
             .build()
-        val desiredEntries = query.findFirst()
+
+        val desiredEntries = query.find(0, amount)
         query.close()
 
         return desiredEntries
     }
-
-
-
-
 
 
 

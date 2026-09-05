@@ -180,7 +180,7 @@ fun BenchmarkScreen(
                         contentColor = Color.Black
                     )
                 ) {
-                    Text("Find NEXT ENTRY from TODAY to DATE in ObjectBox database")
+                    Text("Find NEXT X ENTRY/IES from TODAY to DATE in ObjectBox database")
                 }
             }
 

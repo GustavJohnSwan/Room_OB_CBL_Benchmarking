@@ -110,7 +110,7 @@ class OB_DAO (private val store: BoxStore) {
 
 
     // DELETE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
-    fun deleteManyEntries(entryIds: List<Long>) {
+    fun deleteEntries(entryIds: List<Long>) {
 
         val entries = EOBBox.get(entryIds)
 

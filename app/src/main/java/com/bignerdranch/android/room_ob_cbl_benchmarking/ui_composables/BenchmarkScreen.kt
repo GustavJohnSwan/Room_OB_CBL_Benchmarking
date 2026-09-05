@@ -136,6 +136,18 @@ fun BenchmarkScreen(
                 }
             }
 
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.deleteEntriesById(100) },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Delete 100 entities by IDs in ObjectBox database")
+                }
+            }
+
 
             item {
                 OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {

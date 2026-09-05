@@ -375,10 +375,131 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
         //val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
+    }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    fun deleteEntriesById(IdAmount: Int) {
+        var entryAmount = ob_DAO.getAllEntriesBulk().count()
+
+        // safety net
+        require(IdAmount <= entryAmount) {
+            "Cannot delete $IdAmount entries because database contains only $entryAmount entries"
+        }
+
+        var jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A${entryAmount}.json")
+        var listOfIDs = jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
+
+        var listOfRelevantIDs = listOfIDs.take(IdAmount)
+
+        //Log.d("OB_UPDATE_TEST", "List of IDs: $listOfRelevantIDs")
+        // CHANGED: Keep simple summary log
+        Log.d(
+            "OB_DELETE_DUMP",
+            "Selected ${listOfRelevantIDs.size} IDs for DELETE"
+        )
+        // breakpoint
+
+        val entriesBeforeDelete =
+            ob_DAO.getEntriesByIDs(listOfRelevantIDs)
+
+        val extraDataIDsBeforeDelete = entriesBeforeDelete
+            .map { it.extradataob_b.targetId }
+            .filter { it != 0L }
+
+
+        Log.d(
+            "OB_DELETE_DUMP",
+            "ExtraData before delete = ${extraDataIDsBeforeDelete.size}"
+        )
+
+
+        ob_DAO.deleteEntries(listOfRelevantIDs)
+
+        val entriesAfterDelete =
+            ob_DAO.getEntriesByIDs(listOfRelevantIDs)
+
+        val extraDataAfterDelete =
+            ob_DAO.EDOBBox.get(extraDataIDsBeforeDelete)
+
+        Log.d(
+            "OB_DELETE_DUMP",
+            "Entries remaining = ${entriesAfterDelete.size}"
+        )
+
+        Log.d(
+            "OB_DELETE_DUMP",
+            "ExtraData remaining = ${extraDataAfterDelete.size}"
+        )
+
+
+
+        var listOfEntityDataObjectsUpdated = ob_DAO.getEntriesByIDs(listOfRelevantIDs)
+
+
+        // ============================================================
+        // CHANGED: FULL DATABASE DUMP AFTER putEntries()
+        // ============================================================
+
+        Log.d(
+            "OB_DELETE_DUMP",
+            "================ AFTER DELETE - READ FROM DATABASE ================"
+        )
+
+        Log.d(
+            "OB_DELETE_DUMP",
+            "COUNT = ${listOfEntityDataObjectsUpdated.size}"
+        )
+
+
+
+        Log.d(
+            "OB_DELETE_DUMP",
+            "================ AFTER DELETE - READ FROM DATABASE ================"
+        )
+
+
+        // CHANGED: Clear end marker
+        Log.d(
+            "OB_DELETE_DUMP",
+            "________________________________ END OF DELETE TESTING ________________________________"
+        )
+
+        //Log.d("OB_UPDATE_TEST", "List of UPDATED Entities from database : $updatedListOfEntityDataObjects")
+        //Log.d("OB_UPDATE_TEST", "________________________________ END OF UPDATE TESTING ________________________________")
+        // breakpoint
+
+        //val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fun deleteAllEntries_ObjectBox() {
         ob_DAO.deleteAllEntries()
@@ -557,7 +678,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
             Log.d("OB_TEST", "Main data: $it | Extra data: $extraData")
         }
 
-        ob_DAO.deleteManyEntries(entryIds)
+        ob_DAO.deleteEntries(entryIds)
 
         val listOfAllObEntries5 = ob_DAO.getAllEntriesBulk()
 

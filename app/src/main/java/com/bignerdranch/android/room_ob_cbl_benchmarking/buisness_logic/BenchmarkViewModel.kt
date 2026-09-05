@@ -183,6 +183,18 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     }
 
+
+
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // CLEANUP updateEntriesById() function code, remove testing code
     fun updateEntriesById(IdAmount: Int) {
         var entryAmount = ob_DAO.getAllEntriesBulk().count()
 
@@ -378,6 +390,28 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     }
 
 
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // MEDIUM QUERIES
+
+    fun findEntriesByDate() {
+        var desiredEntries = ob_DAO.findEntriesInSpecificDate("2026-01-01")
+
+        Log.d("OB_MEDIUM_QUERY_TEST", "Entries in desired date : 2026-01-01")
+        Log.d("OB_MEDIUM_QUERY_TEST", "$desiredEntries")
+    }
+
+    // Find entries in date range, order by time in ObjectBox database
+    fun findEntriesByDateRange() {
+        var desiredEntries = ob_DAO.findEntriesInDateRange("2026-01-01", "2026-05-01")
+
+        Log.d("OB_MEDIUM_QUERY_TEST", "Entries in desired range : 2026-01-01 - 2026-05-01")
+        Log.d("OB_MEDIUM_QUERY_TEST", "$desiredEntries")
+    }
 
 
 

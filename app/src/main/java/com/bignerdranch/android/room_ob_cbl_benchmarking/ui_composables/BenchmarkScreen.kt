@@ -148,6 +148,30 @@ fun BenchmarkScreen(
                 }
             }
 
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.findEntriesByDateRange() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Yellow,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Find entries in DATE RANGE, order by time in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.findEntriesByDate() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Yellow,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Find entries in DATE, order by time in ObjectBox database")
+                }
+            }
+
 
             item {
                 OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {

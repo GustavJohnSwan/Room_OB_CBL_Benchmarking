@@ -6,6 +6,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B_
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 import io.objectbox.BoxStore
+import io.objectbox.query.QueryBuilder
 
 class OB_DAO (private val store: BoxStore) {
 
@@ -131,6 +132,41 @@ class OB_DAO (private val store: BoxStore) {
     fun deleteAllEntries() {
         EOBBox.removeAll()
         EDOBBox.removeAll()
+    }
+
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // Medium Queries
+
+    fun findEntriesInSpecificDate(date: String): List<EntryOb_B> {
+        val query = EOBBox.query(EntryOb_B_.dateOb.equal(date)).order(EntryOb_B_.timeMinutesOb).build()
+        val desiredEntries = query.find()
+        query.close()
+
+        return desiredEntries
+    }
+
+    // Find entries in date range, order by time in ObjectBox database
+    fun findEntriesInDateRange(startDate: String, endDate: String): List<EntryOb_B> {
+        val query = EOBBox.query(
+            EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .and
+                    (
+                    EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                            )
+        )
+            .order(EntryOb_B_.timeMinutesOb)
+            .build()
+        val desiredEntries = query.find()
+        query.close()
+
+        return desiredEntries
     }
 
 

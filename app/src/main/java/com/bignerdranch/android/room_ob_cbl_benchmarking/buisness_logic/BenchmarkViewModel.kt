@@ -15,6 +15,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Ope
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonIDsAssetDeserializer
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
+import java.time.LocalDate
 
 
 class BenchmarkViewModel (application: Application) : AndroidViewModel(application) {
@@ -398,6 +399,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     // _____________________________________________________________________________________________
     // MEDIUM QUERIES
 
+    // Find entries in date, order by time in ObjectBox database
     fun findEntriesByDate() {
         var desiredEntries = ob_DAO.findEntriesInSpecificDate("2026-01-01")
 
@@ -407,13 +409,22 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     // Find entries in date range, order by time in ObjectBox database
     fun findEntriesByDateRange() {
-        var desiredEntries = ob_DAO.findEntriesInDateRange("2026-01-01", "2026-05-01")
+        var desiredEntries = ob_DAO.findEntriesInDateRange("2026-09-05", "2026-12-01")
 
-        Log.d("OB_MEDIUM_QUERY_TEST", "Entries in desired range : 2026-01-01 - 2026-05-01")
+        Log.d("OB_MEDIUM_QUERY_TEST", "Entries in desired range : 2026-09-05 - 2026-12-01")
         Log.d("OB_MEDIUM_QUERY_TEST", "$desiredEntries")
     }
 
 
+    // Find entries in date range, order by time in ObjectBox database
+    fun findNextEntryFromTodayToDate() {
+        var todayDate = LocalDate.now().toString()
+        var endDate = "2026-12-01"
+        var desiredEntry = ob_DAO.findNextEntry(todayDate, endDate)
+
+        Log.d("OB_MEDIUM_QUERY_TEST", "Next entry from today ${todayDate} to ${endDate}")
+        Log.d("OB_MEDIUM_QUERY_TEST", "$desiredEntry")
+    }
 
 
 

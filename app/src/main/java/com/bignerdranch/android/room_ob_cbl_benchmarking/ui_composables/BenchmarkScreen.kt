@@ -172,6 +172,18 @@ fun BenchmarkScreen(
                 }
             }
 
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.findNextEntryFromTodayToDate() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Yellow,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Find NEXT ENTRY from TODAY to DATE in ObjectBox database")
+                }
+            }
+
 
             item {
                 OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {

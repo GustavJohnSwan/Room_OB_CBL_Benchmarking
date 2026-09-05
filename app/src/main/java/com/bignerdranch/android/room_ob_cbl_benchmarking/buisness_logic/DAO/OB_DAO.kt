@@ -144,6 +144,7 @@ class OB_DAO (private val store: BoxStore) {
     // _____________________________________________________________________________________________
     // Medium Queries
 
+    // Find entries in date, order by time in ObjectBox database
     fun findEntriesInSpecificDate(date: String): List<EntryOb_B> {
         val query = EOBBox.query(EntryOb_B_.dateOb.equal(date)).order(EntryOb_B_.timeMinutesOb).build()
         val desiredEntries = query.find()
@@ -164,6 +165,25 @@ class OB_DAO (private val store: BoxStore) {
             .order(EntryOb_B_.timeMinutesOb)
             .build()
         val desiredEntries = query.find()
+        query.close()
+
+        return desiredEntries
+    }
+
+
+    // Find next entry from today to date in ObjectBox database
+    fun findNextEntry(startDate: String, endDate: String): EntryOb_B? {
+        val query = EOBBox.query(
+            EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .and
+                    (
+                    EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                )
+        )
+            .order(EntryOb_B_.dateOb)
+            .order(EntryOb_B_.timeMinutesOb)
+            .build()
+        val desiredEntries = query.findFirst()
         query.close()
 
         return desiredEntries

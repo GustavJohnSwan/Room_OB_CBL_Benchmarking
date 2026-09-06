@@ -465,7 +465,11 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     fun updateEntriesFromDateToDate() {
         var startDate = "2026-01-01"
-        var endDate = "2026-12-01"
+        var endDate = "2026-02-01"
+
+        val jsonString = jsonAssetReader.loadJsonFromAssets("eventsForUpdate_A100000_S6.json")
+
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
 
         var originalEntries = ob_DAO.findEntriesInDateRange(startDate, endDate)
 
@@ -475,7 +479,21 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
             Log.d("OB_MEDIUM_QUERY_TEST", "Entry : $entry ||| Extra Data : $extraData")
         }
 
-        var desiredEntries = ob_DAO.updateEntriesWithinRange(startDate, endDate)
+        var desiredEntries = ob_DAO.findEntriesInDateRangeForUpdate(startDate, endDate)
+
+        require(listOfDataObjects.size >= desiredEntries.size)
+
+        val desiredUpdateData =
+            listOfDataObjects.take(desiredEntries.size)
+
+        val updatedEntries =
+            updateEntries_ObjectBox.update(
+                desiredEntries,
+                desiredUpdateData
+            )
+
+        ob_DAO.putEntries(updatedEntries)
+
 
         Log.d("OB_MEDIUM_QUERY_TEST", "Updated entries :")
         desiredEntries.forEach { entry ->

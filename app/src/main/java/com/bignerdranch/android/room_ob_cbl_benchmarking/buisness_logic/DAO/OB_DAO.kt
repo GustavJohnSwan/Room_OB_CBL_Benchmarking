@@ -1,6 +1,7 @@
 package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO
 
 
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryAttachmentOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B_
@@ -249,19 +250,28 @@ class OB_DAO (private val store: BoxStore) {
     // ADVANCED QUERIES
 
     // UPDATE entries in date range, in ObjectBox database
-    fun updateEntriesWithinRange(startDate: String, endDate: String): List<EntryOb_B> {
+    fun findEntriesInDateRangeForUpdate(
+        startDate: String,
+        endDate: String
+    ): List<EntryOb_B> {
+
         val query = EOBBox.query(
-            EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and
-                    (
-                    EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+            EntryOb_B_.dateOb
+                .greaterOrEqual(
+                    startDate,
+                    QueryBuilder.StringOrder.CASE_SENSITIVE
+                )
+                .and(
+                    EntryOb_B_.dateOb.lessOrEqual(
+                        endDate,
+                        QueryBuilder.StringOrder.CASE_SENSITIVE
+                    )
                 )
         ).build()
 
         val desiredEntries = query.find()
-        query.close()
 
-        putEntries(desiredEntries)
+        query.close()
 
         return desiredEntries
     }

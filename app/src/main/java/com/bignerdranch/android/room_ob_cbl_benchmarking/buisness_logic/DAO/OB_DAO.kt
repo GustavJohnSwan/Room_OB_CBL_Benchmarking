@@ -172,7 +172,7 @@ class OB_DAO (private val store: BoxStore) {
     }
 
 
-    // Find next entry from today to date in ObjectBox database
+    // Find next X entries from today to date with reminder (not null) in ObjectBox database
     fun findNextEntry(startDate: String, endDate: String, amount: Long): List<EntryOb_B> {
         val queryBuilder = EOBBox.query(
             EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
@@ -192,6 +192,76 @@ class OB_DAO (private val store: BoxStore) {
 
         val desiredEntries = query.find(0, amount)
         query.close()
+
+        return desiredEntries
+    }
+
+    // Find entries with a specific reminder
+    fun findEntriesWithSpecificReminder(): List<EntryOb_B> {
+
+        val queryBuilder = EOBBox.query()
+
+        queryBuilder
+            .link(EntryOb_B_.extradataob_b)
+            .apply(
+                ExtraDataOb_B_.reminderTypeOb.equal("10 mins before")
+            )
+        val query = queryBuilder.build()
+
+
+        val desiredEntries = query.find()
+        query.close()
+
+        return desiredEntries
+    }
+
+
+    // Find entries with any recurrence
+    fun findEntriesWithRecurrance(): List<EntryOb_B> {
+
+        val queryBuilder = EOBBox.query()
+
+        queryBuilder
+            .link(EntryOb_B_.extradataob_b)
+            .apply(
+                ExtraDataOb_B_.repeatOb.notNull()
+            )
+        val query = queryBuilder.build()
+
+
+        val desiredEntries = query.find()
+        query.close()
+
+
+        return desiredEntries
+
+    }
+
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // ADVANCED QUERIES
+
+    // UPDATE entries in date range, in ObjectBox database
+    fun updateEntriesWithinRange(startDate: String, endDate: String): List<EntryOb_B> {
+        val query = EOBBox.query(
+            EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .and
+                    (
+                    EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                )
+        ).build()
+
+        val desiredEntries = query.find()
+        query.close()
+
+        putEntries(desiredEntries)
 
         return desiredEntries
     }

@@ -431,6 +431,59 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     }
 
 
+    // Find entries with a specific reminder
+    fun findEntriesWithOneTypeOfReminder() {
+        var desiredEntries = ob_DAO.findEntriesWithSpecificReminder()
+
+        Log.d("OB_MEDIUM_QUERY_TEST", "Entries with 10 mins before reminder :")
+        desiredEntries.forEach { entry ->
+            var reminder = entry.extradataob_b.target?.reminderTypeOb
+            Log.d("OB_MEDIUM_QUERY_TEST", "Entry : $entry ||| Reminder : $reminder")
+        }
+
+    }
+
+    // Find entries with any recurrence
+    fun findEntriesWithAnyRecurrence() {
+        var desiredEntries = ob_DAO.findEntriesWithRecurrance()
+
+        Log.d("OB_MEDIUM_QUERY_TEST", "Entries with any recurrence :")
+        desiredEntries.forEach { entry ->
+            var recurrence = entry.extradataob_b.target?.repeatOb
+            Log.d("OB_MEDIUM_QUERY_TEST", "Entry : $entry ||| Recurrence : $recurrence")
+        }
+    }
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // ADVANCED QUERIES
+
+    fun updateEntriesFromDateToDate() {
+        var startDate = "2026-01-01"
+        var endDate = "2026-12-01"
+
+        var originalEntries = ob_DAO.findEntriesInDateRange(startDate, endDate)
+
+        Log.d("OB_MEDIUM_QUERY_TEST", "Original entries :")
+        originalEntries.forEach { entry ->
+            var extraData = entry.extradataob_b.target
+            Log.d("OB_MEDIUM_QUERY_TEST", "Entry : $entry ||| Extra Data : $extraData")
+        }
+
+        var desiredEntries = ob_DAO.updateEntriesWithinRange(startDate, endDate)
+
+        Log.d("OB_MEDIUM_QUERY_TEST", "Updated entries :")
+        desiredEntries.forEach { entry ->
+            var extraData = entry.extradataob_b.target
+            Log.d("OB_MEDIUM_QUERY_TEST", "Entry : $entry ||| Extra Data : $extraData")
+        }
+    }
+
 
 
 

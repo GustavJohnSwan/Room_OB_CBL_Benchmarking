@@ -38,7 +38,7 @@ fun BenchmarkScreen(
     Scaffold { padding ->
         LazyColumn(
             modifier = Modifier
-                .padding(top = 40.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 40.dp, bottom = 40.dp, start = 16.dp, end = 16.dp)
         ) {
 
             item {
@@ -181,6 +181,42 @@ fun BenchmarkScreen(
                     )
                 ) {
                     Text("Find NEXT X ENTRY/IES from TODAY to DATE in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.findEntriesWithOneTypeOfReminder() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Yellow,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Find all entries with a reminder in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.findEntriesWithAnyRecurrence() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Yellow,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Find all entries with a reminder in ObjectBox database")
+                }
+            }
+
+            item {
+                FilledTonalButton(
+                    onClick = { viewModel.updateEntriesFromDateToDate() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Update entries in DATE RANGE in ObjectBox database")
                 }
             }
 

@@ -222,6 +222,19 @@ fun BenchmarkScreen(
 
 
             item {
+                FilledTonalButton(
+                    onClick = { viewModel.deleteEntriesFromDateToDate() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Delete entries in DATE RANGE in ObjectBox database")
+                }
+            }
+
+
+            item {
                 OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
                     Text("Delete all entries from ObjectBox")
                 }

@@ -510,6 +510,117 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
 
 
+    // DELETE entries in date range, in ObjectBox database
+    fun deleteEntriesFromDateToDate() {
+
+        val startDate = "2026-01-01"
+        val endDate = "2026-02-01"
+
+        val originalEntries =
+            ob_DAO.findEntriesInDateRange(startDate, endDate)
+
+        val extraDataIdsBeforeDelete =
+            originalEntries
+                .map { it.extradataob_b.targetId }
+                .filter { it != 0L }
+
+        Log.d(
+            "OB_MEDIUM_QUERY_TEST",
+            "ExtraData entries associated with deleted entries: ${extraDataIdsBeforeDelete.size}"
+        )
+
+        Log.d(
+            "OB_MEDIUM_QUERY_TEST",
+            "Found Entries BEFORE delete: ${originalEntries.count()}"
+        )
+
+        Log.d(
+            "OB_MEDIUM_QUERY_TEST",
+            "Original entries:"
+        )
+
+        originalEntries.forEach { entry ->
+
+            val extraData =
+                entry.extradataob_b.target
+
+            Log.d(
+                "OB_MEDIUM_QUERY_TEST",
+                "Entry: $entry ||| Extra Data: $extraData"
+            )
+        }
+
+
+        // Delete
+        ob_DAO.findEntriesInDateRangeForDelete(
+            startDate,
+            endDate
+        )
+
+
+        // Check EntryOb_B
+        val leftOverEntries =
+            ob_DAO.findEntriesInDateRange(
+                startDate,
+                endDate
+            )
+
+        Log.d(
+            "OB_MEDIUM_QUERY_TEST",
+            "Found Entries AFTER delete: ${leftOverEntries.count()}"
+        )
+
+        Log.d(
+            "OB_MEDIUM_QUERY_TEST",
+            "Entries after deletion:"
+        )
+
+        leftOverEntries.forEach { entry ->
+
+            val extraData =
+                entry.extradataob_b.target
+
+            Log.d(
+                "OB_MEDIUM_QUERY_TEST",
+                "Entry: $entry ||| Extra Data: $extraData"
+            )
+        }
+
+
+        // Check ExtraDataOb_B
+        val extraDataAfterDelete =
+            ob_DAO.EDOBBox.get(extraDataIdsBeforeDelete)
+
+        Log.d(
+            "OB_MEDIUM_QUERY_TEST",
+            "ExtraData remaining AFTER delete: ${extraDataAfterDelete.size}"
+        )
+
+        extraDataAfterDelete.forEach { extraData ->
+
+            Log.d(
+                "OB_MEDIUM_QUERY_TEST",
+                "ORPHAN ExtraData still exists: $extraData"
+            )
+        }
+    }
+
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+
+
+
+
+
+
+
+
 
     fun deleteEntriesById(IdAmount: Int) {
         var entryAmount = ob_DAO.getAllEntriesBulk().count()

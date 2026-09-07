@@ -277,6 +277,45 @@ class OB_DAO (private val store: BoxStore) {
     }
 
 
+    // DELETE entries in date range, in ObjectBox database
+    fun findEntriesInDateRangeForDelete(
+        startDate: String,
+        endDate: String
+    ){
+
+        val query = EOBBox.query(
+            EntryOb_B_.dateOb
+                .greaterOrEqual(
+                    startDate,
+                    QueryBuilder.StringOrder.CASE_SENSITIVE
+                )
+                .and(
+                    EntryOb_B_.dateOb.lessOrEqual(
+                        endDate,
+                        QueryBuilder.StringOrder.CASE_SENSITIVE
+                    )
+                )
+        ).build()
+
+        val entries = query.find()
+
+        val entryIds = entries
+            .map { it.id }
+
+        val extraDataIds = entries
+            .map { it.extradataob_b.targetId }
+            .filter { it != 0L }
+
+        store.runInTx {
+            EOBBox.removeByIds(entryIds)
+            EDOBBox.removeByIds(extraDataIds)
+        }
+
+        query.close()
+
+    }
+
+
 
 
 

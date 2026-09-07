@@ -18,6 +18,9 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 import java.time.LocalDate
 
 
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedExtraData
+
 class BenchmarkViewModel (application: Application) : AndroidViewModel(application) {
 
 
@@ -45,6 +48,315 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
     private var updateEntries_ObjectBox =
         UpdateEntries_ObjectBox()
+
+
+
+    fun testAllExtraDataUpdateTransitions() {
+
+        // IMPORTANT:
+        // This test clears the current ObjectBox data.
+        ob_DAO.deleteAllEntries()
+
+
+        // =========================================================
+        // 1. CREATE FOUR ORIGINAL DATABASE ENTRIES
+        // =========================================================
+
+        // CASE 1: null -> null
+        val entry1 = EntryOb_B(
+            dateOb = "2026-01-01",
+            entryOb = "CASE 1 ORIGINAL",
+            timeMinutesOb = 100
+        )
+
+
+        // CASE 2: null -> ExtraData
+        val entry2 = EntryOb_B(
+            dateOb = "2026-01-02",
+            entryOb = "CASE 2 ORIGINAL",
+            timeMinutesOb = 200
+        )
+
+
+        // CASE 3: ExtraData -> null
+        val entry3 = EntryOb_B(
+            dateOb = "2026-01-03",
+            entryOb = "CASE 3 ORIGINAL",
+            timeMinutesOb = 300
+        )
+
+        entry3.extradataob_b.target = ExtraDataOb_B(
+            reminderTypeOb = "10 mins before",
+            repeatOb = "Weekly",
+            repeatDetailsOb = "OLD CASE 3"
+        )
+
+
+        // CASE 4: ExtraData -> ExtraData
+        val entry4 = EntryOb_B(
+            dateOb = "2026-01-04",
+            entryOb = "CASE 4 ORIGINAL",
+            timeMinutesOb = 400
+        )
+
+        entry4.extradataob_b.target = ExtraDataOb_B(
+            reminderTypeOb = "1 hour before",
+            repeatOb = "Daily",
+            repeatDetailsOb = "OLD CASE 4"
+        )
+
+
+        ob_DAO.putEntries(
+            listOf(
+                entry1,
+                entry2,
+                entry3,
+                entry4
+            )
+        )
+
+
+        // Save main IDs
+        val entryIds = listOf(
+            entry1.id,
+            entry2.id,
+            entry3.id,
+            entry4.id
+        )
+
+
+        // Save original ExtraData IDs
+        val oldCase3ExtraDataId =
+            entry3.extradataob_b.targetId
+
+        val oldCase4ExtraDataId =
+            entry4.extradataob_b.targetId
+
+
+        // =========================================================
+        // 2. READ FRESH OBJECTS FROM DATABASE
+        // =========================================================
+
+        val originalEntries =
+            ob_DAO.getEntriesByIDs(entryIds)
+
+
+        // =========================================================
+        // 3. CREATE UPDATE DATA FOR ALL FOUR CASES
+        // =========================================================
+
+        val updateData = listOf(
+
+            // CASE 1:
+            // null -> null
+            GeneratedEvent(
+                fixtureId = 1,
+                date = "2026-02-01",
+                title = "CASE 1 UPDATED",
+                time = 101,
+                extraData = null
+            ),
+
+
+            // CASE 2:
+            // null -> ExtraData
+            GeneratedEvent(
+                fixtureId = 2,
+                date = "2026-02-02",
+                title = "CASE 2 UPDATED",
+                time = 201,
+                extraData = GeneratedExtraData(
+                    reminderType = "At time of event",
+                    repeatType = "Monthly",
+                    repeatDetails = "NEW CASE 2"
+                )
+            ),
+
+
+            // CASE 3:
+            // ExtraData -> null
+            GeneratedEvent(
+                fixtureId = 3,
+                date = "2026-02-03",
+                title = "CASE 3 UPDATED",
+                time = 301,
+                extraData = null
+            ),
+
+
+            // CASE 4:
+            // ExtraData -> ExtraData
+            GeneratedEvent(
+                fixtureId = 4,
+                date = "2026-02-04",
+                title = "CASE 4 UPDATED",
+                time = 401,
+                extraData = GeneratedExtraData(
+                    reminderType = "1 day before",
+                    repeatType = "Yearly",
+                    repeatDetails = "NEW CASE 4"
+                )
+            )
+        )
+
+
+        // =========================================================
+        // 4. RUN YOUR REAL UPDATE LOGIC
+        // =========================================================
+
+        val updateResult =
+            updateEntries_ObjectBox.update(
+                originalEntries,
+                updateData
+            )
+
+        val updatedEntries =
+            updateResult.first
+
+        val extraDataIdsToDelete =
+            updateResult.second
+
+
+        ob_DAO.putEntries(
+            updatedEntries,
+            extraDataIdsToDelete
+        )
+
+
+        // =========================================================
+        // 5. READ EVERYTHING FRESH FROM OBJECTBOX
+        // =========================================================
+
+        val results =
+            ob_DAO.getEntriesByIDs(entryIds)
+
+
+        val result1 = results[0]
+        val result2 = results[1]
+        val result3 = results[2]
+        val result4 = results[3]
+
+
+        // =========================================================
+        // 6. VERIFY MAIN IDs WERE PRESERVED
+        // =========================================================
+
+        check(result1.id == entryIds[0])
+        check(result2.id == entryIds[1])
+        check(result3.id == entryIds[2])
+        check(result4.id == entryIds[3])
+
+
+        // =========================================================
+        // CASE 1: null -> null
+        // =========================================================
+
+        check(result1.extradataob_b.target == null)
+
+        Log.d(
+            "OB_UPDATE_4_CASE_TEST",
+            "PASS CASE 1: null -> null"
+        )
+
+
+        // =========================================================
+        // CASE 2: null -> ExtraData
+        // =========================================================
+
+        val result2Extra =
+            result2.extradataob_b.target
+
+        check(result2Extra != null)
+
+        check(
+            result2Extra.reminderTypeOb ==
+                    "At time of event"
+        )
+
+        check(
+            result2Extra.repeatOb ==
+                    "Monthly"
+        )
+
+        check(
+            result2Extra.repeatDetailsOb ==
+                    "NEW CASE 2"
+        )
+
+        // Must actually have been persisted
+        check(result2Extra.id != 0L)
+
+        Log.d(
+            "OB_UPDATE_4_CASE_TEST",
+            "PASS CASE 2: null -> ExtraData | new ExtraData ID=${result2Extra.id}"
+        )
+
+
+        // =========================================================
+        // CASE 3: ExtraData -> null
+        // =========================================================
+
+        check(result3.extradataob_b.target == null)
+
+        // Old ExtraData entity must actually be gone from DB
+        check(
+            ob_DAO.EDOBBox.get(
+                oldCase3ExtraDataId
+            ) == null
+        )
+
+        Log.d(
+            "OB_UPDATE_4_CASE_TEST",
+            "PASS CASE 3: ExtraData -> null | deleted ExtraData ID=$oldCase3ExtraDataId"
+        )
+
+
+        // =========================================================
+        // CASE 4: ExtraData -> ExtraData
+        // =========================================================
+
+        val result4Extra =
+            result4.extradataob_b.target
+
+        check(result4Extra != null)
+
+        // It should UPDATE the existing ExtraData,
+        // rather than creating another one.
+        check(
+            result4Extra.id ==
+                    oldCase4ExtraDataId
+        )
+
+        check(
+            result4Extra.reminderTypeOb ==
+                    "1 day before"
+        )
+
+        check(
+            result4Extra.repeatOb ==
+                    "Yearly"
+        )
+
+        check(
+            result4Extra.repeatDetailsOb ==
+                    "NEW CASE 4"
+        )
+
+        Log.d(
+            "OB_UPDATE_4_CASE_TEST",
+            "PASS CASE 4: ExtraData -> ExtraData | preserved ExtraData ID=${result4Extra.id}"
+        )
+
+
+        // =========================================================
+        // FINAL RESULT
+        // =========================================================
+
+        Log.d(
+            "OB_UPDATE_4_CASE_TEST",
+            "================ ALL 4 UPDATE CASES PASSED ================"
+        )
+    }
 
 
     fun insertDataSet_ObjectBox(variant: Int) {

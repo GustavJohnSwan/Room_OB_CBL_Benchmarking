@@ -235,6 +235,19 @@ fun BenchmarkScreen(
 
 
             item {
+                FilledTonalButton(
+                    onClick = { viewModel.testAllExtraDataUpdateTransitions() },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color.Blue,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("TEST")
+                }
+            }
+
+
+            item {
                 OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
                     Text("Delete all entries from ObjectBox")
                 }

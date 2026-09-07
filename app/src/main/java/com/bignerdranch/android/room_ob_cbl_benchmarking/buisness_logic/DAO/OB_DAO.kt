@@ -49,35 +49,64 @@ class OB_DAO (private val store: BoxStore) {
  */
 
 
-    fun putEntry(entry: EntryOb_B): Long {
+    fun putEntry(
+        entry: EntryOb_B,
+        extraDataIdToDelete: Long? = null
+    ): Long {
 
-        val extraData = entry.extradataob_b.target
+        val existingExtraData = entry.extradataob_b.target
 
-        if (extraData != null && extraData.id != 0L) {
-            EDOBBox.put(extraData)
+        store.runInTx {
+
+            // Existing ExtraData that was modified
+            if (existingExtraData != null && existingExtraData.id != 0L) {
+                EDOBBox.put(existingExtraData)
+            }
+
+            // Put/update main Entry.
+            // New ExtraData with id=0 can be persisted through the ToOne relation.
+            EOBBox.put(entry)
+
+            // Remove old ExtraData if this was ExtraData -> null
+            if (extraDataIdToDelete != null && extraDataIdToDelete != 0L) {
+                EDOBBox.remove(extraDataIdToDelete)
+            }
         }
 
-        return EOBBox.put(entry)
+        return entry.id
     }
 
-    fun putEntries(entries: List<EntryOb_B>): List<Long> {
+    fun putEntries(
+        entries: List<EntryOb_B>,
+        extraDataIdsToDelete: List<Long> = emptyList()
+    ): List<Long> {
 
         val existingExtraData = entries
             .mapNotNull { it.extradataob_b.target }
             .filter { it.id != 0L }
 
-        if (existingExtraData.isNotEmpty()) {
-            EDOBBox.put(existingExtraData)
-        }
+        store.runInTx {
 
-        EOBBox.put(entries)
+            if (existingExtraData.isNotEmpty()) {
+                EDOBBox.put(existingExtraData)
+            }
+
+            EOBBox.put(entries)
+
+            if (extraDataIdsToDelete.isNotEmpty()) {
+                EDOBBox.removeByIds(extraDataIdsToDelete)
+            }
+        }
 
         return entries.map { it.id }
     }
 
 
 
-
+    // COUNT all entries
+    fun countEntries(): Long {
+        return EOBBox.count()
+    }
 
 
 
@@ -89,11 +118,23 @@ class OB_DAO (private val store: BoxStore) {
 
     // GET ENTRY based on ID
     fun getSpecificEntryOb_B(id: Long): EntryOb_B? {
-        return EOBBox.get(id)
+
+        val entry = EOBBox.get(id)
+
+        entry?.extradataob_b?.target
+
+        return entry
     }
 
     fun getEntriesByIDs(entryIds: List<Long>): List<EntryOb_B> {
-        return EOBBox.get(entryIds)
+
+        val entries = EOBBox.get(entryIds)
+
+        entries.forEach { entry ->
+            entry.extradataob_b.target
+        }
+
+        return entries
     }
 
 
@@ -132,8 +173,10 @@ class OB_DAO (private val store: BoxStore) {
 
     // DELETE ALL ObjectBox database entries
     fun deleteAllEntries() {
-        EOBBox.removeAll()
-        EDOBBox.removeAll()
+        store.runInTx {
+            EOBBox.removeAll()
+            EDOBBox.removeAll()
+        }
     }
 
 
@@ -267,7 +310,9 @@ class OB_DAO (private val store: BoxStore) {
                         QueryBuilder.StringOrder.CASE_SENSITIVE
                     )
                 )
-        ).build()
+        )
+            .order(EntryOb_B_.id)
+            .build()
 
         val desiredEntries = query.find()
 
@@ -331,9 +376,16 @@ class OB_DAO (private val store: BoxStore) {
 
     // GET BULK (EntryOb only)
     /*
-    fun getAllEntriesBulk(): List<EntryOb_B> {
-        return EOBBox.all
+fun getAllEntriesBulk(): List<EntryOb_B> {
+
+    val entries = EOBBox.all
+
+    entries.forEach { entry ->
+        entry.extradataob_b.target
     }
+
+    return entries
+}
      */
 
     //----------------------------------------------------------------------------------------------

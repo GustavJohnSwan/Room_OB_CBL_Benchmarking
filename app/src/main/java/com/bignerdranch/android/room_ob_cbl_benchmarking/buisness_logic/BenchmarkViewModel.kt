@@ -197,7 +197,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
     // _____________________________________________________________________________________________
     // CLEANUP updateEntriesById() function code, remove testing code
     fun updateEntriesById(IdAmount: Int) {
-        var entryAmount = ob_DAO.getAllEntriesBulk().count()
+        val entryAmount = ob_DAO.countEntries().toInt()
 
         // safety net
         require(IdAmount <= entryAmount) {
@@ -283,7 +283,17 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         //Log.d("OB_UPDATE_TEST", "List of Original Entities : $listOfEntityDataObjects")
         // breakpoint
 
-        var updatedListOfEntityDataObjects = updateEntries_ObjectBox.update(listOfEntityDataObjects, listOfDataObjects)
+        val updateResult =
+            updateEntries_ObjectBox.update(
+                listOfEntityDataObjects,
+                listOfDataObjects
+            )
+
+        val updatedListOfEntityDataObjects =
+            updateResult.first
+
+        val extraDataIdsToDelete =
+            updateResult.second
 
 
         // ============================================================
@@ -329,7 +339,10 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         // Log.d("OB_UPDATE_TEST", "List of UPDATED Entities : $updatedListOfEntityDataObjects")
         // breakpoint
 
-        ob_DAO.putEntries(updatedListOfEntityDataObjects)
+        ob_DAO.putEntries(
+            updatedListOfEntityDataObjects,
+            extraDataIdsToDelete
+        )
 
 
         var listOfEntityDataObjectsUpdated = ob_DAO.getEntriesByIDs(listOfRelevantIDs)
@@ -486,13 +499,20 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
         val desiredUpdateData =
             listOfDataObjects.take(desiredEntries.size)
 
-        val updatedEntries =
+        val updateResult =
             updateEntries_ObjectBox.update(
                 desiredEntries,
                 desiredUpdateData
             )
 
-        ob_DAO.putEntries(updatedEntries)
+        val updatedEntries = updateResult.first
+        val extraDataIdsToDelete = updateResult.second
+
+        ob_DAO.putEntries(
+            updatedEntries,
+            extraDataIdsToDelete
+        )
+
 
 
         Log.d("OB_MEDIUM_QUERY_TEST", "Updated entries :")
@@ -623,7 +643,7 @@ class BenchmarkViewModel (application: Application) : AndroidViewModel(applicati
 
 
     fun deleteEntriesById(IdAmount: Int) {
-        var entryAmount = ob_DAO.getAllEntriesBulk().count()
+        val entryAmount = ob_DAO.countEntries().toInt()
 
         // safety net
         require(IdAmount <= entryAmount) {

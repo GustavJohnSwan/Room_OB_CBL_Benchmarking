@@ -1,11 +1,8 @@
-package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic
+package com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup
 
 import android.content.Context
-
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.MyObjectBox
 import io.objectbox.BoxStore
-import io.objectbox.BoxStoreBuilder
-import java.io.File
 
 object ObjectBoxProvider {
 

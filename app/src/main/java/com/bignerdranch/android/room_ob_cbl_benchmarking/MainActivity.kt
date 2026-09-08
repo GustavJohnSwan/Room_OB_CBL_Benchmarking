@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.ObjectBoxProvider
+import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup.ObjectBoxProvider
 import com.bignerdranch.android.room_ob_cbl_benchmarking.ui.theme.Room_OB_CBL_BenchmarkingTheme
 import com.bignerdranch.android.room_ob_cbl_benchmarking.ui_composables.BenchmarkScreen
 

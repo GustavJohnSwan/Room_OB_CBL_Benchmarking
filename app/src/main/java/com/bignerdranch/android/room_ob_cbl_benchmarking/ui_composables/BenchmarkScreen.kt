@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -24,12 +22,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.BenchmarkViewModel
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.ObjectBoxViewModel
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.RoomViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun BenchmarkScreen(
-    viewModel: BenchmarkViewModel = viewModel()
+    viewModel: ObjectBoxViewModel = viewModel(),
+    roomViewModel: RoomViewModel = viewModel()
 ) {
+
+    var showRoomButtons by remember { mutableStateOf(false) }
 
     var benchmarkStatus by remember { mutableStateOf("Ready") }
     val scope = rememberCoroutineScope()
@@ -40,6 +43,17 @@ fun BenchmarkScreen(
             modifier = Modifier
                 .padding(top = 40.dp, bottom = 40.dp, start = 16.dp, end = 16.dp)
         ) {
+
+            item {
+                Button(
+                    onClick = { showRoomButtons = !showRoomButtons }
+                ) {
+                    Text(
+                        if (showRoomButtons) "Switch to ObjectBox"
+                        else "Switch to Room"
+                    )
+                }
+            }
 
             item {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -64,199 +78,239 @@ fun BenchmarkScreen(
                 )
             }
 
-            item {
-                Button(onClick = { viewModel.insertDataSet_ObjectBox(1) }) {
-                    Text("Insert 100 entries into ObjectBox")
+            if (!showRoomButtons) {
+
+                item {
+                    Button(onClick = { viewModel.insertDataSet_ObjectBox(1) }) {
+                        Text("Insert 100 entries into ObjectBox")
+                    }
                 }
-            }
 
-            item {
-                Button(onClick = { viewModel.insertDataSet_ObjectBox(2) }) {
-                    Text("Insert 1k entries into ObjectBox")
+                item {
+                    Button(onClick = { viewModel.insertDataSet_ObjectBox(2) }) {
+                        Text("Insert 1k entries into ObjectBox")
+                    }
                 }
-            }
 
-            item {
-                Button(onClick = { viewModel.insertDataSet_ObjectBox(3) }) {
-                    Text("Insert 10k entries into ObjectBox")
+                item {
+                    Button(onClick = { viewModel.insertDataSet_ObjectBox(3) }) {
+                        Text("Insert 10k entries into ObjectBox")
+                    }
                 }
-            }
 
-            item {
-                Button(onClick = { viewModel.insertDataSet_ObjectBox(4) }) {
-                    Text("Insert 50k entries into ObjectBox")
+                item {
+                    Button(onClick = { viewModel.insertDataSet_ObjectBox(4) }) {
+                        Text("Insert 50k entries into ObjectBox")
+                    }
                 }
-            }
 
-            item {
-                Button(onClick = { viewModel.insertDataSet_ObjectBox(5) }) {
-                    Text("Insert 100k entries into ObjectBox")
+                item {
+                    Button(onClick = { viewModel.insertDataSet_ObjectBox(5) }) {
+                        Text("Insert 100k entries into ObjectBox")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(onClick = { viewModel.findEntriesById(1) }) {
-                    Text("Find 100 IDs in ObjectBox database")
+                item {
+                    FilledTonalButton(onClick = { viewModel.findEntriesById(1) }) {
+                        Text("Find 100 IDs in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(onClick = { viewModel.findEntriesById(2) }) {
-                    Text("Find 1k IDs in ObjectBox database")
+                item {
+                    FilledTonalButton(onClick = { viewModel.findEntriesById(2) }) {
+                        Text("Find 1k IDs in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(onClick = { viewModel.findEntriesById(3) }) {
-                    Text("Find 10k IDs in ObjectBox database")
+                item {
+                    FilledTonalButton(onClick = { viewModel.findEntriesById(3) }) {
+                        Text("Find 10k IDs in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(onClick = { viewModel.findEntriesById(4) }) {
-                    Text("Find 50k IDs in ObjectBox database")
+                item {
+                    FilledTonalButton(onClick = { viewModel.findEntriesById(4) }) {
+                        Text("Find 50k IDs in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(onClick = { viewModel.findEntriesById(5) }) {
-                    Text("Find 100k IDs in ObjectBox database")
+                item {
+                    FilledTonalButton(onClick = { viewModel.findEntriesById(5) }) {
+                        Text("Find 100k IDs in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.updateEntriesById(100) },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Green,
-                        contentColor = Color.Black
-                )
-                ) {
-                    Text("Update 100 entities by IDs in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.updateEntriesById(100) },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Green,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Update 100 entities by IDs in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.deleteEntriesById(100) },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("Delete 100 entities by IDs in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.deleteEntriesById(100) },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Delete 100 entities by IDs in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.findEntriesByDateRange() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Yellow,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("Find entries in DATE RANGE, order by time in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.findEntriesByDateRange() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Yellow,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Find entries in DATE RANGE, order by time in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.findEntriesByDate() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Yellow,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("Find entries in DATE, order by time in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.findEntriesByDate() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Yellow,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Find entries in DATE, order by time in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.findNextEntryFromTodayToDate() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Yellow,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("Find NEXT X ENTRY/IES from TODAY to DATE in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.findNextEntryFromTodayToDate() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Yellow,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Find NEXT X ENTRY/IES from TODAY to DATE in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.findEntriesWithOneTypeOfReminder() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Yellow,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("Find all entries with a reminder in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.findEntriesWithOneTypeOfReminder() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Yellow,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Find all entries with a reminder in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.findEntriesWithAnyRecurrence() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Yellow,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("Find all entries with a reminder in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.findEntriesWithAnyRecurrence() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Yellow,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Find all entries with a reminder in ObjectBox database")
+                    }
                 }
-            }
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.updateEntriesFromDateToDate() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("Update entries in DATE RANGE in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.updateEntriesFromDateToDate() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Black,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Update entries in DATE RANGE in ObjectBox database")
+                    }
                 }
-            }
 
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.deleteEntriesFromDateToDate() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("Delete entries in DATE RANGE in ObjectBox database")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.deleteEntriesFromDateToDate() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Black,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Delete entries in DATE RANGE in ObjectBox database")
+                    }
                 }
-            }
 
 
-            item {
-                FilledTonalButton(
-                    onClick = { viewModel.testAllExtraDataUpdateTransitions() },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.Blue,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("TEST")
+                item {
+                    FilledTonalButton(
+                        onClick = { viewModel.testAllExtraDataUpdateTransitions() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Blue,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("TEST")
+                    }
                 }
-            }
 
 
-            item {
-                OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
-                    Text("Delete all entries from ObjectBox")
+                item {
+                    OutlinedButton(onClick = { viewModel.deleteAllEntries_ObjectBox() }) {
+                        Text("Delete all entries from ObjectBox")
+                    }
                 }
-            }
 
-            item {
-                OutlinedButton(onClick = { viewModel.resetDataBase_ObjectBox() }) {
-                    Text("Reset ObjectBox database")
+                item {
+                    OutlinedButton(onClick = { viewModel.resetDataBase_ObjectBox() }) {
+                        Text("Reset ObjectBox database")
+                    }
                 }
+            } else {
+
+
+                // ROOM BUTTONS
+
+
+                item {
+                    Button(onClick = { scope.launch { roomViewModel.insertEntry_Room() } }) {
+                        Text("Insert 1 entry into Room")
+                    }
+                }
+
+                item {
+                    FilledTonalButton(
+                        onClick = { scope.launch { roomViewModel.getAllEntry_Room() } },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Green,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Get All Entries from Room")
+                    }
+                }
+
+                item {
+                    FilledTonalButton(
+                        onClick = { scope.launch { roomViewModel.deleteEntry_Room() } },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Delete first entry from Room")
+                    }
+                }
+
+
             }
         }
     }

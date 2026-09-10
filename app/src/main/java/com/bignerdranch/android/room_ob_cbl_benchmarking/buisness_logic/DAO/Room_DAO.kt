@@ -78,8 +78,31 @@ interface Room_DAO {
     suspend fun deleteEntries(entries: List<EntryTable>): Int
 
 
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // Medium Queries
 
+    // Find entries in date, order by time in Room database
+    @Query("SELECT * FROM EntryTable WHERE date = :entryDate ORDER BY time_minutes ASC")
+    suspend fun findEntriesInSpecificDate(entryDate: String): List<EntryTable>
 
+    // Find entries in date range, order by time in Room database
+    @Query("SELECT * FROM EntryTable WHERE date BETWEEN :startDate AND :endDate ORDER BY date ASC, time_minutes ASC")
+    suspend fun findEntriesInDateRange(startDate: String, endDate: String): List<EntryTable>
 
+    // Find next X entries from date to date with reminder (not null) in Room database
+    @Query("SELECT EntryTable.* FROM EntryTable INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id WHERE EntryTable.date BETWEEN :startDate AND :endDate AND ExtraDataTable.reminder_type IS NOT NULL ORDER BY EntryTable.date ASC, EntryTable.time_minutes ASC LIMIT :nextAmount")
+    suspend fun findNextEntries(startDate: String, endDate: String, nextAmount: Int): List<EntryTable>
+
+    // Find entries with a specific reminder
+    @Query("SELECT EntryTable.* FROM EntryTable INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id WHERE ExtraDataTable.reminder_type = :desiredReminderType")
+    suspend fun findEntriesWithSpecificReminder(desiredReminderType: String): List<EntryTable>
+
+    @Query("SELECT EntryTable.* FROM EntryTable INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id WHERE ExtraDataTable.repeat IS NOT NULL")
+    suspend fun findEntriesWithRecurrence(): List<EntryTable>
 
 }

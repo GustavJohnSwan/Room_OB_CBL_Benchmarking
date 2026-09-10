@@ -216,7 +216,10 @@ class OB_DAO (private val store: BoxStore) {
     }
 
 
+    // NEED TO CHANGE THIS IN DESCRIPTION AND VIEWMODEL TO USE DATE --> DATE. NO POINT IN USING CURRENT DATE.
+    // IT ONLY COMPLICATES THINGS
     // Find next X entries from today to date with reminder (not null) in ObjectBox database
+    // Also rename to findNextEntries, becasue it looks for the next X not just one
     fun findNextEntry(startDate: String, endDate: String, amount: Long): List<EntryOb_B> {
         val queryBuilder = EOBBox.query(
             EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)

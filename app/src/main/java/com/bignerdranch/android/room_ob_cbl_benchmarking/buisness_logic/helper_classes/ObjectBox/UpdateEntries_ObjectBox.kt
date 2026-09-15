@@ -1,7 +1,6 @@
-package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes
+package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.ObjectBox
 
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedExtraData
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 

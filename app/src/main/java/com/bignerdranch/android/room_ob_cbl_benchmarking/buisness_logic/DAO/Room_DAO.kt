@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.MinMaxTimeResult
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryTable
 
 @Dao
@@ -102,7 +103,115 @@ interface Room_DAO {
     @Query("SELECT EntryTable.* FROM EntryTable INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id WHERE ExtraDataTable.reminder_type = :desiredReminderType")
     suspend fun findEntriesWithSpecificReminder(desiredReminderType: String): List<EntryTable>
 
+    // Find entries with any recurrence
     @Query("SELECT EntryTable.* FROM EntryTable INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id WHERE ExtraDataTable.repeat IS NOT NULL")
     suspend fun findEntriesWithRecurrence(): List<EntryTable>
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // Advanced Queries
+
+
+    // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
+    @Query("SELECT EntryTable.* FROM EntryTable " +
+            "INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id " +
+            "WHERE EntryTable.date BETWEEN :startDate AND :endDate " +
+            "AND ExtraDataTable.reminder_type = :specificReminder " +
+            "AND (" +
+            "ExtraDataTable.repeat = :specificRepeat1 " +
+            "OR ExtraDataTable.repeat = :specificRepeat2" +
+            ") " +
+            "ORDER BY EntryTable.date, EntryTable.time_minutes ASC " +
+            "LIMIT :amount ")
+    suspend fun findEntriesInDateRangeReminderRepeat1OrRepeat2(
+        startDate: String,
+        endDate: String,
+        specificReminder: String,
+        specificRepeat1: String,
+        specificRepeat2: String,
+        amount: Int
+        ): List<EntryTable>
+
+
+    // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
+    @Query("SELECT EntryTable.* FROM EntryTable " +
+            "INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id " +
+            "WHERE ExtraDataTable.reminder_type IS NULL " +
+            "AND ExtraDataTable.repeat IS NOT NULL " +
+            "ORDER BY EntryTable.date ASC, " +
+            "EntryTable.time_minutes ASC, " +
+            "EntryTable.id ASC " +
+            "LIMIT :limit " +
+            "OFFSET :offset")
+    suspend fun findEntriesReminderNullRepeatNotNullLimitOffset(
+        limit: Int,
+        offset: Int
+    ): List<EntryTable>
+
+
+    // Find all repeat types and count them
+    @Query("SELECT ExtraDataTable.repeat, COUNT(repeat) FROM ExtraDataTable " +
+            "GROUP BY repeat " +
+            "ORDER BY ExtraDataTable.repeat")
+    suspend fun countEntriesByRepeatType()
+
+
+    // Earliest and latest event time among events in a date range with a specific reminder
+    @Query("SELECT MIN(EntryTable.time_minutes) AS minTime, MAX(EntryTable.time_minutes) AS maxTime " +
+            "FROM EntryTable " +
+            "INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id " +
+            "WHERE EntryTable.date BETWEEN :startDate AND :endDate " +
+            "AND ExtraDataTable.reminder_type = :specificReminder ")
+    suspend fun findEarliestEventsInRangeWithReminder(
+        startDate: String,
+        endDate: String,
+        specificReminder: String
+    ): MinMaxTimeResult
+
+
+    // Find all entries whose title contains a specified text fragment
+    // and whose event time is later than a specified time.
+    @Query("SELECT * FROM EntryTable " +
+            "WHERE entry LIKE '%' || :textFragment || '%' " +
+            "AND time_minutes >= :timeFloor")
+    suspend fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(
+        textFragment: String,
+        timeFloor: Int
+    ): List<EntryTable>
+
+
+
+
+    // (DROPPED) Find Top X Dates With Most Entries
+    // (DROPPED) group by issue
+    /*
+    @Query("SELECT date, COUNT(*) as entryCount FROM EntryTable " +
+            "GROUP BY date " +
+            "ORDER BY entryCount DESC " +
+            "LIMIT :limit")
+    suspend fun findTopDatesWithMostEntries(
+        limit: Int
+    )
+
+
+    // (DROPPED) Find all reminder types, count them and show those that are more than / equal to "amount"
+    // (DROPPED) group by / having issue
+    @Query("SELECT ExtraDataTable.reminder_type, COUNT(reminder_type) reminderCount FROM EntryTable " +
+            "INNER JOIN ExtraDataTable ON  EntryTable.id = ExtraDataTable.entry_id " +
+            "GROUP BY ExtraDataTable.reminder_type " +
+            "HAVING COUNT(reminder_type) >= :amount " +
+            "ORDER BY ExtraDataTable.reminder_type ")
+    suspend fun reminderTypeCountMoreThanEqualAmount(
+        amount: Int
+    ): List<EntryTable>
+     */
+
+
+
 
 }

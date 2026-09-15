@@ -1,10 +1,12 @@
 package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO
 
 
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.MinMaxTimeResult
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryAttachmentOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B_
+import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryTable
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B_
 import io.objectbox.BoxStore
@@ -295,7 +297,191 @@ class OB_DAO (private val store: BoxStore) {
     // _____________________________________________________________________________________________
     // ADVANCED QUERIES
 
+
+    // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
+    fun findEntriesInDateRangeReminderRepeat1OrRepeat2(
+        startDate: String,
+        endDate: String,
+        specificReminder: String,
+        specificRepeat1: String,
+        specificRepeat2: String,
+        limit: Long
+    ): List<EntryOb_B> {
+        val queryBuilder = EOBBox.query(
+            EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .and
+                    (
+                    EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                )
+        )
+
+        queryBuilder
+            .link(EntryOb_B_.extradataob_b)
+            .apply(
+                (
+                        ExtraDataOb_B_.reminderTypeOb.equal(specificReminder)
+                        ).and
+                        (
+                        ExtraDataOb_B_.repeatOb.equal(specificRepeat1)
+                            .or(
+                                ExtraDataOb_B_.repeatOb.equal(specificRepeat2)
+                            )
+                        )
+            )
+
+
+        val query = queryBuilder
+            .order(EntryOb_B_.dateOb)
+            .order(EntryOb_B_.timeMinutesOb)
+            .order(EntryOb_B_.id)
+            .build()
+
+        val results = query.find(0, limit)
+
+        query.close()
+
+        return results
+    }
+
+
+
+    // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
+    fun findEntriesReminderNullRepeatNotNullLimitOffset(
+        limit: Long,
+        offset: Long
+    ): List<EntryOb_B> {
+
+        val queryBuilder = EOBBox.query()
+
+        queryBuilder
+            .link(EntryOb_B_.extradataob_b)
+            .apply(
+                ExtraDataOb_B_.reminderTypeOb.isNull()
+                    .and(
+                        ExtraDataOb_B_.repeatOb.notNull()
+                    )
+            )
+
+        val query = queryBuilder
+            .order(EntryOb_B_.dateOb)
+            .order(EntryOb_B_.timeMinutesOb)
+            .order(EntryOb_B_.id)
+            .build()
+
+        val results = query.find(
+            offset,
+            limit
+        )
+
+        query.close()
+
+        return results
+    }
+
+
+
+
+
+    // Find all repeat types and count them
+    fun countEntriesByRepeatType(): Map<String, Long> {
+        val repeatTypesQuery  = EDOBBox.query(
+            ExtraDataOb_B_.repeatOb.notNull()
+        ).build()
+
+        val repeatTypes = repeatTypesQuery
+            .property(ExtraDataOb_B_.repeatOb)
+            .distinct()
+            .findStrings()
+
+        repeatTypesQuery.close()
+
+        return repeatTypes.associateWith { repeatType ->
+            val countQuery = EDOBBox.query(
+                ExtraDataOb_B_.repeatOb.equal(repeatType)
+            ).build()
+
+            val count = countQuery.count()
+
+            countQuery.close()
+
+            count
+        }
+    }
+
+
+    // Earliest and latest event time among events in a date range with a specific reminder
+    fun findEarliestLatestEventTimesInRangeWithReminder(
+        startDate: String,
+        endDate: String,
+        specificReminder: String
+    ): MinMaxTimeResult {
+
+        val queryBuilder = EOBBox.query(
+            EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .and
+                    (
+                    EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                )
+        )
+
+        queryBuilder
+            .link(EntryOb_B_.extradataob_b)
+            .apply(
+                ExtraDataOb_B_.reminderTypeOb.equal(specificReminder)
+            )
+
+        val query = queryBuilder.build()
+
+        val timePropertyQuery = query.property(EntryOb_B_.timeMinutesOb)
+
+        val minTime = timePropertyQuery.min()
+        val maxTime = timePropertyQuery.max()
+
+        query.close()
+
+        return MinMaxTimeResult(minTime, maxTime)
+
+
+    }
+
+
+    // Find all entries whose title contains a specified text fragment
+    // and whose event time is later than a specified time.
+
+    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(
+        textFragment: String,
+        timeFloor: Int
+    ): List<EntryOb_B> {
+
+        val query = EOBBox.query(
+            EntryOb_B_.entryOb.contains(textFragment)
+                .and
+                    (
+                    EntryOb_B_.timeMinutesOb.greaterOrEqual(timeFloor)
+                            )
+        ).build()
+
+        val result = query.find()
+
+        query.close()
+
+        return result
+
+    }
+
+
+
+
+
+
+
+
+
+    // _____________________________________________________________________________________________
+
     // UPDATE entries in date range, in ObjectBox database
+    // OUTDATED VERSION. REPLACE WITH SOLUTIONS BASED ON ROOM ADVANCED QUERIES
+    /*
     fun findEntriesInDateRangeForUpdate(
         startDate: String,
         endDate: String
@@ -362,6 +548,8 @@ class OB_DAO (private val store: BoxStore) {
         query.close()
 
     }
+
+     */
 
 
 

@@ -789,6 +789,8 @@ class ObjectBoxViewModel (application: Application) : AndroidViewModel(applicati
     // _____________________________________________________________________________________________
     // ADVANCED QUERIES
 
+    // OUTDATED - DELETE
+    /*
     fun updateEntriesFromDateToDate() {
         var startDate = "2026-01-01"
         var endDate = "2026-02-01"
@@ -937,6 +939,8 @@ class ObjectBoxViewModel (application: Application) : AndroidViewModel(applicati
             )
         }
     }
+
+     */
 
 
 

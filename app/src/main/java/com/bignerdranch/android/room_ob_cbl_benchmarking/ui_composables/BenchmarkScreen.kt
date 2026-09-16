@@ -226,7 +226,7 @@ fun BenchmarkScreen(
 
                 item {
                     FilledTonalButton(
-                        onClick = { viewModel.updateEntriesFromDateToDate() },
+                        onClick = {  },
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = Color.Black,
                             contentColor = Color.White
@@ -239,7 +239,7 @@ fun BenchmarkScreen(
 
                 item {
                     FilledTonalButton(
-                        onClick = { viewModel.deleteEntriesFromDateToDate() },
+                        onClick = {  },
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = Color.Black,
                             contentColor = Color.White

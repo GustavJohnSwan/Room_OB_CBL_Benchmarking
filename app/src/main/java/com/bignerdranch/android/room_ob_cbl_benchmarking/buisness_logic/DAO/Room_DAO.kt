@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.MinMaxTimeResult
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.RepeatTypeCountResult
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryTable
 
 @Dao
@@ -155,10 +156,11 @@ interface Room_DAO {
 
 
     // Find all repeat types and count them
-    @Query("SELECT ExtraDataTable.repeat, COUNT(repeat) FROM ExtraDataTable " +
+    @Query("SELECT ExtraDataTable.repeat, COUNT(repeat) AS repeatCount " +
+            "FROM ExtraDataTable " +
             "GROUP BY repeat " +
             "ORDER BY ExtraDataTable.repeat")
-    suspend fun countEntriesByRepeatType()
+    suspend fun countEntriesByRepeatType(): List<RepeatTypeCountResult>
 
 
     // Earliest and latest event time among events in a date range with a specific reminder

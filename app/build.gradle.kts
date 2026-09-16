@@ -116,4 +116,10 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$room_version")
+
+
+
+    // Couchbase Lite dependecies
+
+    implementation("com.couchbase.lite:couchbase-lite-android-ktx:4.1.0")
 }

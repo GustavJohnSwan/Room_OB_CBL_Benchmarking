@@ -3,14 +3,10 @@ package com.bignerdranch.android.room_ob_cbl_benchmarking.database
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup.CouchbaseLiteProvider
 import com.couchbase.lite.Collection
 
-
-
-
-class CBL_Database_Col_And_Doc {
-
+fun createCollections() {
 
     // Create "entries" collection
-    val entriesCollection: Collection = CouchbaseLiteProvider
+    val entriesCollection: com.couchbase.lite.Collection = CouchbaseLiteProvider
         .getDatabase()
         .createCollection("entries")
 
@@ -20,11 +16,4 @@ class CBL_Database_Col_And_Doc {
         .getDatabase()
         .createCollection("extra_data")
 
-
-
-
-
-
-
 }
-

@@ -7,6 +7,7 @@ import com.couchbase.lite.Expression
 import com.couchbase.lite.Join
 import com.couchbase.lite.Meta
 import com.couchbase.lite.MutableDocument
+import com.couchbase.lite.Ordering
 import com.couchbase.lite.QueryBuilder
 import com.couchbase.lite.SelectResult
 import com.couchbase.lite.UnitOfWork
@@ -203,6 +204,157 @@ class CBL_DAO {
     }
 
 
+
+    // DELETE DOCUMENT by Id
+    fun deleteDocument(documentId: String) {
+        database.inBatch(UnitOfWork {
+            // Find the optional ExtraData document's ID.
+            val queryExtraData = QueryBuilder
+                .select(
+                    SelectResult.expression(Meta.id).`as`("extraDataId")
+                )
+                .from(DataSource.collection(Collection_ExtraData))
+                .where(
+                    Expression.property("entry_id")
+                        .equalTo(Expression.string(documentId))
+                )
+
+            val extraDataId = queryExtraData.execute().use { results ->
+                results.next()?.getString("extraDataId")
+            }
+
+            // Delete ExtraData if it exists.
+            if (extraDataId != null) {
+                val extraDataDocument =
+                    Collection_ExtraData.getDocument(extraDataId)
+
+                if (extraDataDocument != null) {
+                    Collection_ExtraData.delete(extraDataDocument)
+                }
+            }
+
+            // Delete the main entry if it exists.
+            val entryDocument = Collection_Entires.getDocument(documentId)
+
+            if (entryDocument != null) {
+                Collection_Entires.delete(entryDocument)
+            }
+        })
+    }
+
+
+
+    // DELETE DOCUMENTS BY ids
+
+    fun deleteDocuments(documentIds: List<String>) {
+        if (documentIds.isEmpty()) return
+
+        val idExpressions = documentIds
+            .map { id -> Expression.string(id) }
+            .toTypedArray()
+
+        database.inBatch(UnitOfWork {
+            // Find ExtraData belonging to the selected entries.
+            val queryExtraData = QueryBuilder
+                .select(
+                    SelectResult.expression(Meta.id).`as`("extraDataId")
+                )
+                .from(DataSource.collection(Collection_ExtraData))
+                .where(
+                    Expression.property("entry_id")
+                        .`in`(*idExpressions)
+                )
+
+            val extraDataIds = queryExtraData.execute().use { results ->
+                results.mapNotNull { result ->
+                    result.getString("extraDataId")
+                }
+            }
+
+            // Delete the matching ExtraData documents.
+            for (extraDataId in extraDataIds) {
+                val extraDataDocument =
+                    Collection_ExtraData.getDocument(extraDataId)
+
+                if (extraDataDocument != null) {
+                    Collection_ExtraData.delete(extraDataDocument)
+                }
+            }
+
+            // Delete the selected main documents.
+            for (documentId in documentIds) {
+                val entryDocument =
+                    Collection_Entires.getDocument(documentId)
+
+                if (entryDocument != null) {
+                    Collection_Entires.delete(entryDocument)
+                }
+            }
+        })
+    }
+
+
+    // DELETE ALL DOCUMENTS
+    fun deleteAllDocuments() {
+        database.inBatch(UnitOfWork {
+            for (collection in listOf(Collection_Entires, Collection_ExtraData)) {
+                val query = QueryBuilder
+                    .select(SelectResult.expression(Meta.id).`as`("documentId"))
+                    .from(DataSource.collection(collection))
+
+                val documentIds = query.execute().use { results ->
+                    results.mapNotNull { result ->
+                        result.getString("documentId")
+                    }
+                }
+
+                for (documentId in documentIds) {
+                    val document = collection.getDocument(documentId)
+
+                    if (document != null) {
+                        collection.delete(document)
+                    }
+                }
+            }
+        })
+    }
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // Medium Queries
+
+    fun findDocumentsInSpecificDate(date: String): List<Map<String, Any?>> {
+
+        val queryAll = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(Expression.property("date").equalTo(Expression.string(date)))
+            .orderBy(
+                Ordering.property("date").ascending(),
+                Ordering.property("time_minutes").ascending()
+            )
+
+        return queryAll.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+
+    }
 
 
 

@@ -2,9 +2,20 @@ package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO
 
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup.CouchbaseLiteProvider
+import com.couchbase.lite.DataSource
+import com.couchbase.lite.Expression
+import com.couchbase.lite.Join
+import com.couchbase.lite.Meta
 import com.couchbase.lite.MutableDocument
+import com.couchbase.lite.QueryBuilder
+import com.couchbase.lite.SelectResult
+import com.couchbase.lite.UnitOfWork
 
 class CBL_DAO {
+
+    // retrieving the database
+    val database = CouchbaseLiteProvider.getDatabase()
+
 
     // retrieving collections for DAO functions to use
     val Collection_Entires = CouchbaseLiteProvider
@@ -49,6 +60,7 @@ class CBL_DAO {
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
+    // Basic CRUD
 
     // TO DO - WRITE THE CBL DAO IN THIS FILE
 
@@ -85,6 +97,114 @@ class CBL_DAO {
 
 
     }
+
+
+    // INSERT ENTRIES BULK
+    fun insertDocuments(events: List<GeneratedEvent>) {
+
+        val startingId = nextEntryId
+
+        try {
+            database.inBatch(UnitOfWork {
+                for (event in events) {
+                    insertDocument(event)
+                }
+            })
+        } catch (error: Exception) {
+            nextEntryId = startingId
+            throw error
+        }
+    }
+
+
+
+
+
+
+
+
+    // GET BULK
+    fun getAllDocuments(): List<Map<String, Any?>> {
+        val queryAll = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+                )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+
+        return queryAll.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+    }
+
+
+    // GET document by Id
+    fun getDocumentById(documentId: String): Map<String, Any?>? {
+        val queryDocument = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(
+                Meta.id.from("entries")
+                .equalTo(
+                    Expression.string(documentId)))
+
+        return queryDocument.execute().use { results ->
+            results.next()?.toMap()
+        }
+    }
+
+    // GET documents by List of Ids
+    fun getDocumentsById (documentIds: List<String>): List<Map<String, Any?>> {
+
+        val idExpressions = documentIds
+            .map { id -> Expression.string(id) }
+            .toTypedArray()
+
+        val queryAll = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(
+                Meta.id.from("entries").`in`(*idExpressions)
+            )
+
+        return queryAll.execute().use { results ->
+            results.map { result -> result.toMap() }
+        }
+    }
+
+
+
+
 
 
 }

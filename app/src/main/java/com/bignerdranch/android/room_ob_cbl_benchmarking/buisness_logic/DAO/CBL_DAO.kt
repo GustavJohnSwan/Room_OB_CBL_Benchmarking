@@ -11,6 +11,7 @@ import com.couchbase.lite.Ordering
 import com.couchbase.lite.QueryBuilder
 import com.couchbase.lite.SelectResult
 import com.couchbase.lite.UnitOfWork
+import kotlin.use
 
 class CBL_DAO {
 
@@ -353,6 +354,134 @@ class CBL_DAO {
         return queryAll.execute().use { results ->
             results.map { result -> result.toMap()}
         }
+
+    }
+
+    // FIND NEXT X DOCUMENTS FROM DATE (TODAY) TO DATE WITH REMINDER (NOT NULL)
+    fun findNextDocument(thisLimit: Int, startDate: String, endDate: String): List<Map<String, Any?>> {
+
+        val queryAll = QueryBuilder
+        .select(
+            SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+            SelectResult.all().from("entries"),
+            SelectResult.all().from("extraData")
+        )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(Expression.property("date")
+                .from("entries")
+                .between(
+                Expression.string(startDate),
+                Expression.string(endDate)
+            )
+                .and(
+                    Expression.property("reminder_type").from("extraData")
+                        .isValued()
+                )
+            )
+            .orderBy(
+                Ordering.expression(
+                    Expression.property("date").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Expression.property("time_minutes").from("entries")
+                ).ascending()
+            )
+            .limit(
+                Expression.intValue(thisLimit),
+                Expression.intValue(0)
+            )
+
+        return queryAll.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+
+    }
+
+
+
+
+    // Find documents with a specific reminder
+    fun findDocumentsWithSpecificReminder(): List<Map<String, Any?>> {
+
+        val queryAll = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(Expression.property("reminder_type")
+                .from("extraData")
+                .equalTo(Expression.string("10 mins before"))
+            )
+            .orderBy(
+                Ordering.expression(
+                    Expression.property("date").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Expression.property("time_minutes").from("entries")
+                ).ascending()
+            )
+
+        return queryAll.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+
+    }
+
+
+    // FIND DOCUMENTS WITH ANY RECCURANCE
+    fun findDocumentsWithReccurence(): List<Map<String, Any?>> {
+
+
+        val queryAll = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(Expression.property("repeat")
+                .from("extraData")
+                .isValued()
+            )
+            .orderBy(
+                Ordering.expression(
+                    Expression.property("date").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Expression.property("time_minutes").from("entries")
+                ).ascending()
+            )
+
+        return queryAll.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+
 
     }
 

@@ -13,6 +13,8 @@ import com.couchbase.lite.SelectResult
 import com.couchbase.lite.UnitOfWork
 import kotlin.use
 
+import com.couchbase.lite.Function
+
 class CBL_DAO {
 
     // retrieving the database
@@ -69,6 +71,7 @@ class CBL_DAO {
 
     // INSERT ENTRY
     fun insertDocument(event: GeneratedEvent) {
+        database.inBatch(UnitOfWork {
 
         // creating a mutable document (entry) with ID iterator helper function
         val entryDoc = MutableDocument(nextEntryId.toString())
@@ -97,6 +100,8 @@ class CBL_DAO {
             Collection_ExtraData.save(extraDataDoc)
         }
 
+        })
+
 
     }
 
@@ -104,21 +109,234 @@ class CBL_DAO {
     // INSERT ENTRIES BULK
     fun insertDocuments(events: List<GeneratedEvent>) {
 
-        val startingId = nextEntryId
-
-        try {
             database.inBatch(UnitOfWork {
                 for (event in events) {
-                    insertDocument(event)
+                    // creating a mutable document (entry) with ID iterator helper function
+                    val entryDoc = MutableDocument(nextEntryId.toString())
+
+                    entryDoc.setString("date", event.date)
+                    entryDoc.setString("entry", event.title)
+                    entryDoc.setInt("time_minutes", event.time)
+
+                    // store document in collection
+                    Collection_Entires.save(entryDoc)
+                    nextEntryId++
+
+                    // check if current event has extraData (not null), if it does, execute code in brackets
+                    event.extraData?.let { extraData ->
+
+                        // creating a mutable document (extra data)
+                        val extraDataDoc = MutableDocument()
+
+                        // define extra data parameters and main entry ID reference
+                        extraDataDoc.setString("entry_id", entryDoc.id)
+                        extraDataDoc.setString("reminder_type", extraData.reminderType)
+                        extraDataDoc.setString("repeat", extraData.repeatType)
+                        extraDataDoc.setString("repeat_details", extraData.repeatDetails)
+
+                        // store document in collection
+                        Collection_ExtraData.save(extraDataDoc)
+                    }
                 }
             })
-        } catch (error: Exception) {
-            nextEntryId = startingId
-            throw error
-        }
     }
 
 
+
+
+    // UPDATE DOCUMENT
+    fun updateDocument(docId: String, event: GeneratedEvent) {
+
+        database.inBatch(UnitOfWork {
+
+            val entryDocument = Collection_Entires.getDocument(docId)
+
+            if (entryDocument != null) {
+
+                val queryExtraData = QueryBuilder
+                    .select(
+                        SelectResult.expression(Meta.id).`as`("extraDataId")
+                    )
+                    .from(DataSource.collection(Collection_ExtraData))
+                    .where(
+                        Expression.property("entry_id")
+                            .equalTo(Expression.string(docId))
+                    )
+
+                val extraDataId = queryExtraData.execute().use { results ->
+                    results.next()?.getString("extraDataId")
+                }
+
+                when {
+
+                    event.extraData != null && extraDataId != null -> {
+
+                        Collection_ExtraData.getDocument(extraDataId)?.toMutable()?.let {
+
+                            it.setString("reminder_type", event.extraData?.reminderType)
+                            it.setString("repeat", event.extraData?.repeatType)
+                            it.setString("repeat_details", event.extraData?.repeatDetails)
+                            Collection_ExtraData.save(it)
+
+                        }
+                    }
+
+                    event.extraData == null && extraDataId == null -> {
+                        // nothing should happen with extra data
+                    }
+
+                    event.extraData != null && extraDataId == null -> {
+
+                        // creating a mutable document (extra data)
+                        val extraDataDoc = MutableDocument()
+
+                        // define extra data parameters and main entry ID reference
+                        extraDataDoc.setString("entry_id", docId)
+                        extraDataDoc.setString("reminder_type", event.extraData?.reminderType)
+                        extraDataDoc.setString("repeat", event.extraData?.repeatType)
+                        extraDataDoc.setString("repeat_details", event.extraData?.repeatDetails)
+
+                        // store document in collection
+                        Collection_ExtraData.save(extraDataDoc)
+
+
+                    }
+
+                    event.extraData == null && extraDataId != null -> {
+
+                        val extraDataDocument =
+                            Collection_ExtraData.getDocument(extraDataId)
+
+                        if (extraDataDocument != null) {
+                            Collection_ExtraData.delete(extraDataDocument)
+                        }
+
+
+                    }
+                }
+
+
+                entryDocument.toMutable().let {
+
+                    it.setString("date", event.date)
+                    it.setString("entry", event.title)
+                    it.setInt("time_minutes", event.time)
+                    Collection_Entires.save(it)
+
+                }
+            }
+        })
+    }
+
+
+    // UPDATE DOCUMENTS
+    fun updateDocuments(docIds: List<String>, events: List<GeneratedEvent>) {
+
+        require(docIds.size == events.size)
+
+        database.inBatch(UnitOfWork {
+
+            for (i in docIds.indices) {
+
+                val entryDocument = Collection_Entires.getDocument(docIds[i])
+
+                if (entryDocument != null) {
+
+                    val queryExtraData = QueryBuilder
+                        .select(
+                            SelectResult.expression(Meta.id).`as`("extraDataId")
+                        )
+                        .from(DataSource.collection(Collection_ExtraData))
+                        .where(
+                            Expression.property("entry_id")
+                                .equalTo(Expression.string(docIds[i]))
+                        )
+
+                    val extraDataId = queryExtraData.execute().use { results ->
+                        results.next()?.getString("extraDataId")
+                    }
+
+                    when {
+
+                        events[i].extraData != null && extraDataId != null -> {
+
+                            Collection_ExtraData.getDocument(extraDataId)?.toMutable()?.let {
+
+                                it.setString("reminder_type", events[i].extraData?.reminderType)
+                                it.setString("repeat", events[i].extraData?.repeatType)
+                                it.setString("repeat_details", events[i].extraData?.repeatDetails)
+                                Collection_ExtraData.save(it)
+
+                            }
+                        }
+
+                        events[i].extraData == null && extraDataId == null -> {
+                            // nothing should happen with extra data
+                        }
+
+                        events[i].extraData != null && extraDataId == null -> {
+
+                            // creating a mutable document (extra data)
+                            val extraDataDoc = MutableDocument()
+
+                            // define extra data parameters and main entry ID reference
+                            extraDataDoc.setString("entry_id", docIds[i])
+                            extraDataDoc.setString("reminder_type", events[i].extraData?.reminderType)
+                            extraDataDoc.setString("repeat", events[i].extraData?.repeatType)
+                            extraDataDoc.setString("repeat_details", events[i].extraData?.repeatDetails)
+
+                            // store document in collection
+                            Collection_ExtraData.save(extraDataDoc)
+
+
+                        }
+
+                        events[i].extraData == null && extraDataId != null -> {
+
+                            val extraDataDocument =
+                                Collection_ExtraData.getDocument(extraDataId)
+
+                            if (extraDataDocument != null) {
+                                Collection_ExtraData.delete(extraDataDocument)
+                            }
+
+
+                        }
+                    }
+
+
+                    entryDocument.toMutable().let {
+
+                        it.setString("date", events[i].date)
+                        it.setString("entry", events[i].title)
+                        it.setInt("time_minutes", events[i].time)
+                        Collection_Entires.save(it)
+
+                    }
+                }
+            }
+        })
+        
+    }
+
+
+
+    // COUNT DOCUMENTS
+    fun countDocuments(): Long {
+
+        val query = QueryBuilder
+            .select(
+                SelectResult.expression(
+                    Function.count(
+                        Expression.string("*"))).`as`("documentCount")
+            )
+            .from(DataSource.collection(Collection_Entires))
+
+
+        return query.execute().use { results ->
+            results.next()?.getLong("documentCount") ?: 0L
+        }
+    }
 
 
 
@@ -176,6 +394,8 @@ class CBL_DAO {
 
     // GET documents by List of Ids
     fun getDocumentsById (documentIds: List<String>): List<Map<String, Any?>> {
+        if (documentIds.isEmpty()) return emptyList()
+
 
         val idExpressions = documentIds
             .map { id -> Expression.string(id) }
@@ -329,6 +549,7 @@ class CBL_DAO {
     // _____________________________________________________________________________________________
     // Medium Queries
 
+    // Find documents in date, order by time in ObjectBox database
     fun findDocumentsInSpecificDate(date: String): List<Map<String, Any?>> {
 
         val queryAll = QueryBuilder
@@ -345,10 +566,13 @@ class CBL_DAO {
                             .equalTo(Expression.property("entry_id").from("extraData"))
                     )
             )
-            .where(Expression.property("date").equalTo(Expression.string(date)))
+            .where(
+                Expression.property("date").from("entries")
+                    .equalTo(Expression.string(date)))
             .orderBy(
-                Ordering.property("date").ascending(),
-                Ordering.property("time_minutes").ascending()
+                Ordering.expression(
+                    Expression.property("time_minutes").from("entries")
+                ).ascending()
             )
 
         return queryAll.execute().use { results ->
@@ -356,6 +580,51 @@ class CBL_DAO {
         }
 
     }
+
+
+    // Find documents in date range, order by time
+    fun findDocumentsInDateRange(startDate: String, endDate: String): List<Map<String, Any?>> {
+
+        val queryAll = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(Expression.property("date")
+                .from("entries")
+                .between(
+                    Expression.string(startDate),
+                    Expression.string(endDate)
+                )
+            )
+            .orderBy(
+                Ordering.expression(
+                    Expression.property("date").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Expression.property("time_minutes").from("entries")
+                ).ascending()
+            )
+
+        return queryAll.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+
+    }
+
+
+
+
 
     // FIND NEXT X DOCUMENTS FROM DATE (TODAY) TO DATE WITH REMINDER (NOT NULL)
     fun findNextDocument(thisLimit: Int, startDate: String, endDate: String): List<Map<String, Any?>> {

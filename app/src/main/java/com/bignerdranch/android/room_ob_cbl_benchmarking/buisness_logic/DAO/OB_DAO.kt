@@ -392,6 +392,7 @@ class OB_DAO (private val store: BoxStore) {
             .property(ExtraDataOb_B_.repeatOb)
             .distinct()
             .findStrings()
+            .sorted()
 
         repeatTypesQuery.close()
 

@@ -756,5 +756,271 @@ class CBL_DAO {
 
 
 
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // ADVANCED QUERIES
+
+    // FIND documents in date range with specific Reminder and specific Repeat1 OR Repeat2
+    fun findDocInDateRangeReminderRepeatOrRepeat(
+        startDate: String,
+        endDate: String,
+        specificReminder: String,
+        specificRepeat1: String,
+        specificRepeat2: String,
+        limit: Int
+    ): List<Map<String, Any?>> {
+        val query = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.innerJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(Expression.property("date")
+                .from("entries")
+                .between(
+                    Expression.string(startDate),
+                    Expression.string(endDate)
+                )
+                .and(
+                    Expression.property("reminder_type")
+                    .from("extraData")
+                    .equalTo(Expression.string(specificReminder))
+                )
+                .and(
+                    Expression.property("repeat")
+                        .from("extraData")
+                        .equalTo(Expression.string(specificRepeat1))
+                        .or(
+                            Expression.property("repeat")
+                                .from("extraData")
+                                .equalTo(Expression.string(specificRepeat2))
+                        )
+                )
+            )
+            .orderBy(
+                Ordering.expression(
+                    Expression.property("date").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Expression.property("time_minutes").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Function.length(Meta.id.from("entries"))
+                ).ascending(),
+
+                Ordering.expression(
+                    Meta.id.from("entries")
+                ).ascending()
+            )
+            .limit(
+                Expression.intValue(limit),
+                Expression.intValue(0)
+            )
+
+        return query.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+    }
+
+
+
+
+    // FIND documents with Reminder IS NULL and Repeat IS NOT NULL + LIMIT + OFFSET
+    fun findDocumentsReminderNullRepeatNotNullLimitOffset (
+        limit: Int,
+        offset: Int
+    ): List<Map<String, Any?>> {
+
+        val query = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+                SelectResult.all().from("entries"),
+                SelectResult.all().from("extraData")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.innerJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(
+                Expression.property("reminder_type")
+                .from("extraData")
+                .isNotValued()
+                .and(
+                    Expression.property("repeat")
+                        .from("extraData")
+                        .isValued()
+                )
+            )
+            .orderBy(
+                Ordering.expression(
+                    Expression.property("date").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Expression.property("time_minutes").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Function.length(Meta.id.from("entries"))
+                ).ascending(),
+
+                Ordering.expression(
+                    Meta.id.from("entries")
+                ).ascending()
+            )
+            .limit(
+                Expression.intValue(limit),
+                Expression.intValue(offset)
+            )
+
+
+        return query.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+    }
+
+
+
+
+    // FIND all repeat types and count them
+    fun countDocumentsByRepeatType(): List<Map<String, Any?>> {
+
+        val query = QueryBuilder
+        .select(
+            SelectResult.property("repeat"),
+            SelectResult.expression(
+                Function.count(
+                    Expression.property("repeat"))).`as`("repeatCount")
+        )
+            .from(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+            .where(Expression.property("repeat").isValued())
+            .groupBy(Expression.property("repeat"))
+            .orderBy(Ordering.property("repeat").ascending())
+
+
+        return query.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+    }
+
+
+
+
+
+    // Earliest and latest document time among documents in date range with specific reminder
+    fun findEarliestDocumentsInRangeWithReminder(
+        startDate: String,
+        endDate: String,
+        specificReminder: String
+    ): Map<String, Any?>? {
+
+        val query = QueryBuilder
+            .select(
+
+                SelectResult.expression(
+                    Function.min(
+                        Expression.property("time_minutes")
+                            .from("entries"))).`as`("minTime"),
+
+                        SelectResult.expression(
+                        Function.max(
+                            Expression.property("time_minutes")
+                                .from("entries"))).`as`("maxTime")
+            )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.innerJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(Expression.property("date")
+                .from("entries")
+                .between(
+                    Expression.string(startDate),
+                    Expression.string(endDate)
+                )
+                .and(
+                    Expression.property("reminder_type")
+                        .from("extraData")
+                        .equalTo(Expression.string(specificReminder))
+                )
+            )
+
+
+        return query.execute().use { results ->
+            results.next()?.toMap()
+        }
+    }
+
+
+
+    // Find all documents whose title contains a specific text fragment
+    // and whose event time is later then a specific time
+
+    fun findDocTitleLikeTextTimeLater(
+        textFragment: String,
+        timeFloor: Int
+    ): List<Map<String, Any?>> {
+
+        val query = QueryBuilder
+        .select(
+            SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
+            SelectResult.all().from("entries"),
+            SelectResult.all().from("extraData")
+        )
+            .from(DataSource.collection(Collection_Entires).`as`("entries"))
+            .join(
+                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                    .on(
+                        Meta.id.from("entries")
+                            .equalTo(Expression.property("entry_id").from("extraData"))
+                    )
+            )
+            .where(
+                Function.lower(
+                    Expression.property("entry").from("entries")
+                )
+                    .like(
+                        Function.lower(Expression.string("%${textFragment}%"))
+                    )
+                    .and(
+                        Expression.property("time_minutes").from("entries")
+                            .greaterThanOrEqualTo(Expression.intValue(timeFloor))
+                    )
+            )
+
+        return query.execute().use { results ->
+            results.map { result -> result.toMap()}
+        }
+    }
+
+
+
+
+
+
+
+
 
 }

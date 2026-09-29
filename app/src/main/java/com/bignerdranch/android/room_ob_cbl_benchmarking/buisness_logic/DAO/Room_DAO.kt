@@ -127,7 +127,7 @@ interface Room_DAO {
             "ExtraDataTable.repeat = :specificRepeat1 " +
             "OR ExtraDataTable.repeat = :specificRepeat2" +
             ") " +
-            "ORDER BY EntryTable.date, EntryTable.time_minutes ASC " +
+            "ORDER BY EntryTable.date, EntryTable.time_minutes ASC, EntryTable.id ASC  " +
             "LIMIT :amount ")
     suspend fun findEntriesInDateRangeReminderRepeat1OrRepeat2(
         startDate: String,

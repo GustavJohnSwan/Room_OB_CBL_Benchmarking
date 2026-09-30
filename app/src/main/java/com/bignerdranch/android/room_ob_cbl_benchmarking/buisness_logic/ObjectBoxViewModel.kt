@@ -759,7 +759,7 @@ class ObjectBoxViewModel (application: Application) : AndroidViewModel(applicati
 
     // Find entries with a specific reminder
     fun findEntriesWithOneTypeOfReminder() {
-        var desiredEntries = ob_DAO.findEntriesWithSpecificReminder()
+        var desiredEntries = ob_DAO.findEntriesWithSpecificReminder("10 mins before")
 
         Log.d("OB_MEDIUM_QUERY_TEST", "Entries with 10 mins before reminder :")
         desiredEntries.forEach { entry ->

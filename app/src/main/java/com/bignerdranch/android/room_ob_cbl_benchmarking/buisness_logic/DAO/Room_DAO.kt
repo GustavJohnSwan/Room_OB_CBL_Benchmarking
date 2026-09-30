@@ -97,7 +97,7 @@ interface Room_DAO {
     suspend fun findEntriesInDateRange(startDate: String, endDate: String): List<EntryTable>
 
     // Find next X entries from date to date with reminder (not null) in Room database
-    @Query("SELECT EntryTable.* FROM EntryTable INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id WHERE EntryTable.date BETWEEN :startDate AND :endDate AND ExtraDataTable.reminder_type IS NOT NULL ORDER BY EntryTable.date ASC, EntryTable.time_minutes ASC LIMIT :nextAmount")
+    @Query("SELECT EntryTable.* FROM EntryTable INNER JOIN ExtraDataTable ON EntryTable.id = ExtraDataTable.entry_id WHERE EntryTable.date BETWEEN :startDate AND :endDate AND ExtraDataTable.reminder_type IS NOT NULL ORDER BY EntryTable.date ASC, EntryTable.time_minutes ASC, EntryTable.id ASC LIMIT :nextAmount")
     suspend fun findNextEntries(startDate: String, endDate: String, nextAmount: Int): List<EntryTable>
 
     // Find entries with a specific reminder
@@ -156,8 +156,9 @@ interface Room_DAO {
 
 
     // Find all repeat types and count them
-    @Query("SELECT ExtraDataTable.repeat, COUNT(repeat) AS repeatCount " +
+    @Query("SELECT ExtraDataTable.repeat AS repeatType, COUNT(repeat) AS repeatCount " +
             "FROM ExtraDataTable " +
+            "WHERE ExtraDataTable.repeat IS NOT NULL " +
             "GROUP BY repeat " +
             "ORDER BY ExtraDataTable.repeat")
     suspend fun countEntriesByRepeatType(): List<RepeatTypeCountResult>
@@ -179,7 +180,7 @@ interface Room_DAO {
     // Find all entries whose title contains a specified text fragment
     // and whose event time is later than a specified time.
     @Query("SELECT * FROM EntryTable " +
-            "WHERE entry LIKE '%' || :textFragment || '%' " +
+            "WHERE instr(entry, :textFragment) > 0 " +
             "AND time_minutes >= :timeFloor")
     suspend fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(
         textFragment: String,

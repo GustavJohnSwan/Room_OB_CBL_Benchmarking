@@ -661,6 +661,14 @@ class CBL_DAO {
 
                 Ordering.expression(
                     Expression.property("time_minutes").from("entries")
+                ).ascending(),
+
+                Ordering.expression(
+                    Function.length(Meta.id.from("entries"))
+                ).ascending(),
+
+                Ordering.expression(
+                    Meta.id.from("entries")
                 ).ascending()
             )
             .limit(
@@ -678,7 +686,9 @@ class CBL_DAO {
 
 
     // Find documents with a specific reminder
-    fun findDocumentsWithSpecificReminder(): List<Map<String, Any?>> {
+    fun findDocumentsWithSpecificReminder(
+        specificReminder: String
+    ): List<Map<String, Any?>> {
 
         val queryAll = QueryBuilder
             .select(
@@ -696,16 +706,7 @@ class CBL_DAO {
             )
             .where(Expression.property("reminder_type")
                 .from("extraData")
-                .equalTo(Expression.string("10 mins before"))
-            )
-            .orderBy(
-                Ordering.expression(
-                    Expression.property("date").from("entries")
-                ).ascending(),
-
-                Ordering.expression(
-                    Expression.property("time_minutes").from("entries")
-                ).ascending()
+                .equalTo(Expression.string(specificReminder))
             )
 
         return queryAll.execute().use { results ->
@@ -737,15 +738,7 @@ class CBL_DAO {
                 .from("extraData")
                 .isValued()
             )
-            .orderBy(
-                Ordering.expression(
-                    Expression.property("date").from("entries")
-                ).ascending(),
 
-                Ordering.expression(
-                    Expression.property("time_minutes").from("entries")
-                ).ascending()
-            )
 
         return queryAll.execute().use { results ->
             results.map { result -> result.toMap()}
@@ -998,12 +991,10 @@ class CBL_DAO {
                     )
             )
             .where(
-                Function.lower(
-                    Expression.property("entry").from("entries")
+                Function.contains(
+                    Expression.property("entry").from("entries"),
+                    Expression.string(textFragment)
                 )
-                    .like(
-                        Function.lower(Expression.string("%${textFragment}%"))
-                    )
                     .and(
                         Expression.property("time_minutes").from("entries")
                             .greaterThanOrEqualTo(Expression.intValue(timeFloor))

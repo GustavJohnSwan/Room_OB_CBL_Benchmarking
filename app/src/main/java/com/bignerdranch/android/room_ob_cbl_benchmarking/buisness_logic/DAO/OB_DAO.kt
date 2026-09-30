@@ -209,6 +209,7 @@ class OB_DAO (private val store: BoxStore) {
                     EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
                             )
         )
+            .order(EntryOb_B_.dateOb)
             .order(EntryOb_B_.timeMinutesOb)
             .build()
         val desiredEntries = query.find()
@@ -237,6 +238,7 @@ class OB_DAO (private val store: BoxStore) {
             val query = queryBuilder
             .order(EntryOb_B_.dateOb)
             .order(EntryOb_B_.timeMinutesOb)
+            .order(EntryOb_B_.id)
             .build()
 
         val desiredEntries = query.find(0, amount)
@@ -246,14 +248,16 @@ class OB_DAO (private val store: BoxStore) {
     }
 
     // Find entries with a specific reminder
-    fun findEntriesWithSpecificReminder(): List<EntryOb_B> {
+    fun findEntriesWithSpecificReminder(
+        specificReminder: String
+    ): List<EntryOb_B> {
 
         val queryBuilder = EOBBox.query()
 
         queryBuilder
             .link(EntryOb_B_.extradataob_b)
             .apply(
-                ExtraDataOb_B_.reminderTypeOb.equal("10 mins before")
+                ExtraDataOb_B_.reminderTypeOb.equal(specificReminder)
             )
         val query = queryBuilder.build()
 
@@ -390,7 +394,7 @@ class OB_DAO (private val store: BoxStore) {
 
         val repeatTypes = repeatTypesQuery
             .property(ExtraDataOb_B_.repeatOb)
-            .distinct()
+            .distinct(QueryBuilder.StringOrder.CASE_SENSITIVE)
             .findStrings()
             .sorted()
 
@@ -440,7 +444,10 @@ class OB_DAO (private val store: BoxStore) {
 
         query.close()
 
-        return MinMaxTimeResult(minTime, maxTime)
+        return MinMaxTimeResult(
+            minTime = if (minTime == Long.MAX_VALUE) null else minTime,
+            maxTime = if (maxTime == Long.MIN_VALUE) null else maxTime
+        )
 
 
     }
@@ -455,7 +462,10 @@ class OB_DAO (private val store: BoxStore) {
     ): List<EntryOb_B> {
 
         val query = EOBBox.query(
-            EntryOb_B_.entryOb.contains(textFragment)
+            EntryOb_B_.entryOb.contains(
+                textFragment,
+                QueryBuilder.StringOrder.CASE_SENSITIVE
+            )
                 .and
                     (
                     EntryOb_B_.timeMinutesOb.greaterOrEqual(timeFloor)

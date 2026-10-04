@@ -34,7 +34,7 @@ interface Room_DAO {
     // _____________________________________________________________________________________________
     // Room CRUD
 
-    // *** CRUD - INSERT main ENTRY data entries
+    // *** CRUD - INSERT main ENTRY data entry
     @Insert
     suspend fun insertMainEntry(entryTable: EntryTable): Long
 
@@ -158,7 +158,7 @@ interface Room_DAO {
     // _____________________________________________________________________________________________
     // Medium Queries
 
-    // Find entries in date, order by time in Room database
+    // *** MQ - Find entries in date, order by time in Room database
     @Query("SELECT e.*, x.* " +
             "FROM EntryTable AS e " +
             "LEFT JOIN ExtraDataTable AS x " +

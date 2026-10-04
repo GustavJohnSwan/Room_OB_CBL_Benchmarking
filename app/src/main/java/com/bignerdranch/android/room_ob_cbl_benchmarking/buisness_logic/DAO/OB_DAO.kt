@@ -81,7 +81,7 @@ class OB_DAO (private val store: BoxStore) {
         return entry.id
     }
 
-    // *** DATA SET INSERT AND UPDATE *** CRUD - used for INSERT BULK (both initial set and CRUD)
+    // *** DATA SET INSERT AND UPDATE - used for INSERT BULK (both initial set and CRUD)
     fun putEntries(
         entries: List<EntryOb_B>,
         extraDataIdsToDelete: List<Long> = emptyList()
@@ -105,6 +105,14 @@ class OB_DAO (private val store: BoxStore) {
         }
 
         return entries.map { it.id }
+    }
+
+
+
+
+
+    fun putMainEntry(entry: EntryOb_B): Long {
+        return EOBBox.put(entry)
     }
 
 
@@ -218,7 +226,7 @@ class OB_DAO (private val store: BoxStore) {
     // Medium Queries
 
     // Find entries in date, order by time in ObjectBox database
-    fun findEntriesInSpecificDate(date: String): List<EntryOb_B> {
+    fun findEntriesInSpecificDate(date: String): List<OB_EntryWithExtraData> {
         val query = EOBBox.query(
             EntryOb_B_.dateOb.equal(date))
             .order(EntryOb_B_.timeMinutesOb)
@@ -227,11 +235,16 @@ class OB_DAO (private val store: BoxStore) {
         val desiredEntries = query.find()
         query.close()
 
-        return desiredEntries
+        return desiredEntries.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
     }
 
     // Find entries in date range, order by time in ObjectBox database
-    fun findEntriesInDateRange(startDate: String, endDate: String): List<EntryOb_B> {
+    fun findEntriesInDateRange(startDate: String, endDate: String): List<OB_EntryWithExtraData> {
         val query = EOBBox.query(
             EntryOb_B_.dateOb.greaterOrEqual(
                 startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
@@ -247,7 +260,12 @@ class OB_DAO (private val store: BoxStore) {
         val desiredEntries = query.find()
         query.close()
 
-        return desiredEntries
+        return desiredEntries.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
     }
 
 
@@ -255,7 +273,7 @@ class OB_DAO (private val store: BoxStore) {
     // IT ONLY COMPLICATES THINGS
     // Find next X entries from today to date with reminder (not null) in ObjectBox database
     // Also rename to findNextEntries, becasue it looks for the next X not just one
-    fun findNextEntry(startDate: String, endDate: String, amount: Long): List<EntryOb_B> {
+    fun findNextEntry(startDate: String, endDate: String, amount: Long): List<OB_EntryWithExtraData> {
         val queryBuilder = EOBBox.query(
             EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and
@@ -277,13 +295,18 @@ class OB_DAO (private val store: BoxStore) {
         val desiredEntries = query.find(0, amount)
         query.close()
 
-        return desiredEntries
+        return desiredEntries.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
     }
 
     // Find entries with a specific reminder
     fun findEntriesWithSpecificReminder(
         specificReminder: String
-    ): List<EntryOb_B> {
+    ): List<OB_EntryWithExtraData> {
 
         val queryBuilder = EOBBox.query()
 
@@ -301,12 +324,17 @@ class OB_DAO (private val store: BoxStore) {
         val desiredEntries = query.find()
         query.close()
 
-        return desiredEntries
+        return desiredEntries.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
     }
 
 
     // Find entries with any recurrence
-    fun findEntriesWithRecurrance(): List<EntryOb_B> {
+    fun findEntriesWithRecurrance(): List<OB_EntryWithExtraData> {
 
         val queryBuilder = EOBBox.query()
 
@@ -325,7 +353,12 @@ class OB_DAO (private val store: BoxStore) {
         query.close()
 
 
-        return desiredEntries
+        return desiredEntries.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
 
     }
 
@@ -349,7 +382,7 @@ class OB_DAO (private val store: BoxStore) {
         specificRepeat1: String,
         specificRepeat2: String,
         limit: Long
-    ): List<EntryOb_B> {
+    ): List<OB_EntryWithExtraData> {
         val queryBuilder = EOBBox.query(
             EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and
@@ -384,7 +417,12 @@ class OB_DAO (private val store: BoxStore) {
 
         query.close()
 
-        return results
+        return results.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
     }
 
 
@@ -393,7 +431,7 @@ class OB_DAO (private val store: BoxStore) {
     fun findEntriesReminderNullRepeatNotNullLimitOffset(
         limit: Long,
         offset: Long
-    ): List<EntryOb_B> {
+    ): List<OB_EntryWithExtraData> {
 
         val queryBuilder = EOBBox.query()
 
@@ -420,7 +458,12 @@ class OB_DAO (private val store: BoxStore) {
 
         query.close()
 
-        return results
+        return results.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
     }
 
 
@@ -500,7 +543,7 @@ class OB_DAO (private val store: BoxStore) {
     fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(
         textFragment: String,
         timeFloor: Int
-    ): List<EntryOb_B> {
+    ): List<OB_EntryWithExtraData> {
 
         val query = EOBBox.query(
             EntryOb_B_.entryOb.contains(
@@ -519,7 +562,12 @@ class OB_DAO (private val store: BoxStore) {
 
         query.close()
 
-        return result
+        return result.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
 
     }
 

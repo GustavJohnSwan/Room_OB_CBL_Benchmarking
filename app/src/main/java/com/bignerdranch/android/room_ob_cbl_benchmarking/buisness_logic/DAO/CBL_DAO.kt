@@ -66,10 +66,10 @@ class CBL_DAO {
     // _____________________________________________________________________________________________
     // Basic CRUD
 
-    // TO DO - WRITE THE CBL DAO IN THIS FILE
 
 
-    // INSERT ENTRY
+    // don't use for anything
+    // INSERT FULL DOCUMENT
     fun insertDocument(event: GeneratedEvent) {
         database.inBatch(UnitOfWork {
 
@@ -106,7 +106,7 @@ class CBL_DAO {
     }
 
 
-    // INSERT ENTRIES BULK
+    // *** DATA SET INSERT - INSERT ENTRIES BULK
     fun insertDocuments(events: List<GeneratedEvent>) {
 
             database.inBatch(UnitOfWork {
@@ -144,59 +144,68 @@ class CBL_DAO {
 
 
 
-    // UPDATE DOCUMENT
-    fun updateDocument(docId: String, event: GeneratedEvent) {
-
-
-
-            val entryDocument = Collection_Entires.getDocument(docId)
-
-            if (entryDocument != null) {
-
-                entryDocument.toMutable().let {
-
-                    it.setString("date", event.date)
-                    it.setString("entry", event.title)
-                    it.setInt("time_minutes", event.time)
-                    Collection_Entires.save(it)
-
-                }
-            }
-
-    }
-
-
-    // UPDATE DOCUMENTS
-    fun updateDocuments(docIds: List<String>, events: List<GeneratedEvent>) {
-
-        require(docIds.size == events.size)
-
+    // *** CRUD - INSERT main DOC data entry
+    fun insertMainDoc(event: GeneratedEvent) {
         database.inBatch(UnitOfWork {
 
-            for (i in docIds.indices) {
+            // creating a mutable document (entry) with ID iterator helper function
+            val entryDoc = MutableDocument(nextEntryId.toString())
 
-                val entryDocument = Collection_Entires.getDocument(docIds[i])
+            entryDoc.setString("date", event.date)
+            entryDoc.setString("entry", event.title)
+            entryDoc.setInt("time_minutes", event.time)
 
-                if (entryDocument != null) {
+            // store document in collection
+            Collection_Entires.save(entryDoc)
+            nextEntryId++
 
-
-                    entryDocument.toMutable().let {
-
-                        it.setString("date", events[i].date)
-                        it.setString("entry", events[i].title)
-                        it.setInt("time_minutes", events[i].time)
-                        Collection_Entires.save(it)
-
-                    }
-                }
-            }
         })
-        
+
+
     }
 
 
 
-    // COUNT DOCUMENTS
+    // *** CRUD - INSERT main DOC data entries BULK
+    fun insertMainDocs(events: List<GeneratedEvent>) {
+
+        database.inBatch(UnitOfWork {
+            for (event in events) {
+                // creating a mutable document (entry) with ID iterator helper function
+                val entryDoc = MutableDocument(nextEntryId.toString())
+
+                entryDoc.setString("date", event.date)
+                entryDoc.setString("entry", event.title)
+                entryDoc.setInt("time_minutes", event.time)
+
+                // store document in collection
+                Collection_Entires.save(entryDoc)
+                nextEntryId++
+            }
+        })
+    }
+
+
+
+
+    // *** CRUD - UPDATE DOCUMENT
+    fun updateDocument(document: MutableDocument) {
+        Collection_Entires.save(document)
+    }
+
+
+    // *** CRUD - UPDATE DOCUMENTS
+    fun updateDocuments(documents: List<MutableDocument>) {
+        database.inBatch(UnitOfWork {
+            for (document in documents) {
+                Collection_Entires.save(document)
+            }
+        })
+    }
+
+
+
+    // *** CRUD - COUNT DOCUMENTS
     fun countDocuments(): Long {
 
         val query = QueryBuilder
@@ -218,7 +227,7 @@ class CBL_DAO {
 
 
 
-    // GET BULK
+    // *** CRUD - GET BULK
     fun getAllDocuments(): List<Map<String, Any?>> {
         val queryAll = QueryBuilder
             .select(
@@ -241,7 +250,7 @@ class CBL_DAO {
     }
 
 
-    // GET document by Id
+    // *** CRUD - GET document by Id
     fun getDocumentById(documentId: String): Map<String, Any?>? {
         val queryDocument = QueryBuilder
             .select(
@@ -267,7 +276,7 @@ class CBL_DAO {
         }
     }
 
-    // GET documents by List of Ids
+    // *** CRUD - GET documents by List of Ids
     fun getDocumentsById (documentIds: List<String>): List<Map<String, Any?>> {
         if (documentIds.isEmpty()) return emptyList()
 
@@ -301,7 +310,7 @@ class CBL_DAO {
 
 
 
-    // DELETE DOCUMENT by Id
+    // *** CRUD - DELETE DOCUMENT by Id
     fun deleteDocument(documentId: String) {
         database.inBatch(UnitOfWork {
             // Find the optional ExtraData document's ID.
@@ -340,8 +349,7 @@ class CBL_DAO {
 
 
 
-    // DELETE DOCUMENTS BY ids
-
+    // *** CRUD - DELETE DOCUMENTS BY ids
     fun deleteDocuments(documentIds: List<String>) {
         if (documentIds.isEmpty()) return
 
@@ -390,7 +398,7 @@ class CBL_DAO {
     }
 
 
-    // DELETE ALL DOCUMENTS
+    // *** CRUD - DELETE ALL DOCUMENTS
     fun deleteAllDocuments() {
         database.inBatch(UnitOfWork {
             for (collection in listOf(Collection_Entires, Collection_ExtraData)) {
@@ -512,7 +520,7 @@ class CBL_DAO {
         )
             .from(DataSource.collection(Collection_Entires).`as`("entries"))
             .join(
-                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                Join.innerJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
                     .on(
                         Meta.id.from("entries")
                             .equalTo(Expression.property("entry_id").from("extraData"))
@@ -573,7 +581,7 @@ class CBL_DAO {
             )
             .from(DataSource.collection(Collection_Entires).`as`("entries"))
             .join(
-                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                Join.innerJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
                     .on(
                         Meta.id.from("entries")
                             .equalTo(Expression.property("entry_id").from("extraData"))
@@ -603,7 +611,7 @@ class CBL_DAO {
             )
             .from(DataSource.collection(Collection_Entires).`as`("entries"))
             .join(
-                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
+                Join.innerJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
                     .on(
                         Meta.id.from("entries")
                             .equalTo(Expression.property("entry_id").from("extraData"))

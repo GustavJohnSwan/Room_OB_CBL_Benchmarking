@@ -9,6 +9,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B_
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryTable
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B_
+import com.bignerdranch.android.room_ob_cbl_benchmarking.database.OB_EntryWithExtraData
 import io.objectbox.BoxStore
 import io.objectbox.query.QueryBuilder
 
@@ -42,7 +43,7 @@ class OB_DAO (private val store: BoxStore) {
     }
 
         // INSERT ENTRY - main data AND extra data if it exists.
-    // also UPDATE ENTRY - if entry with same ID already exists
+    // (DO NOT USE FOR UPDATE BENCHMARKING) also UPDATE ENTRY - if entry with same ID already exists
     // Extra data needs to be associated with main data using "entry.extradataob_b.target = extraEntity"
     fun insertEntryOb_B(entry: EntryOb_B): Long {
         return EOBBox.put(entry)
@@ -51,6 +52,8 @@ class OB_DAO (private val store: BoxStore) {
  */
 
 
+   // NOTE : put() functions as UPSERT, because OB doesn't have simply UPDATE
+    // *** CRUD -  used for INSERT AND UPADATE
     fun putEntry(
         entry: EntryOb_B,
         extraDataIdToDelete: Long? = null
@@ -78,6 +81,7 @@ class OB_DAO (private val store: BoxStore) {
         return entry.id
     }
 
+    // *** DATA SET INSERT AND UPDATE *** CRUD - used for INSERT BULK (both initial set and CRUD)
     fun putEntries(
         entries: List<EntryOb_B>,
         extraDataIdsToDelete: List<Long> = emptyList()
@@ -105,42 +109,64 @@ class OB_DAO (private val store: BoxStore) {
 
 
 
-    // COUNT all entries
+
+    // *** CRUD - UPDATE ENTRY
+    fun updateEntry(entry: EntryOb_B) {
+        EOBBox.put(entry)
+    }
+
+    // *** CRUD - UPDATE ENTRIES BULK
+    fun updateEntries(entries: List<EntryOb_B>) {
+        EOBBox.put(entries)
+    }
+
+
+
+
+
+
+
+    // *** CRUD - COUNT all entries
     fun countEntries(): Long {
         return EOBBox.count()
     }
 
 
 
-    // GET BULK (EntryOb only, but ExtraDataOb_B can be and is accessed using it.extradataob_b.target)
-    fun getAllEntriesBulk(): List<EntryOb_B> {
-        return EOBBox.all
-    }
-
-
-    // GET ENTRY based on ID
-    fun getSpecificEntryOb_B(id: Long): EntryOb_B? {
-
-        val entry = EOBBox.get(id)
-
-        entry?.extradataob_b?.target
-
-        return entry
-    }
-
-    fun getEntriesByIDs(entryIds: List<Long>): List<EntryOb_B> {
-
-        val entries = EOBBox.get(entryIds)
-
-        entries.forEach { entry ->
-            entry.extradataob_b.target
+    // *** CRUD - GET BULK ALL (EntryOb only, but ExtraDataOb_B can be and is accessed using it.extradataob_b.target)
+    fun getAllEntriesBulk(): List<OB_EntryWithExtraData> {
+        return EOBBox.all.map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
         }
-
-        return entries
     }
 
 
-    // DELETE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    // *** CRUD - GET ENTRY based on ID
+    fun getSpecificEntryOb_B(id: Long): OB_EntryWithExtraData? {
+        val entry = EOBBox.get(id) ?: return null
+
+        return OB_EntryWithExtraData(
+            entry = entry,
+            extraData = entry.extradataob_b.target
+        )
+    }
+
+
+    // *** CRUD - GET ENTRIES by IDs
+    fun getEntriesByIDs(entryIds: List<Long>): List<OB_EntryWithExtraData> {
+        return EOBBox.get(entryIds).map { entry ->
+            OB_EntryWithExtraData(
+                entry = entry,
+                extraData = entry.extradataob_b.target
+            )
+        }
+    }
+
+
+    // *** CRUD - DELETE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
     fun deleteEntry(id: Long) {
         val entry = EOBBox.get(id) ?: return
         val extraDataId = entry.extradataob_b.targetId
@@ -155,7 +181,7 @@ class OB_DAO (private val store: BoxStore) {
     }
 
 
-    // DELETE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    // *** CRUD - DELETE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
     fun deleteEntries(entryIds: List<Long>) {
 
         val entries = EOBBox.get(entryIds)
@@ -173,7 +199,7 @@ class OB_DAO (private val store: BoxStore) {
 
 
 
-    // DELETE ALL ObjectBox database entries
+    // *** CRUD - DELETE ALL ObjectBox database entries
     fun deleteAllEntries() {
         store.runInTx {
             EOBBox.removeAll()
@@ -193,7 +219,11 @@ class OB_DAO (private val store: BoxStore) {
 
     // Find entries in date, order by time in ObjectBox database
     fun findEntriesInSpecificDate(date: String): List<EntryOb_B> {
-        val query = EOBBox.query(EntryOb_B_.dateOb.equal(date)).order(EntryOb_B_.timeMinutesOb).build()
+        val query = EOBBox.query(
+            EntryOb_B_.dateOb.equal(date))
+            .order(EntryOb_B_.timeMinutesOb)
+            .eager(EntryOb_B_.extradataob_b)
+            .build()
         val desiredEntries = query.find()
         query.close()
 
@@ -203,7 +233,8 @@ class OB_DAO (private val store: BoxStore) {
     // Find entries in date range, order by time in ObjectBox database
     fun findEntriesInDateRange(startDate: String, endDate: String): List<EntryOb_B> {
         val query = EOBBox.query(
-            EntryOb_B_.dateOb.greaterOrEqual(startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
+            EntryOb_B_.dateOb.greaterOrEqual(
+                startDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and
                     (
                     EntryOb_B_.dateOb.lessOrEqual(endDate, QueryBuilder.StringOrder.CASE_SENSITIVE)
@@ -211,6 +242,7 @@ class OB_DAO (private val store: BoxStore) {
         )
             .order(EntryOb_B_.dateOb)
             .order(EntryOb_B_.timeMinutesOb)
+            .eager(EntryOb_B_.extradataob_b)
             .build()
         val desiredEntries = query.find()
         query.close()
@@ -239,6 +271,7 @@ class OB_DAO (private val store: BoxStore) {
             .order(EntryOb_B_.dateOb)
             .order(EntryOb_B_.timeMinutesOb)
             .order(EntryOb_B_.id)
+            .eager(EntryOb_B_.extradataob_b)
             .build()
 
         val desiredEntries = query.find(0, amount)
@@ -259,7 +292,10 @@ class OB_DAO (private val store: BoxStore) {
             .apply(
                 ExtraDataOb_B_.reminderTypeOb.equal(specificReminder)
             )
-        val query = queryBuilder.build()
+
+        val query = queryBuilder
+            .eager(EntryOb_B_.extradataob_b)
+            .build()
 
 
         val desiredEntries = query.find()
@@ -279,7 +315,10 @@ class OB_DAO (private val store: BoxStore) {
             .apply(
                 ExtraDataOb_B_.repeatOb.notNull()
             )
-        val query = queryBuilder.build()
+
+        val query = queryBuilder
+            .eager(EntryOb_B_.extradataob_b)
+            .build()
 
 
         val desiredEntries = query.find()
@@ -338,6 +377,7 @@ class OB_DAO (private val store: BoxStore) {
             .order(EntryOb_B_.dateOb)
             .order(EntryOb_B_.timeMinutesOb)
             .order(EntryOb_B_.id)
+            .eager(EntryOb_B_.extradataob_b)
             .build()
 
         val results = query.find(0, limit)
@@ -370,6 +410,7 @@ class OB_DAO (private val store: BoxStore) {
             .order(EntryOb_B_.dateOb)
             .order(EntryOb_B_.timeMinutesOb)
             .order(EntryOb_B_.id)
+            .eager(EntryOb_B_.extradataob_b)
             .build()
 
         val results = query.find(
@@ -470,7 +511,9 @@ class OB_DAO (private val store: BoxStore) {
                     (
                     EntryOb_B_.timeMinutesOb.greaterOrEqual(timeFloor)
                             )
-        ).build()
+        )
+            .eager(EntryOb_B_.extradataob_b)
+            .build()
 
         val result = query.find()
 

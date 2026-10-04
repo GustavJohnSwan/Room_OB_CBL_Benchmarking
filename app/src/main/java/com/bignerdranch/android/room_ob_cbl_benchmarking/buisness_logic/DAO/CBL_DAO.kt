@@ -147,74 +147,11 @@ class CBL_DAO {
     // UPDATE DOCUMENT
     fun updateDocument(docId: String, event: GeneratedEvent) {
 
-        database.inBatch(UnitOfWork {
+
 
             val entryDocument = Collection_Entires.getDocument(docId)
 
             if (entryDocument != null) {
-
-                val queryExtraData = QueryBuilder
-                    .select(
-                        SelectResult.expression(Meta.id).`as`("extraDataId")
-                    )
-                    .from(DataSource.collection(Collection_ExtraData))
-                    .where(
-                        Expression.property("entry_id")
-                            .equalTo(Expression.string(docId))
-                    )
-
-                val extraDataId = queryExtraData.execute().use { results ->
-                    results.next()?.getString("extraDataId")
-                }
-
-                when {
-
-                    event.extraData != null && extraDataId != null -> {
-
-                        Collection_ExtraData.getDocument(extraDataId)?.toMutable()?.let {
-
-                            it.setString("reminder_type", event.extraData?.reminderType)
-                            it.setString("repeat", event.extraData?.repeatType)
-                            it.setString("repeat_details", event.extraData?.repeatDetails)
-                            Collection_ExtraData.save(it)
-
-                        }
-                    }
-
-                    event.extraData == null && extraDataId == null -> {
-                        // nothing should happen with extra data
-                    }
-
-                    event.extraData != null && extraDataId == null -> {
-
-                        // creating a mutable document (extra data)
-                        val extraDataDoc = MutableDocument()
-
-                        // define extra data parameters and main entry ID reference
-                        extraDataDoc.setString("entry_id", docId)
-                        extraDataDoc.setString("reminder_type", event.extraData?.reminderType)
-                        extraDataDoc.setString("repeat", event.extraData?.repeatType)
-                        extraDataDoc.setString("repeat_details", event.extraData?.repeatDetails)
-
-                        // store document in collection
-                        Collection_ExtraData.save(extraDataDoc)
-
-
-                    }
-
-                    event.extraData == null && extraDataId != null -> {
-
-                        val extraDataDocument =
-                            Collection_ExtraData.getDocument(extraDataId)
-
-                        if (extraDataDocument != null) {
-                            Collection_ExtraData.delete(extraDataDocument)
-                        }
-
-
-                    }
-                }
-
 
                 entryDocument.toMutable().let {
 
@@ -225,7 +162,7 @@ class CBL_DAO {
 
                 }
             }
-        })
+
     }
 
 
@@ -241,68 +178,6 @@ class CBL_DAO {
                 val entryDocument = Collection_Entires.getDocument(docIds[i])
 
                 if (entryDocument != null) {
-
-                    val queryExtraData = QueryBuilder
-                        .select(
-                            SelectResult.expression(Meta.id).`as`("extraDataId")
-                        )
-                        .from(DataSource.collection(Collection_ExtraData))
-                        .where(
-                            Expression.property("entry_id")
-                                .equalTo(Expression.string(docIds[i]))
-                        )
-
-                    val extraDataId = queryExtraData.execute().use { results ->
-                        results.next()?.getString("extraDataId")
-                    }
-
-                    when {
-
-                        events[i].extraData != null && extraDataId != null -> {
-
-                            Collection_ExtraData.getDocument(extraDataId)?.toMutable()?.let {
-
-                                it.setString("reminder_type", events[i].extraData?.reminderType)
-                                it.setString("repeat", events[i].extraData?.repeatType)
-                                it.setString("repeat_details", events[i].extraData?.repeatDetails)
-                                Collection_ExtraData.save(it)
-
-                            }
-                        }
-
-                        events[i].extraData == null && extraDataId == null -> {
-                            // nothing should happen with extra data
-                        }
-
-                        events[i].extraData != null && extraDataId == null -> {
-
-                            // creating a mutable document (extra data)
-                            val extraDataDoc = MutableDocument()
-
-                            // define extra data parameters and main entry ID reference
-                            extraDataDoc.setString("entry_id", docIds[i])
-                            extraDataDoc.setString("reminder_type", events[i].extraData?.reminderType)
-                            extraDataDoc.setString("repeat", events[i].extraData?.repeatType)
-                            extraDataDoc.setString("repeat_details", events[i].extraData?.repeatDetails)
-
-                            // store document in collection
-                            Collection_ExtraData.save(extraDataDoc)
-
-
-                        }
-
-                        events[i].extraData == null && extraDataId != null -> {
-
-                            val extraDataDocument =
-                                Collection_ExtraData.getDocument(extraDataId)
-
-                            if (extraDataDocument != null) {
-                                Collection_ExtraData.delete(extraDataDocument)
-                            }
-
-
-                        }
-                    }
 
 
                     entryDocument.toMutable().let {

@@ -10,7 +10,7 @@ import androidx.room.Upsert
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.MinMaxTimeResult
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.RepeatTypeCountResult
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryTable
-import com.bignerdranch.android.room_ob_cbl_benchmarking.database.Room_EntryWithExtraData
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.Room_EntryWithExtraData
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataTable
 
 @Dao

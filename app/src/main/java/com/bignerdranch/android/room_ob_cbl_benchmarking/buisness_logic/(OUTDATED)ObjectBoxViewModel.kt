@@ -1,27 +1,9 @@
 package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic
 
-import android.app.Application
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
 
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.OB_DAO
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.data_mapping.OB_Mapping
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.ObjectBox.UpdateEntries_ObjectBox
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetDeserializer
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetReader
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonIDsAssetDeserializer
-import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B
-import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
-import java.time.LocalDate
+// OUTDATED --> DELETE THIS FILE
 
-
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedExtraData
-import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup.ObjectBoxProvider
-
+/*
 class ObjectBoxViewModel (application: Application) : AndroidViewModel(application) {
 
 
@@ -1565,3 +1547,5 @@ class ObjectBoxViewModel (application: Application) : AndroidViewModel(applicati
      */
     }
 }
+
+ */

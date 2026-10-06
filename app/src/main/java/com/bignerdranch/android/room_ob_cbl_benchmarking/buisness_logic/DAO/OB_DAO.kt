@@ -9,7 +9,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryOb_B_
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.EntryTable
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.ExtraDataOb_B_
-import com.bignerdranch.android.room_ob_cbl_benchmarking.database.OB_EntryWithExtraData
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.ObjectBox.OB_EntryWithExtraData
 import io.objectbox.BoxStore
 import io.objectbox.query.QueryBuilder
 
@@ -53,7 +53,7 @@ class OB_DAO (private val store: BoxStore) {
 
 
    // NOTE : put() functions as UPSERT, because OB doesn't have simply UPDATE
-    // *** CRUD -  used for INSERT AND UPADATE
+    // used for INSERT AND UPADATE
     fun putEntry(
         entry: EntryOb_B,
         extraDataIdToDelete: Long? = null
@@ -111,8 +111,14 @@ class OB_DAO (private val store: BoxStore) {
 
 
 
-    fun putMainEntry(entry: EntryOb_B): Long {
-        return EOBBox.put(entry)
+    // *** CRUD -  INSERT ENTRY
+    fun putMainEntry(entry: EntryOb_B) {
+        EOBBox.put(entry)
+    }
+
+    // *** CRUD -  INSERT ENTRIES
+    fun putMainEntries(entries: List<EntryOb_B>) {
+        EOBBox.put(entries)
     }
 
 

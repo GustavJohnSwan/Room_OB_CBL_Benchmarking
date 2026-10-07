@@ -146,7 +146,24 @@ class OB_DAO (private val store: BoxStore) {
     }
 
 
+    // *** CRUD - GET BULK ALL
+    fun getAllMainEntries(): List<EntryOb_B> {
+        return EOBBox.all
+    }
 
+    // *** CRUD - GET ENTRY based on ID
+    fun getMainEntry(id: Long): EntryOb_B? {
+        return EOBBox.get(id)
+    }
+
+    // *** CRUD - GET ENTRIES by IDs
+    fun getMainEntries(ids: List<Long>): List<EntryOb_B> {
+        return EOBBox.get(ids)
+    }
+
+
+/*
+    // DO NOT USE THESE FOR ANYTHING
     // *** CRUD - GET BULK ALL (EntryOb only, but ExtraDataOb_B can be and is accessed using it.extradataob_b.target)
     fun getAllEntriesBulk(): List<OB_EntryWithExtraData> {
         return EOBBox.all.map { entry ->
@@ -178,9 +195,30 @@ class OB_DAO (private val store: BoxStore) {
             )
         }
     }
+ */
 
 
-    // *** CRUD - DELETE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    // *** CRUD - DELETE MAIN ENTRY based on ID
+    fun deleteMainEntry(id: Long): Boolean {
+        return EOBBox.remove(id)
+    }
+
+    // *** CRUD - DELETE MAIN ENTRIES BULK based on ID
+    fun deleteMainEntries(ids: List<Long>) {
+        EOBBox.removeByIds(ids)
+    }
+
+    // *** CRUD - DELETE ALL MAIN ENTRIES
+    fun deleteAllMainEntries() {
+        store.runInTx {
+            EOBBox.removeAll()
+        }
+    }
+
+
+    /*
+    // DO NOT USE FOR ANYTHING
+    // DELETE ENTRY based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
     fun deleteEntry(id: Long) {
         val entry = EOBBox.get(id) ?: return
         val extraDataId = entry.extradataob_b.targetId
@@ -194,8 +232,8 @@ class OB_DAO (private val store: BoxStore) {
         }
     }
 
-
-    // *** CRUD - DELETE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
+    // DO NOT USE FOR ANYTHING
+    // DELETE BULK based on ID (both its mother and child object : EntryOb_B and its ExtraDataOb_B if it exists)
     fun deleteEntries(entryIds: List<Long>) {
 
         val entries = EOBBox.get(entryIds)
@@ -212,14 +250,16 @@ class OB_DAO (private val store: BoxStore) {
 
 
 
-
-    // *** CRUD - DELETE ALL ObjectBox database entries
+    // DO NOT USE FOR ANYTHING
+    // DELETE ALL ObjectBox database entries
     fun deleteAllEntries() {
         store.runInTx {
             EOBBox.removeAll()
             EDOBBox.removeAll()
         }
     }
+
+     */
 
 
 

@@ -40,4 +40,14 @@ class OB_Mapping (store: BoxStore) {
         return listOfEntityDataObjects
 
     }
+
+    fun mapMainEntries(events: List<GeneratedEvent>): List<EntryOb_B> {
+        return events.map { event ->
+            EntryOb_B(
+                dateOb = event.date,
+                entryOb = event.title,
+                timeMinutesOb = event.time
+            )
+        }
+    }
 }

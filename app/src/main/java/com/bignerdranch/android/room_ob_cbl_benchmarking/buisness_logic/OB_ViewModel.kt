@@ -42,7 +42,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // HELPER FUNCTIONS
 
-    fun accessListOfIdsByVariant (variant: Int): List<Long> {
+    fun accessListOfIdsByVariant_ObjectBox (variant: Int): List<Long> {
 
         // default value
         var jsonFileNamePart = "100"
@@ -64,7 +64,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
 
-    fun firstXamountIDs (IdVariant: Int): Int {
+    fun firstXamountIDs_ObjectBox (IdVariant: Int): Int {
 
         var IdAmount = 100
 
@@ -85,7 +85,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
-    fun createFreshDatabaseAndDataSet (variant: Int) {
+    fun createFreshDatabaseAndDataSet_ObjectBox (variant: Int) {
 
         ObjectBoxProvider.reset(
             getApplication<Application>().applicationContext
@@ -130,7 +130,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
 
-    fun createFreshDatabaseAndMainDataSet (variant: Int) {
+    fun createFreshDatabaseAndMainDataSet_ObjectBox (variant: Int) {
 
         ObjectBoxProvider.reset(
             getApplication<Application>().applicationContext
@@ -181,7 +181,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // INSERT ONE ENTRY
-    fun insertEntryBenchmark () {
+    fun insertEntryBenchmark_ObjectBox () {
 
         val entry = EntryOb_B(
             dateOb = "2026-08-27",
@@ -195,7 +195,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // INSERT ENTRIES BULK
-    fun insertEntriesBenchmark (variant: Int) {
+    fun insertEntriesBenchmark_ObjectBox (variant: Int) {
 
         // default value
         var jsonFileNamePart = "100_S1"
@@ -227,11 +227,11 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // UPDATE ENTRY
-    fun updateEntryBenchmark (variant: Int) {
+    fun updateEntryBenchmark_ObjectBox (variant: Int) {
 
         val IdAmount = 1
 
-        var listOfIDs = accessListOfIdsByVariant(variant)
+        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
@@ -255,16 +255,16 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
         ob_DAO.updateEntry(entry)
-        
+
     }
 
 
 
 
     // UPDATE ENTRIES BULK
-    fun updateEntriesBenchmark (variant: Int, IdAmount: Int) {
+    fun updateEntriesBenchmark_ObjectBox (variant: Int, IdAmount: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant(variant)
+        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
@@ -299,7 +299,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // COUNT ALL ENTRIES
-    fun countEntriesBenchmark (): Long {
+    fun countEntriesBenchmark_ObjectBox (): Long {
         val count = ob_DAO.countEntries()
         return count
     }
@@ -312,14 +312,14 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // GET ALL ENTRIES
-    fun getAllEntries () {
+    fun getAllEntries_ObjectBox () {
         ob_DAO.getAllMainEntries()
     }
 
     // GET ENTRY BY ID
-    fun getEntryByIdBenchmark (variant: Int) {
+    fun getEntryByIdBenchmark_ObjectBox (variant: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant(variant)
+        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
 
         ob_DAO.getMainEntry(listOfIDs[0])
     }
@@ -327,10 +327,10 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // GET ENTRIES BY IDs BULK
-    fun getEntriesByIdsBenchmark (variant: Int, IdVariant: Int) {
+    fun getEntriesByIdsBenchmark_ObjectBox (variant: Int, IdVariant: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant(variant)
-        var IdAmount = firstXamountIDs(IdVariant)
+        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+        var IdAmount = firstXamountIDs_ObjectBox(IdVariant)
 
         require(IdAmount <= listOfIDs.size) {
             "Requested $IdAmount IDs, but the file contains ${listOfIDs.size}"
@@ -350,18 +350,18 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // DELETE ENTRY BY ID
-    fun deleteEntryByIdBenchmark (variant: Int) {
+    fun deleteEntryByIdBenchmark_ObjectBox (variant: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant(variant)
+        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
 
         ob_DAO.deleteMainEntry(listOfIDs[0])
 
     }
 
     // DELETE ENTRIES BY IDs
-    fun deleteEntriesByIdsBenchmark(variant: Int, IdVariant: Int) {
-        val listOfIDs = accessListOfIdsByVariant(variant)
-        val IdAmount = firstXamountIDs(IdVariant)
+    fun deleteEntriesByIdsBenchmark_ObjectBox(variant: Int, IdVariant: Int) {
+        val listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+        val IdAmount = firstXamountIDs_ObjectBox(IdVariant)
 
         require(IdAmount <= listOfIDs.size)
 
@@ -370,7 +370,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     // DELETE ALL ENTRIES
-    fun deleteAllEntriesBenchmark () {
+    fun deleteAllEntriesBenchmark_ObjectBox () {
 
         ob_DAO.deleteAllMainEntries()
 
@@ -398,7 +398,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // MEDIUM QUERIES
 
     // Find entries in date, order by time in ObjectBox database
-    fun findEntriesInSpecificDateBenchmarking () {
+    fun findEntriesInSpecificDateBenchmarking_ObjectBox () {
 
         var date = "2026-10-05"
 
@@ -407,7 +407,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // Find entries in date range, order by time in ObjectBox database
-    fun findEntriesInDateRangeBenchmarking () {
+    fun findEntriesInDateRangeBenchmarking_ObjectBox () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -416,7 +416,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     // FIND next X entries from date to date with reminder (not null)
-    fun findNextEntriesBenchmarking () {
+    fun findNextEntriesBenchmarking_ObjectBox () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -426,14 +426,14 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     // Find entries with a specific reminder
-    fun findEntriesWithSpecificReminderBenchmarking () {
+    fun findEntriesWithSpecificReminderBenchmarking_ObjectBox () {
         var specificReminder = "10 mins before"
 
         var result = ob_DAO.findEntriesWithSpecificReminder(specificReminder)
     }
 
     // Find entries with any recurrence
-    fun findEntriesWithRecurranceBenchmarking () {
+    fun findEntriesWithRecurranceBenchmarking_ObjectBox () {
 
         var result = ob_DAO.findEntriesWithRecurrance()
     }
@@ -461,7 +461,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // ADVANCED QUERIES
 
     // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
-    fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking () {
+    fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_ObjectBox () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -485,7 +485,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
-    fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking () {
+    fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_ObjectBox () {
 
         var limit: Long = 15
         var offset: Long = 10
@@ -497,7 +497,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // Find all repeat types and count them
-    fun countEntriesByRepeatTypeBenchmarking () {
+    fun countEntriesByRepeatTypeBenchmarking_ObjectBox () {
 
         var result = ob_DAO.countEntriesByRepeatType()
 
@@ -505,7 +505,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // Earliest and latest event time among events in a date range with a specific reminder
-    fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking () {
+    fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_ObjectBox () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -522,7 +522,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
     // Find all entries whose title contains a specified text fragment
     // and whose event time is later than a specified time.
-    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking () {
+    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_ObjectBox () {
 
         var textFragment = "abc"
         var timeFloor = 500

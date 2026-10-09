@@ -41,5 +41,23 @@ abstract class AppDatabase : RoomDatabase() { // AppDatabase extends RoomDatabas
                 instance
             }
         }
+
+        // this re-creates the database
+        fun reset(context: Context): AppDatabase {
+            return synchronized(this) {
+                val appContext = context.applicationContext
+
+                INSTANCE?.close()
+                INSTANCE = null
+
+                if (appContext.getDatabasePath("app_database").exists()) {
+                    check(appContext.deleteDatabase("app_database")) {
+                        "Could not delete Room database"
+                    }
+                }
+
+                getDatabase(appContext)
+            }
+        }
     }
 }

@@ -397,6 +397,140 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // MEDIUM QUERIES
 
+    // Find entries in date, order by time in ObjectBox database
+    fun findEntriesInSpecificDateBenchmarking () {
+
+        var date = "2026-10-05"
+
+        var result = ob_DAO.findEntriesInSpecificDate(date)
+    }
+
+
+    // Find entries in date range, order by time in ObjectBox database
+    fun findEntriesInDateRangeBenchmarking () {
+
+        var startDate = "2026-02-15"
+        var endDate = "2026-10-05"
+
+        var result = ob_DAO.findEntriesInDateRange(startDate, endDate)
+    }
+
+    // FIND next X entries from date to date with reminder (not null)
+    fun findNextEntriesBenchmarking () {
+
+        var startDate = "2026-02-15"
+        var endDate = "2026-10-05"
+        var amount: Long = 15
+
+        var result = ob_DAO.findNextEntries(startDate, endDate, amount)
+    }
+
+    // Find entries with a specific reminder
+    fun findEntriesWithSpecificReminderBenchmarking () {
+        var specificReminder = "10 mins before"
+
+        var result = ob_DAO.findEntriesWithSpecificReminder(specificReminder)
+    }
+
+    // Find entries with any recurrence
+    fun findEntriesWithRecurranceBenchmarking () {
+
+        var result = ob_DAO.findEntriesWithRecurrance()
+    }
+
+
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // ADVANCED QUERIES
+
+    // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
+    fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking () {
+
+        var startDate = "2026-02-15"
+        var endDate = "2026-10-05"
+        var limit: Long = 15
+
+        var specificReminder = "10 mins before"
+
+        var specificRepeat1 = "Weekly"
+        var specificRepeat2 = "Monthly"
+
+        var result = ob_DAO.findEntriesInDateRangeReminderRepeat1OrRepeat2(
+            startDate,
+            endDate,
+            specificReminder,
+            specificRepeat1,
+            specificRepeat2,
+            limit
+            )
+    }
+
+
+
+    // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
+    fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking () {
+
+        var limit: Long = 15
+        var offset: Long = 10
+
+        var result = ob_DAO.findEntriesReminderNullRepeatNotNullLimitOffset(limit, offset)
+
+    }
+
+
+
+    // Find all repeat types and count them
+    fun countEntriesByRepeatTypeBenchmarking () {
+
+        var result = ob_DAO.countEntriesByRepeatType()
+
+    }
+
+
+    // Earliest and latest event time among events in a date range with a specific reminder
+    fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking () {
+
+        var startDate = "2026-02-15"
+        var endDate = "2026-10-05"
+        var specificReminder = "10 mins before"
+
+        var result = ob_DAO.findEarliestLatestEventTimesInRangeWithReminder(
+            startDate,
+            endDate,
+            specificReminder
+        )
+
+    }
+
+
+    // Find all entries whose title contains a specified text fragment
+    // and whose event time is later than a specified time.
+    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking () {
+
+        var textFragment = "abc"
+        var timeFloor = 500
+
+        var result = ob_DAO.findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(textFragment, timeFloor)
+
+    }
+
 
 
 }

@@ -23,13 +23,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.ObjectBoxViewModel
-import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.RoomViewModel
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.Room_ViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun BenchmarkScreen(
     viewModel: ObjectBoxViewModel = viewModel(),
-    roomViewModel: RoomViewModel = viewModel()
+    roomViewModel: Room_ViewModel = viewModel()
 ) {
 
     var showRoomButtons by remember { mutableStateOf(false) }

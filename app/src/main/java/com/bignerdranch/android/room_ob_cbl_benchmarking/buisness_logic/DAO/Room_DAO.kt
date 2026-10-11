@@ -112,27 +112,16 @@ interface Room_DAO {
 
 
     // *** CRUD - GET BULK ALL ENTRIES
-    @Query("SELECT e.*, x.* " +
-            "FROM EntryTable AS e " +
-            "LEFT JOIN ExtraDataTable AS x " +
-            "ON e.id = x.entry_id ")
-    suspend fun getAllEntriesBulk(): List<Room_EntryWithExtraData>
+    @Query("SELECT * FROM EntryTable")
+    suspend fun getAllEntriesBulk(): List<EntryTable>
 
     // *** CRUD - GET ENTRY BY ID
-    @Query("SELECT e.*, x.* " +
-            "FROM EntryTable AS e " +
-            "LEFT JOIN ExtraDataTable AS x " +
-            "ON e.id = x.entry_id " +
-            "WHERE id = :entryId")
-    suspend fun getSpecificEntry(entryId: Long): Room_EntryWithExtraData?
+    @Query("SELECT * FROM EntryTable WHERE id = :entryId")
+    suspend fun getSpecificEntry(entryId: Long): EntryTable?
 
     // *** CRUD - GET ENTRIES BY IDs
-    @Query("SELECT e.*, x.* " +
-            "FROM EntryTable AS e " +
-            "LEFT JOIN ExtraDataTable AS x " +
-            "ON e.id = x.entry_id " +
-            "WHERE id IN (:entryId)")
-    suspend fun getEntriesByIDs(entryId: List<Long>): List<Room_EntryWithExtraData>
+    @Query("SELECT * FROM EntryTable WHERE id IN (:entryId)")
+    suspend fun getEntriesByIDs(entryId: List<Long>): List<EntryTable>
 
 
 

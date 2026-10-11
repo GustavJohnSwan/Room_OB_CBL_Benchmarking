@@ -7,7 +7,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.createCollecti
 import com.couchbase.lite.CouchbaseLite
 
 import com.couchbase.lite.Database
-
+import java.io.File
 
 
 object CouchbaseLiteProvider {
@@ -34,6 +34,20 @@ object CouchbaseLiteProvider {
     fun getDatabase(): Database {
         return database
             ?: error("CouchbaseLiteProvider not initialized")
+    }
+
+    fun reset() {
+        val currentDatabase = getDatabase()
+        val name = currentDatabase.name
+        val configuration = currentDatabase.config
+
+        currentDatabase.close()
+        database = null
+
+        Database.delete(name, File(configuration.directory))
+
+        database = Database(name, configuration)
+        createCollections()
     }
 
 

@@ -1,5 +1,6 @@
 package com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO
 
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.CouchbaseLite.CBL_EntryWithExtraData
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup.CouchbaseLiteProvider
 import com.couchbase.lite.DataSource
@@ -70,117 +71,45 @@ class CBL_DAO {
 
     // don't use for anything
     // INSERT FULL DOCUMENT
-    fun insertDocument(event: GeneratedEvent) {
+    fun insertDocument(value: CBL_EntryWithExtraData) {
         database.inBatch(UnitOfWork {
+            Collection_Entires.save(value.entry)
 
-        // creating a mutable document (entry) with ID iterator helper function
-        val entryDoc = MutableDocument(nextEntryId.toString())
-
-        entryDoc.setString("date", event.date)
-        entryDoc.setString("entry", event.title)
-        entryDoc.setInt("time_minutes", event.time)
-
-        // store document in collection
-        Collection_Entires.save(entryDoc)
-        nextEntryId++
-
-        // check if current event has extraData (not null), if it does, execute code in brackets
-        event.extraData?.let { extraData ->
-
-            // creating a mutable document (extra data)
-            val extraDataDoc = MutableDocument()
-
-            // define extra data parameters and main entry ID reference
-            extraDataDoc.setString("entry_id", entryDoc.id)
-            extraDataDoc.setString("reminder_type", extraData.reminderType)
-            extraDataDoc.setString("repeat", extraData.repeatType)
-            extraDataDoc.setString("repeat_details", extraData.repeatDetails)
-
-            // store document in collection
-            Collection_ExtraData.save(extraDataDoc)
-        }
-
+            value.extraData?.let { extraData ->
+                Collection_ExtraData.save(extraData)
+            }
         })
-
-
     }
 
 
     // *** DATA SET INSERT - INSERT ENTRIES BULK
-    fun insertDocuments(events: List<GeneratedEvent>) {
+    fun insertDocuments(entries: List<CBL_EntryWithExtraData>) {
+        database.inBatch(UnitOfWork {
+            for (value in entries) {
+                Collection_Entires.save(value.entry)
 
-            database.inBatch(UnitOfWork {
-                for (event in events) {
-                    // creating a mutable document (entry) with ID iterator helper function
-                    val entryDoc = MutableDocument(nextEntryId.toString())
-
-                    entryDoc.setString("date", event.date)
-                    entryDoc.setString("entry", event.title)
-                    entryDoc.setInt("time_minutes", event.time)
-
-                    // store document in collection
-                    Collection_Entires.save(entryDoc)
-                    nextEntryId++
-
-                    // check if current event has extraData (not null), if it does, execute code in brackets
-                    event.extraData?.let { extraData ->
-
-                        // creating a mutable document (extra data)
-                        val extraDataDoc = MutableDocument()
-
-                        // define extra data parameters and main entry ID reference
-                        extraDataDoc.setString("entry_id", entryDoc.id)
-                        extraDataDoc.setString("reminder_type", extraData.reminderType)
-                        extraDataDoc.setString("repeat", extraData.repeatType)
-                        extraDataDoc.setString("repeat_details", extraData.repeatDetails)
-
-                        // store document in collection
-                        Collection_ExtraData.save(extraDataDoc)
-                    }
+                value.extraData?.let { extraData ->
+                    Collection_ExtraData.save(extraData)
                 }
-            })
+            }
+        })
     }
 
 
 
 
     // *** CRUD - INSERT main DOC data entry
-    fun insertMainDoc(event: GeneratedEvent) {
-        database.inBatch(UnitOfWork {
-
-            // creating a mutable document (entry) with ID iterator helper function
-            val entryDoc = MutableDocument(nextEntryId.toString())
-
-            entryDoc.setString("date", event.date)
-            entryDoc.setString("entry", event.title)
-            entryDoc.setInt("time_minutes", event.time)
-
-            // store document in collection
-            Collection_Entires.save(entryDoc)
-            nextEntryId++
-
-        })
-
-
+    fun insertMainDoc(document: MutableDocument) {
+        Collection_Entires.save(document)
     }
 
 
 
     // *** CRUD - INSERT main DOC data entries BULK
-    fun insertMainDocs(events: List<GeneratedEvent>) {
-
+    fun insertMainDocs(documents: List<MutableDocument>) {
         database.inBatch(UnitOfWork {
-            for (event in events) {
-                // creating a mutable document (entry) with ID iterator helper function
-                val entryDoc = MutableDocument(nextEntryId.toString())
-
-                entryDoc.setString("date", event.date)
-                entryDoc.setString("entry", event.title)
-                entryDoc.setInt("time_minutes", event.time)
-
-                // store document in collection
-                Collection_Entires.save(entryDoc)
-                nextEntryId++
+            for (document in documents) {
+                Collection_Entires.save(document)
             }
         })
     }

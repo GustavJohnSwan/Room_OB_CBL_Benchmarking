@@ -37,12 +37,11 @@ class CBL_DAO {
     // https://docs.couchbase.com/couchbase-lite/current/android/document.html
 
 
-    // helper variable that stores next ID value for CBL insertion
-    private var nextEntryId: Long = findNextEntryId()
+
 
     // helper function that reads the CBL database to find out the current max ID
     // and then iterate it by 1 for next insertion (iteration done here once. After that DAO functions self iterate ID)
-    private fun findNextEntryId(): Long {
+    fun findNextEntryId(): Long {
 
         // makes the database available for use in the function
         val database = CouchbaseLiteProvider.getDatabase()
@@ -355,7 +354,7 @@ class CBL_DAO {
 
 
     // FIND NEXT X DOCUMENTS FROM DATE (TODAY) TO DATE WITH REMINDER (NOT NULL)
-    fun findNextDocument(thisLimit: Int, startDate: String, endDate: String): List<Map<String, Any?>> {
+    fun findNextDocument(startDate: String, endDate: String, thisLimit: Int): List<Map<String, Any?>> {
 
         val queryAll = QueryBuilder
         .select(

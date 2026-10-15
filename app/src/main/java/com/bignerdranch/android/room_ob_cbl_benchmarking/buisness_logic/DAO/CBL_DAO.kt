@@ -98,6 +98,7 @@ class CBL_DAO {
 
 
 
+
     // *** CRUD - INSERT main DOC data entry
     fun insertMainDoc(document: MutableDocument) {
         Collection_Entires.save(document)
@@ -106,6 +107,7 @@ class CBL_DAO {
 
 
     // *** CRUD - INSERT main DOC data entries BULK
+    // also for *** MAIN DATA SET INSERT - INSERT only MAIN ENTRIES BULK
     fun insertMainDocs(documents: List<MutableDocument>) {
         database.inBatch(UnitOfWork {
             for (document in documents) {
@@ -156,22 +158,14 @@ class CBL_DAO {
 
 
 
-    // *** CRUD - GET BULK
+    // *** CRUD - GET ALL
     fun getAllDocuments(): List<Map<String, Any?>> {
         val queryAll = QueryBuilder
             .select(
                 SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
                 SelectResult.all().from("entries"),
-                SelectResult.all().from("extraData")
                 )
             .from(DataSource.collection(Collection_Entires).`as`("entries"))
-            .join(
-                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
-                    .on(
-                        Meta.id.from("entries")
-                            .equalTo(Expression.property("entry_id").from("extraData"))
-                    )
-            )
 
         return queryAll.execute().use { results ->
             results.map { result -> result.toMap()}
@@ -185,16 +179,8 @@ class CBL_DAO {
             .select(
                 SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
                 SelectResult.all().from("entries"),
-                SelectResult.all().from("extraData")
             )
             .from(DataSource.collection(Collection_Entires).`as`("entries"))
-            .join(
-                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
-                    .on(
-                        Meta.id.from("entries")
-                            .equalTo(Expression.property("entry_id").from("extraData"))
-                    )
-            )
             .where(
                 Meta.id.from("entries")
                 .equalTo(
@@ -207,8 +193,6 @@ class CBL_DAO {
 
     // *** CRUD - GET documents by List of Ids
     fun getDocumentsById (documentIds: List<String>): List<Map<String, Any?>> {
-        if (documentIds.isEmpty()) return emptyList()
-
 
         val idExpressions = documentIds
             .map { id -> Expression.string(id) }
@@ -218,16 +202,8 @@ class CBL_DAO {
             .select(
                 SelectResult.expression(Meta.id.from("entries")).`as`("entryId"),
                 SelectResult.all().from("entries"),
-                SelectResult.all().from("extraData")
             )
             .from(DataSource.collection(Collection_Entires).`as`("entries"))
-            .join(
-                Join.leftJoin(DataSource.collection(Collection_ExtraData).`as`("extraData"))
-                    .on(
-                        Meta.id.from("entries")
-                            .equalTo(Expression.property("entry_id").from("extraData"))
-                    )
-            )
             .where(
                 Meta.id.from("entries").`in`(*idExpressions)
             )
@@ -241,31 +217,6 @@ class CBL_DAO {
 
     // *** CRUD - DELETE DOCUMENT by Id
     fun deleteDocument(documentId: String) {
-        database.inBatch(UnitOfWork {
-            // Find the optional ExtraData document's ID.
-            val queryExtraData = QueryBuilder
-                .select(
-                    SelectResult.expression(Meta.id).`as`("extraDataId")
-                )
-                .from(DataSource.collection(Collection_ExtraData))
-                .where(
-                    Expression.property("entry_id")
-                        .equalTo(Expression.string(documentId))
-                )
-
-            val extraDataId = queryExtraData.execute().use { results ->
-                results.next()?.getString("extraDataId")
-            }
-
-            // Delete ExtraData if it exists.
-            if (extraDataId != null) {
-                val extraDataDocument =
-                    Collection_ExtraData.getDocument(extraDataId)
-
-                if (extraDataDocument != null) {
-                    Collection_ExtraData.delete(extraDataDocument)
-                }
-            }
 
             // Delete the main entry if it exists.
             val entryDocument = Collection_Entires.getDocument(documentId)
@@ -273,54 +224,19 @@ class CBL_DAO {
             if (entryDocument != null) {
                 Collection_Entires.delete(entryDocument)
             }
-        })
     }
 
 
 
     // *** CRUD - DELETE DOCUMENTS BY ids
     fun deleteDocuments(documentIds: List<String>) {
-        if (documentIds.isEmpty()) return
-
-        val idExpressions = documentIds
-            .map { id -> Expression.string(id) }
-            .toTypedArray()
 
         database.inBatch(UnitOfWork {
-            // Find ExtraData belonging to the selected entries.
-            val queryExtraData = QueryBuilder
-                .select(
-                    SelectResult.expression(Meta.id).`as`("extraDataId")
-                )
-                .from(DataSource.collection(Collection_ExtraData))
-                .where(
-                    Expression.property("entry_id")
-                        .`in`(*idExpressions)
-                )
-
-            val extraDataIds = queryExtraData.execute().use { results ->
-                results.mapNotNull { result ->
-                    result.getString("extraDataId")
-                }
-            }
-
-            // Delete the matching ExtraData documents.
-            for (extraDataId in extraDataIds) {
-                val extraDataDocument =
-                    Collection_ExtraData.getDocument(extraDataId)
-
-                if (extraDataDocument != null) {
-                    Collection_ExtraData.delete(extraDataDocument)
-                }
-            }
-
-            // Delete the selected main documents.
             for (documentId in documentIds) {
-                val entryDocument =
-                    Collection_Entires.getDocument(documentId)
+                val document = Collection_Entires.getDocument(documentId)
 
-                if (entryDocument != null) {
-                    Collection_Entires.delete(entryDocument)
+                if (document != null) {
+                    Collection_Entires.delete(document)
                 }
             }
         })
@@ -330,23 +246,23 @@ class CBL_DAO {
     // *** CRUD - DELETE ALL DOCUMENTS
     fun deleteAllDocuments() {
         database.inBatch(UnitOfWork {
-            for (collection in listOf(Collection_Entires, Collection_ExtraData)) {
-                val query = QueryBuilder
-                    .select(SelectResult.expression(Meta.id).`as`("documentId"))
-                    .from(DataSource.collection(collection))
+            val query = QueryBuilder
+                .select(
+                    SelectResult.expression(Meta.id).`as`("documentId")
+                )
+                .from(DataSource.collection(Collection_Entires))
 
-                val documentIds = query.execute().use { results ->
-                    results.mapNotNull { result ->
-                        result.getString("documentId")
-                    }
+            val documentIds = query.execute().use { results ->
+                results.mapNotNull { result ->
+                    result.getString("documentId")
                 }
+            }
 
-                for (documentId in documentIds) {
-                    val document = collection.getDocument(documentId)
+            for (documentId in documentIds) {
+                val document = Collection_Entires.getDocument(documentId)
 
-                    if (document != null) {
-                        collection.delete(document)
-                    }
+                if (document != null) {
+                    Collection_Entires.delete(document)
                 }
             }
         })

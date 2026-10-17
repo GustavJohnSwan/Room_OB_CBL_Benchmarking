@@ -42,6 +42,20 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // HELPER FUNCTIONS
 
+    fun accessListOfIdsBySize_ObjectBox(databaseSize: Int): List<Long> {
+        require(databaseSize in listOf(100, 1000, 10000, 50000, 100000)) {
+            "No ID dataset exists for database size $databaseSize"
+        }
+
+        val jsonString =
+            jsonAssetReader.loadJsonFromAssets("IDs_A${databaseSize}.json")
+
+        return jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
+    }
+
+    
+    // OUTDATED
+    /*
     fun accessListOfIdsByVariant_ObjectBox (variant: Int): List<Long> {
 
         // default value
@@ -61,6 +75,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
         return listOfIDs
     }
+     */
 
 
 
@@ -85,7 +100,8 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
-    fun createFreshDatabaseAndDataSet_ObjectBox (variant: Int) {
+    // RE-CREATE A FRESH DATABASE
+    fun createFreshDatabase_ObjectBox () {
 
         ObjectBoxProvider.reset(
             getApplication<Application>().applicationContext
@@ -95,10 +111,12 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
         ob_DAO = OB_DAO(store)
         ob_Mapping = OB_Mapping(store)
 
-        insertDataSet_ObjectBox(variant)
+
 
     }
 
+
+    // *** INSERT DATA SET - INSERT FULL DATA SET
     fun insertDataSet_ObjectBox (variant: Int) {
 
         // default value
@@ -128,23 +146,22 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
+    // *** CRUD - INSERT ONE ENTRY
+    fun insertMainEntryBenchmark_ObjectBox () {
 
-
-    fun createFreshDatabaseAndMainDataSet_ObjectBox (variant: Int) {
-
-        ObjectBoxProvider.reset(
-            getApplication<Application>().applicationContext
+        val entry = EntryOb_B(
+            dateOb = "2026-08-27",
+            entryOb = "TyOk6EFsIWL6L3YOY15gwiS",
+            timeMinutesOb = 1427
         )
 
-        store = ObjectBoxProvider.get()
-        ob_DAO = OB_DAO(store)
-        ob_Mapping = OB_Mapping(store)
-
-        insertMainDataSet_ObjectBox(variant)
+        ob_DAO.putMainEntry(entry)
 
     }
 
 
+    // *** CRUD - INSERT MAIN ENTRIES BULK
+    // ALSO *** INSERT DATA SET - MAIN DATA ONLY
     fun insertMainDataSet_ObjectBox (variant: Int) {
 
         // default value
@@ -165,13 +182,12 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
         val listOfEntityDataObjects = ob_Mapping.mapMainEntries(listOfDataObjects)
 
-        var ids = ob_DAO.putEntries(listOfEntityDataObjects)
+        var ids = ob_DAO.putMainEntries(listOfEntityDataObjects)
 
     }
 
 
 
-
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
@@ -179,59 +195,14 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
+    // *** CRUD - UPDATE ENTRY
+    fun updateEntryBenchmark_ObjectBox () {
 
-    // INSERT ONE ENTRY
-    fun insertEntryBenchmark_ObjectBox () {
-
-        val entry = EntryOb_B(
-            dateOb = "2026-08-27",
-            entryOb = "TyOk6EFsIWL6L3YOY15gwiS",
-            timeMinutesOb = 1427
-        )
-
-        ob_DAO.putMainEntry(entry)
-
-    }
-
-
-    // INSERT ENTRIES BULK
-    fun insertEntriesBenchmark_ObjectBox (variant: Int) {
-
-        // default value
-        var jsonFileNamePart = "100_S1"
-
-        when (variant) {
-            1 -> jsonFileNamePart = "100_S1"
-            2 -> jsonFileNamePart = "1000_S2"
-            3 -> jsonFileNamePart = "10000_S3"
-            4 -> jsonFileNamePart = "50000_S4"
-            5 -> jsonFileNamePart = "100000_S5"
-        }
-
-        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A${jsonFileNamePart}.json")
-
-        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
-
-        val listOfEntityDataObjects = ob_Mapping.mapMainEntries(listOfDataObjects)
-
-        ob_DAO.putMainEntries(listOfEntityDataObjects)
-
-    }
-
-
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-
-    // UPDATE ENTRY
-    fun updateEntryBenchmark_ObjectBox (variant: Int) {
+        var dbSize = countEntriesBenchmark_ObjectBox().toInt()
 
         val IdAmount = 1
 
-        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+        var listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
@@ -262,19 +233,23 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // UPDATE ENTRIES BULK
-    fun updateEntriesBenchmark_ObjectBox (variant: Int, IdAmount: Int) {
+    fun updateEntriesBenchmark_ObjectBox (IdAmount: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+        var amount = firstXamountIDs_ObjectBox(IdAmount)
 
-        var listOfRelevantIDs = listOfIDs.take(IdAmount)
+        var dbSize = countEntriesBenchmark_ObjectBox().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
+
+        var listOfRelevantIDs = listOfIDs.take(amount)
 
         val updateJsonString = jsonAssetReader.loadJsonFromAssets("eventsForUpdate_A100000_S6.json")
 
-        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(updateJsonString).take(IdAmount)
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(updateJsonString).take(amount)
 
-        require(IdAmount > 0 &&
-                listOfRelevantIDs.size == IdAmount &&
-                listOfDataObjects.size == IdAmount)
+        require(amount > 0 &&
+                listOfRelevantIDs.size == amount &&
+                listOfDataObjects.size == amount)
 
 
 
@@ -317,9 +292,11 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     // GET ENTRY BY ID
-    fun getEntryByIdBenchmark_ObjectBox (variant: Int) {
+    fun getEntryByIdBenchmark_ObjectBox () {
 
-        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+        var dbSize = countEntriesBenchmark_ObjectBox().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
 
         ob_DAO.getMainEntry(listOfIDs[0])
     }
@@ -327,10 +304,14 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // GET ENTRIES BY IDs BULK
-    fun getEntriesByIdsBenchmark_ObjectBox (variant: Int, IdVariant: Int) {
+    fun getEntriesByIdsBenchmark_ObjectBox (IdVariant: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+        var dbSize = countEntriesBenchmark_ObjectBox().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
         var IdAmount = firstXamountIDs_ObjectBox(IdVariant)
+
+
 
         require(IdAmount <= listOfIDs.size) {
             "Requested $IdAmount IDs, but the file contains ${listOfIDs.size}"
@@ -350,17 +331,22 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // DELETE ENTRY BY ID
-    fun deleteEntryByIdBenchmark_ObjectBox (variant: Int) {
+    fun deleteEntryByIdBenchmark_ObjectBox () {
 
-        var listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+        var dbSize = countEntriesBenchmark_ObjectBox().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
 
         ob_DAO.deleteMainEntry(listOfIDs[0])
 
     }
 
     // DELETE ENTRIES BY IDs
-    fun deleteEntriesByIdsBenchmark_ObjectBox(variant: Int, IdVariant: Int) {
-        val listOfIDs = accessListOfIdsByVariant_ObjectBox(variant)
+    fun deleteEntriesByIdsBenchmark_ObjectBox(IdVariant: Int) {
+
+        var dbSize = countEntriesBenchmark_ObjectBox().toInt()
+
+        val listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
         val IdAmount = firstXamountIDs_ObjectBox(IdVariant)
 
         require(IdAmount <= listOfIDs.size)

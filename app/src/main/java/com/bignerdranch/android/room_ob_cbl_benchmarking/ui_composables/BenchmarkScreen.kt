@@ -26,6 +26,9 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.OB_ViewM
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.Room_ViewModel
 import kotlinx.coroutines.launch
 
+
+// --------------------------------- THIS FILE IS NO LONGER NEEDED ---------------------------------
+// ------------------ WILL CALL FUNCTIONS AND PERFORM BENCHMARKING THRU TERMINAL -------------------
 @Composable
 fun BenchmarkScreen(
     viewModel: OB_ViewModel = viewModel(),
@@ -542,40 +545,7 @@ fun BenchmarkScreen(
 
             } else {
 
-
                 // ROOM BUTTONS
-
-
-                item {
-                    Button(onClick = { scope.launch { roomViewModel.insertEntry_Room() } }) {
-                        Text("Insert 1 entry into Room")
-                    }
-                }
-
-                item {
-                    FilledTonalButton(
-                        onClick = { scope.launch { roomViewModel.getAllEntry_Room() } },
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = Color.Green,
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text("Get All Entries from Room")
-                    }
-                }
-
-                item {
-                    FilledTonalButton(
-                        onClick = { scope.launch { roomViewModel.deleteEntry_Room() } },
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text("Delete first entry from Room")
-                    }
-                }
-
 
             }
         }

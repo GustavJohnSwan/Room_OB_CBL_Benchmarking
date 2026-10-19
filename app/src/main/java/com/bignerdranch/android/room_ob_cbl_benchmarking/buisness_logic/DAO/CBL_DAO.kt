@@ -4,6 +4,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_c
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.GeneratedEvent
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup.CouchbaseLiteProvider
 import com.couchbase.lite.DataSource
+import com.couchbase.lite.Database
 import com.couchbase.lite.Expression
 import com.couchbase.lite.Join
 import com.couchbase.lite.Meta
@@ -16,8 +17,14 @@ import kotlin.use
 
 import com.couchbase.lite.Function
 
-class CBL_DAO {
+class CBL_DAO (val database: Database = CouchbaseLiteProvider.getDatabase()) {
 
+    val Collection_Entires = database.getCollection("entries")
+        ?: error("entries collection not found")
+
+    val Collection_ExtraData = database.getCollection("extra_data")
+        ?: error("extra_data collection not found")
+    /*
     // retrieving the database
     val database = CouchbaseLiteProvider.getDatabase()
 
@@ -32,6 +39,7 @@ class CBL_DAO {
         .getDatabase()
         .getCollection("extra_data")
         ?: throw IllegalStateException("collection not found")
+     */
 
     // last page looked at (looking for basics on how to define documents :
     // https://docs.couchbase.com/couchbase-lite/current/android/document.html
@@ -43,8 +51,7 @@ class CBL_DAO {
     // and then iterate it by 1 for next insertion (iteration done here once. After that DAO functions self iterate ID)
     fun findNextEntryId(): Long {
 
-        // makes the database available for use in the function
-        val database = CouchbaseLiteProvider.getDatabase()
+
 
         // defines a query
         val query = database.createQuery(

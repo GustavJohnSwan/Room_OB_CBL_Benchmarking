@@ -17,19 +17,19 @@ import kotlinx.coroutines.launch
 
 class Room_ViewModel (application: Application) : AndroidViewModel(application) {
 
-    private var db = AppDatabase.getDatabase(application)
-    private var room_DAO = db.Room_DAO()
+     var db = AppDatabase.getDatabase(application)
+     var room_DAO = db.Room_DAO()
 
-    private var jsonIDsAssetDeserializer =
+     var jsonIDsAssetDeserializer =
         JsonIDsAssetDeserializer()
 
-    private var jsonAssetReader =
+     var jsonAssetReader =
         JsonAssetReader(application.applicationContext)
 
-    private var jsonAssetDeserializer =
+     var jsonAssetDeserializer =
         JsonAssetDeserializer()
 
-    private var room_Mapping =
+     var room_Mapping =
         Room_Mapping()
 
 
@@ -38,6 +38,19 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
     // HELPER FUNCTIONS
 
+    fun accessListOfIdsBySize_Room(databaseSize: Int): List<Long> {
+        require(databaseSize in listOf(100, 1000, 10000, 50000, 100000)) {
+            "No ID dataset exists for database size $databaseSize"
+        }
+
+        val jsonString =
+            jsonAssetReader.loadJsonFromAssets("IDs_A${databaseSize}.json")
+
+        return jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
+    }
+    
+    // OUTDATED
+    /*
     fun accessListOfIdsByVariant_Room (variant: Int): List<Long> {
 
         // default value
@@ -57,6 +70,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
         return listOfIDs
     }
+     */
 
 
 
@@ -96,7 +110,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
     }
 
-    private suspend fun insertDataSet_Room (variant: Int) {
+     suspend fun insertDataSet_Room (variant: Int) {
 
         // default value
         var jsonFileNamePart = "100_S1"
@@ -140,7 +154,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
     }
 
-    private suspend fun insertMainDataSet_Room (variant: Int) {
+     suspend fun insertMainDataSet_Room (variant: Int) {
 
         // default value
         var jsonFileNamePart = "100_S1"
@@ -173,7 +187,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // INSERT ONE ENTRY
-    private suspend fun insertEntryBenchmark_Room () {
+     suspend fun insertEntryBenchmark_Room () {
 
         val entry = EntryTable(
             dateDB = "2026-08-27",
@@ -186,7 +200,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // INSERT ENTRIES BULK
-    private suspend fun insertEntriesBenchmark_Room (variant: Int) {
+     suspend fun insertEntriesBenchmark_Room (variant: Int) {
 
         // default value
         var jsonFileNamePart = "100_S1"
@@ -218,11 +232,13 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
 
     // UPDATE ENTRY
-    private suspend fun updateEntryBenchmark_Room (variant: Int) {
+     suspend fun updateEntryBenchmark_Room () {
+
+        var dbSize = countEntriesBenchmark_Room().toInt()
 
         val IdAmount = 1
 
-        var listOfIDs = accessListOfIdsByVariant_Room(variant)
+        var listOfIDs = accessListOfIdsBySize_Room(dbSize)
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
@@ -251,9 +267,11 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // UPDATE ENTRIES BULK
-    private suspend fun updateEntriesBenchmark_Room (variant: Int, IdAmount: Int) {
+     suspend fun updateEntriesBenchmark_Room (IdAmount: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant_Room(variant)
+        var dbSize = countEntriesBenchmark_Room().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_Room(dbSize)
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
@@ -289,7 +307,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
 
     // COUNT ALL ENTRIES
-    private suspend fun countEntriesBenchmark_Room (): Long {
+     suspend fun countEntriesBenchmark_Room (): Long {
         val count = room_DAO.countEntries()
         return count
     }
@@ -303,15 +321,17 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
 
     // GET ALL ENTRIES
-    private suspend fun getAllEntries_Room () {
+     suspend fun getAllEntries_Room () {
         room_DAO.getAllEntriesBulk()
     }
 
 
     // GET ENTRY BY ID
-    private suspend fun getEntryByIdBenchmark_Room (variant: Int) {
+     suspend fun getEntryByIdBenchmark_Room () {
 
-        var listOfIDs = accessListOfIdsByVariant_Room(variant)
+        var dbSize = countEntriesBenchmark_Room().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_Room(dbSize)
 
         room_DAO.getSpecificEntry(listOfIDs[0])
     }
@@ -319,9 +339,11 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // GET ENTRIES BY IDs BULK
-    private suspend fun getEntriesByIdsBenchmark_Room (variant: Int, IdVariant: Int) {
+     suspend fun getEntriesByIdsBenchmark_Room (IdVariant: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant_Room(variant)
+        var dbSize = countEntriesBenchmark_Room().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_Room(dbSize)
         var IdAmount = firstXamountIDs_Room(IdVariant)
 
         require(IdAmount <= listOfIDs.size) {
@@ -343,9 +365,11 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
 
     // DELETE ENTRY BY ID
-    private suspend fun deleteEntryByIdBenchmark_Room (variant: Int) {
+     suspend fun deleteEntryByIdBenchmark_Room () {
 
-        var listOfIDs = accessListOfIdsByVariant_Room(variant)
+        var dbSize = countEntriesBenchmark_Room().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_Room(dbSize)
 
         val entry = EntryTable(
             id = listOfIDs[0],
@@ -360,8 +384,11 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // DELETE ENTRIES BY IDs
-    private suspend fun deleteEntriesByIdsBenchmark_Room(variant: Int, IdVariant: Int) {
-        var listOfIDs = accessListOfIdsByVariant_Room(variant)
+     suspend fun deleteEntriesByIdsBenchmark_Room(IdVariant: Int) {
+
+        var dbSize = countEntriesBenchmark_Room().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_Room(dbSize)
         val IdAmount = firstXamountIDs_Room(IdVariant)
 
         require(IdAmount <= listOfIDs.size)
@@ -384,7 +411,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // DELETE ALL ENTRIES
-    private suspend fun deleteAllEntriesBenchmark_Room () {
+     suspend fun deleteAllEntriesBenchmark_Room () {
 
         room_DAO.deleteAllEntries()
 
@@ -413,7 +440,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Find entries in date, order by time
-    private suspend fun findEntriesInSpecificDateBenchmarking_Room () {
+     suspend fun findEntriesInSpecificDateBenchmarking_Room () {
 
         var date = "2026-10-05"
 
@@ -422,7 +449,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Find entries in date range, order by time
-    private suspend fun findEntriesInDateRangeBenchmarking_Room () {
+     suspend fun findEntriesInDateRangeBenchmarking_Room () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -432,7 +459,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // FIND next X entries from date to date with reminder (not null)
-    private suspend fun findNextEntriesBenchmarking_Room () {
+     suspend fun findNextEntriesBenchmarking_Room () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -443,7 +470,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Find entries with a specific reminder
-    private suspend fun findEntriesWithSpecificReminderBenchmarking_Room () {
+     suspend fun findEntriesWithSpecificReminderBenchmarking_Room () {
         var specificReminder = "10 mins before"
 
         var result = room_DAO.findEntriesWithSpecificReminder(specificReminder)
@@ -451,7 +478,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Find entries with any recurrence
-    private suspend fun findEntriesWithRecurranceBenchmarking_Room () {
+     suspend fun findEntriesWithRecurranceBenchmarking_Room () {
 
         var result = room_DAO.findEntriesWithRecurrence()
     }
@@ -479,7 +506,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
-    private suspend fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_Room () {
+     suspend fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_Room () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -502,7 +529,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
-    private suspend fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_Room () {
+     suspend fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_Room () {
 
         var limit: Int = 15
         var offset: Int = 10
@@ -513,7 +540,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Find all repeat types and count them
-    private suspend fun countEntriesByRepeatTypeBenchmarking_Room () {
+     suspend fun countEntriesByRepeatTypeBenchmarking_Room () {
 
         var result = room_DAO.countEntriesByRepeatType()
 
@@ -521,7 +548,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Earliest and latest event time among events in a date range with a specific reminder
-    private suspend fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_Room () {
+     suspend fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_Room () {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -539,7 +566,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
     // Find all entries whose title contains a specified text fragment
     // and whose event time is later than a specified time.
-    private suspend fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_Room () {
+     suspend fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_Room () {
 
         var textFragment = "abc"
         var timeFloor = 500

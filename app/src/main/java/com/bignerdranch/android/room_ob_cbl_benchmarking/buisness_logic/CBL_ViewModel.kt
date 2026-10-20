@@ -43,24 +43,15 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     // HELPER FUNCTIONS
 
 
-    fun accessListOfIdsByVariant_CouchbaseLite (variant: Int): List<Long> {
-
-        // default value
-        var jsonFileNamePart = "100"
-
-        when (variant) {
-            1 -> jsonFileNamePart = "100"
-            2 -> jsonFileNamePart = "1000"
-            3 -> jsonFileNamePart = "10000"
-            4 -> jsonFileNamePart = "50000"
-            5 -> jsonFileNamePart = "100000"
+    fun accessListOfIdsBySize_CouchbaseLite(databaseSize: Int): List<Long> {
+        require(databaseSize in listOf(100, 1000, 10000, 50000, 100000)) {
+            "No ID dataset exists for database size $databaseSize"
         }
 
-        var jsonString = jsonAssetReader.loadJsonFromAssets("IDs_A${jsonFileNamePart}.json")
+        val jsonString =
+            jsonAssetReader.loadJsonFromAssets("IDs_A${databaseSize}.json")
 
-        var listOfIDs = jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
-
-        return listOfIDs
+        return jsonIDsAssetDeserializer.deserializeIDsJson(jsonString)
     }
 
 
@@ -229,11 +220,13 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // UPDATE ENTRY
-    fun updateEntryBenchmark_CouchbaseLite (variant: Int) {
+    fun updateEntryBenchmark_CouchbaseLite () {
+
+        var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
 
         val IdAmount = 1
 
-        var listOfIDs = accessListOfIdsByVariant_CouchbaseLite(variant)
+        var listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
@@ -261,9 +254,12 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // UPDATE ENTRIES BULK
-    fun updateEntriesBenchmark_CouchbaseLite (variant: Int, IdAmount: Int) {
+    fun updateEntriesBenchmark_CouchbaseLite (IdAmount: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant_CouchbaseLite(variant)
+        var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
+
 
         var listOfRelevantIDs = listOfIDs.take(IdAmount)
 
@@ -317,16 +313,20 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     // GET ENTRY BY ID
-    fun getEntryByIdBenchmark_CouchbaseLite (variant: Int) {
+    fun getEntryByIdBenchmark_CouchbaseLite () {
 
-        var listOfIDs = accessListOfIdsByVariant_CouchbaseLite(variant)
+        var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
         cbl_DAO.getDocumentById(toString(listOfIDs[0]))
     }
 
     // GET ENTRIES BY IDs BULK
-    fun getEntriesByIdsBenchmark_CouchbaseLite (variant: Int, IdVariant: Int) {
+    fun getEntriesByIdsBenchmark_CouchbaseLite (IdVariant: Int) {
 
-        var listOfIDs = accessListOfIdsByVariant_CouchbaseLite(variant)
+        var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
 
         val listOfStringIDs: List<String> = listOfIDs.map {
             it.toString()
@@ -354,16 +354,21 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // DELETE ENTRY BY ID
-    fun deleteEntryByIdBenchmark_CouchbaseLite (variant: Int) {
+    fun deleteEntryByIdBenchmark_CouchbaseLite () {
 
-        var listOfIDs = accessListOfIdsByVariant_CouchbaseLite(variant)
+        var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
+
+        var listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
         cbl_DAO.deleteDocument(toString(listOfIDs[0]))
 
     }
 
     // DELETE ENTRIES BY IDs
-    fun deleteEntriesByIdsBenchmark_CouchbaseLite(variant: Int, IdVariant: Int) {
-        val listOfIDs = accessListOfIdsByVariant_CouchbaseLite(variant)
+    fun deleteEntriesByIdsBenchmark_CouchbaseLite(IdVariant: Int) {
+
+        var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
+
+        val listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
         val IdAmount = firstXamountIDs_CouchbaseLite(IdVariant)
 
         require(IdAmount <= listOfIDs.size)

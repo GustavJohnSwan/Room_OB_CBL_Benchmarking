@@ -11,8 +11,10 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup
 
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.data_mapping.Room_Mapping
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.Room.Room_EntryWithExtraData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class Room_ViewModel (application: Application) : AndroidViewModel(application) {
@@ -95,21 +97,18 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
-    fun createFreshDatabaseAndDataSet_Room (variant: Int) {
-
-        viewModelScope.launch(Dispatchers.IO) {
+    // RE-CREATE A FRESH DATABASE
+    suspend fun createFreshDatabase_Room() {
+        withContext(Dispatchers.IO) {
             db = AppDatabase.reset(
                 getApplication<Application>().applicationContext
             )
             room_DAO = db.Room_DAO()
-
-            insertDataSet_Room(variant)
         }
-
-
-
     }
 
+
+    // *** INSERT DATA SET - INSERT FULL DATA SET
      suspend fun insertDataSet_Room (variant: Int) {
 
         // default value
@@ -131,6 +130,36 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
         val listOfEntityDataObjects = room_Mapping.map(listOfDataObjects)
 
         var ids = room_DAO.insertEntries(listOfEntityDataObjects)
+
+    }
+
+
+
+
+    // ***** BENCHMARKING - INSERT DATA SET - INSERT FULL DATA SET
+    suspend fun insertDataSetBenchmarking_Room (variant: Int): List<Room_EntryWithExtraData> {
+
+        // default value
+        var jsonFileNamePart = "100_S1"
+
+        when (variant) {
+            1 -> jsonFileNamePart = "100_S1"
+            2 -> jsonFileNamePart = "1000_S2"
+            3 -> jsonFileNamePart = "10000_S3"
+            4 -> jsonFileNamePart = "50000_S4"
+            5 -> jsonFileNamePart = "100000_S5"
+        }
+
+        // modify this to change .json file based on variant by replacing numbers in string
+        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A${jsonFileNamePart}.json")
+
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+        val listOfEntityDataObjects = room_Mapping.map(listOfDataObjects)
+
+        return listOfEntityDataObjects
+
+        // var ids = room_DAO.insertEntries(listOfEntityDataObjects)
 
     }
 

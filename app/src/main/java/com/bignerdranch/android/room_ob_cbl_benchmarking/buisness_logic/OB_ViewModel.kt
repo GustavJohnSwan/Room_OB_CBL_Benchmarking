@@ -142,12 +142,40 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
 
+    // ***** BENCHMARKING - INSERT DATA SET - INSERT FULL DATA SET
+    fun insertDataSetBenchmarking_ObjectBox (variant: Int): List<EntryOb_B> {
+
+        // default value
+        var jsonFileNamePart = "100_S1"
+
+        when (variant) {
+            1 -> jsonFileNamePart = "100_S1"
+            2 -> jsonFileNamePart = "1000_S2"
+            3 -> jsonFileNamePart = "10000_S3"
+            4 -> jsonFileNamePart = "50000_S4"
+            5 -> jsonFileNamePart = "100000_S5"
+        }
+
+        // modify this to change .json file based on variant by replacing numbers in string
+        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A${jsonFileNamePart}.json")
+
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+        val listOfEntityDataObjects = ob_Mapping.map(listOfDataObjects)
+
+        return listOfEntityDataObjects
+
+        // var ids = ob_DAO.putEntries(listOfEntityDataObjects)
+
+    }
+
+
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
     // *** CRUD - INSERT ONE ENTRY
-    fun insertMainEntryBenchmark_ObjectBox () {
+    fun insertMainEntryBenchmark_ObjectBox (): EntryOb_B {
 
         val entry = EntryOb_B(
             dateOb = "2026-08-27",
@@ -155,7 +183,9 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
             timeMinutesOb = 1427
         )
 
-        ob_DAO.putMainEntry(entry)
+        return entry
+
+        // ob_DAO.putMainEntry(entry)
 
     }
 
@@ -186,6 +216,34 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
     }
 
+    // ***** BENCHMARKING - CRUD - INSERT MAIN ENTRIES BULK
+    // ALSO *** INSERT DATA SET - MAIN DATA ONLY
+    fun insertMainDataSetBenchmarking_ObjectBox (variant: Int): List<EntryOb_B> {
+
+        // default value
+        var jsonFileNamePart = "100_S1"
+
+        when (variant) {
+            1 -> jsonFileNamePart = "100_S1"
+            2 -> jsonFileNamePart = "1000_S2"
+            3 -> jsonFileNamePart = "10000_S3"
+            4 -> jsonFileNamePart = "50000_S4"
+            5 -> jsonFileNamePart = "100000_S5"
+        }
+
+        // modify this to change .json file based on variant by replacing numbers in string
+        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A${jsonFileNamePart}.json")
+
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+        val listOfEntityDataObjects = ob_Mapping.mapMainEntries(listOfDataObjects)
+
+        return listOfEntityDataObjects
+
+        // var ids = ob_DAO.putMainEntries(listOfEntityDataObjects)
+
+    }
+
 
 
     // _____________________________________________________________________________________________
@@ -196,7 +254,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // *** CRUD - UPDATE ENTRY
-    fun updateEntryBenchmark_ObjectBox () {
+    fun updateEntryBenchmark_ObjectBox (): EntryOb_B {
 
         var dbSize = countEntriesBenchmark_ObjectBox().toInt()
 
@@ -224,8 +282,9 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
                 timeMinutesOb = desiredObject.time
             )
 
+        return entry
 
-        ob_DAO.updateEntry(entry)
+        // ob_DAO.updateEntry(entry)
 
     }
 
@@ -233,7 +292,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // UPDATE ENTRIES BULK
-    fun updateEntriesBenchmark_ObjectBox (IdAmount: Int) {
+    fun updateEntriesBenchmark_ObjectBox (IdAmount: Int):  List<EntryOb_B> {
 
         var amount = firstXamountIDs_ObjectBox(IdAmount)
 
@@ -262,7 +321,9 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
             )
         }
 
-        ob_DAO.updateEntries(entries)
+        return entries
+
+        // ob_DAO.updateEntries(entries)
     }
 
 
@@ -292,19 +353,21 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     // GET ENTRY BY ID
-    fun getEntryByIdBenchmark_ObjectBox () {
+    fun getEntryByIdBenchmark_ObjectBox (): List<Long> {
 
         var dbSize = countEntriesBenchmark_ObjectBox().toInt()
 
         var listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
 
-        ob_DAO.getMainEntry(listOfIDs[0])
+        return listOfIDs
+
+        // ob_DAO.getMainEntry(listOfIDs[0])
     }
 
 
 
     // GET ENTRIES BY IDs BULK
-    fun getEntriesByIdsBenchmark_ObjectBox (IdVariant: Int) {
+    fun getEntriesByIdsBenchmark_ObjectBox (IdVariant: Int): List<Long> {
 
         var dbSize = countEntriesBenchmark_ObjectBox().toInt()
 
@@ -319,8 +382,10 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
 
         var listOfDesiredIDs = listOfIDs.take(IdAmount)
 
-        val results = ob_DAO.getMainEntries(listOfDesiredIDs)
-        Log.d("OB_GET", "Requested $IdAmount, returned ${results.size}")
+        return listOfDesiredIDs
+
+        // val results = ob_DAO.getMainEntries(listOfDesiredIDs)
+        // Log.d("OB_GET", "Requested $IdAmount, returned ${results.size}")
     }
 
     // _____________________________________________________________________________________________
@@ -331,18 +396,20 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // DELETE ENTRY BY ID
-    fun deleteEntryByIdBenchmark_ObjectBox () {
+    fun deleteEntryByIdBenchmark_ObjectBox (): List<Long> {
 
         var dbSize = countEntriesBenchmark_ObjectBox().toInt()
 
         var listOfIDs = accessListOfIdsBySize_ObjectBox(dbSize)
 
-        ob_DAO.deleteMainEntry(listOfIDs[0])
+        return listOfIDs
+
+        // ob_DAO.deleteMainEntry(listOfIDs[0])
 
     }
 
     // DELETE ENTRIES BY IDs
-    fun deleteEntriesByIdsBenchmark_ObjectBox(IdVariant: Int) {
+    fun deleteEntriesByIdsBenchmark_ObjectBox(IdVariant: Int): List<Long> {
 
         var dbSize = countEntriesBenchmark_ObjectBox().toInt()
 
@@ -352,7 +419,10 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
         require(IdAmount <= listOfIDs.size)
 
         val listOfDesiredIDs = listOfIDs.take(IdAmount)
-        ob_DAO.deleteMainEntries(listOfDesiredIDs)
+
+        return listOfDesiredIDs
+
+        // ob_DAO.deleteMainEntries(listOfDesiredIDs)
     }
 
     // DELETE ALL ENTRIES
@@ -384,38 +454,51 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // MEDIUM QUERIES
 
     // Find entries in date, order by time in ObjectBox database
-    fun findEntriesInSpecificDateBenchmarking_ObjectBox () {
+    fun findEntriesInSpecificDateBenchmarking_ObjectBox (): String {
 
-        var date = "2026-10-05"
+        var date = "2026-11-30"
 
-        var result = ob_DAO.findEntriesInSpecificDate(date)
+        return date
+
+        // var result = ob_DAO.findEntriesInSpecificDate(date)
     }
 
 
     // Find entries in date range, order by time in ObjectBox database
-    fun findEntriesInDateRangeBenchmarking_ObjectBox () {
+    fun findEntriesInDateRangeBenchmarking_ObjectBox (): List<String> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
 
-        var result = ob_DAO.findEntriesInDateRange(startDate, endDate)
+        var arguments = listOf(startDate, endDate)
+
+        return arguments
+
+        // var result = ob_DAO.findEntriesInDateRange(startDate, endDate)
     }
 
     // FIND next X entries from date to date with reminder (not null)
-    fun findNextEntriesBenchmarking_ObjectBox () {
+    fun findNextEntriesBenchmarking_ObjectBox (): List<Any> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
         var amount: Long = 15
 
-        var result = ob_DAO.findNextEntries(startDate, endDate, amount)
+        var arguments = listOf(startDate, endDate, amount)
+
+        return arguments
+
+
+        // var result = ob_DAO.findNextEntries(startDate, endDate, amount)
     }
 
     // Find entries with a specific reminder
-    fun findEntriesWithSpecificReminderBenchmarking_ObjectBox () {
+    fun findEntriesWithSpecificReminderBenchmarking_ObjectBox (): String {
         var specificReminder = "10 mins before"
 
-        var result = ob_DAO.findEntriesWithSpecificReminder(specificReminder)
+        return specificReminder
+
+        // var result = ob_DAO.findEntriesWithSpecificReminder(specificReminder)
     }
 
     // Find entries with any recurrence
@@ -447,7 +530,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // ADVANCED QUERIES
 
     // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
-    fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_ObjectBox () {
+    fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_ObjectBox (): List<Any> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -458,6 +541,11 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
         var specificRepeat1 = "Weekly"
         var specificRepeat2 = "Monthly"
 
+        var arguments = listOf(startDate, endDate, specificReminder, specificRepeat1, specificRepeat2, limit)
+
+        return arguments
+
+        /*
         var result = ob_DAO.findEntriesInDateRangeReminderRepeat1OrRepeat2(
             startDate,
             endDate,
@@ -466,17 +554,22 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
             specificRepeat2,
             limit
             )
+         */
     }
 
 
 
     // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
-    fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_ObjectBox () {
+    fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_ObjectBox (): List<Long> {
 
         var limit: Long = 15
         var offset: Long = 10
 
-        var result = ob_DAO.findEntriesReminderNullRepeatNotNullLimitOffset(limit, offset)
+        var arguments = listOf(limit, offset)
+
+        return arguments
+
+        // var result = ob_DAO.findEntriesReminderNullRepeatNotNullLimitOffset(limit, offset)
 
     }
 
@@ -485,35 +578,46 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // Find all repeat types and count them
     fun countEntriesByRepeatTypeBenchmarking_ObjectBox () {
 
-        var result = ob_DAO.countEntriesByRepeatType()
+        // var result = ob_DAO.countEntriesByRepeatType()
 
     }
 
 
     // Earliest and latest event time among events in a date range with a specific reminder
-    fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_ObjectBox () {
+    fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_ObjectBox (): List<String> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
         var specificReminder = "10 mins before"
 
+        var arguments = listOf(startDate, endDate, specificReminder)
+
+        return arguments
+
+        /*
         var result = ob_DAO.findEarliestLatestEventTimesInRangeWithReminder(
             startDate,
             endDate,
             specificReminder
         )
 
+         */
+
     }
 
 
     // Find all entries whose title contains a specified text fragment
     // and whose event time is later than a specified time.
-    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_ObjectBox () {
+    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_ObjectBox (): List<Any> {
 
         var textFragment = "abc"
         var timeFloor = 500
 
-        var result = ob_DAO.findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(textFragment, timeFloor)
+        var arguments = listOf(textFragment, timeFloor)
+
+        return arguments
+
+        // var result = ob_DAO.findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(textFragment, timeFloor)
 
     }
 

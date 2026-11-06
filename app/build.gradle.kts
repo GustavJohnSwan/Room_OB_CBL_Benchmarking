@@ -23,6 +23,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // custom benchmarking build
+    testBuildType = "benchmark"
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -31,6 +34,15 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        // custom benchmarking build = release build + disable debugging
+        create("benchmark") {
+            initWith(getByName("release"))
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("debug")
+        }
+
+
     }
     compileOptions {
 
@@ -46,6 +58,8 @@ android {
         compose = true
     }
 }
+
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -122,4 +136,10 @@ dependencies {
     // Couchbase Lite dependecies
 
     implementation("com.couchbase.lite:couchbase-lite-android-ktx:4.1.0")
+
+
+    // AndroidX
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.runner)
+
 }

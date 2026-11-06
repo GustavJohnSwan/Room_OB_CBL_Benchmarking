@@ -164,48 +164,6 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     }
 
 
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-
-    fun createFreshDatabaseAndMainDataSet_Room (variant: Int) {
-
-        viewModelScope.launch(Dispatchers.IO) {
-            db = AppDatabase.reset(
-                getApplication<Application>().applicationContext
-            )
-            room_DAO = db.Room_DAO()
-
-            insertMainDataSet_Room(variant)
-        }
-
-
-
-    }
-
-     suspend fun insertMainDataSet_Room (variant: Int) {
-
-        // default value
-        var jsonFileNamePart = "100_S1"
-
-        when (variant) {
-            1 -> jsonFileNamePart = "100_S1"
-            2 -> jsonFileNamePart = "1000_S2"
-            3 -> jsonFileNamePart = "10000_S3"
-            4 -> jsonFileNamePart = "50000_S4"
-            5 -> jsonFileNamePart = "100000_S5"
-        }
-
-        // modify this to change .json file based on variant by replacing numbers in string
-        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A${jsonFileNamePart}.json")
-
-        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
-
-        val listOfEntityDataObjects = room_Mapping.mapMainEntries(listOfDataObjects)
-
-        var ids = room_DAO.insertMainEntries(listOfEntityDataObjects)
-
-    }
 
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
@@ -215,8 +173,8 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
 
 
-    // INSERT ONE ENTRY
-     suspend fun insertEntryBenchmark_Room () {
+    // *** CRUD - INSERT ONE ENTRY
+     suspend fun insertEntryBenchmark_Room (): EntryTable {
 
         val entry = EntryTable(
             dateDB = "2026-08-27",
@@ -224,12 +182,15 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
             timeMinutes = 1427
         )
 
-        room_DAO.insertMainEntry(entry)
+        return entry
+
+        // room_DAO.insertMainEntry(entry)
     }
 
 
-    // INSERT ENTRIES BULK
-     suspend fun insertEntriesBenchmark_Room (variant: Int) {
+    // *** CRUD - INSERT MAIN ENTRIES BULK
+    // ALSO *** INSERT DATA SET - MAIN DATA ONLY
+     suspend fun insertMainDataSet_Room (variant: Int) {
 
         // default value
         var jsonFileNamePart = "100_S1"
@@ -253,6 +214,35 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     }
 
 
+    // ***** BENCHMARKING - CRUD - INSERT MAIN ENTRIES BULK
+    // ALSO *** INSERT DATA SET - MAIN DATA ONLY
+    suspend fun insertMainDataSetBenchmarking_Room (variant: Int): List<EntryTable> {
+
+        // default value
+        var jsonFileNamePart = "100_S1"
+
+        when (variant) {
+            1 -> jsonFileNamePart = "100_S1"
+            2 -> jsonFileNamePart = "1000_S2"
+            3 -> jsonFileNamePart = "10000_S3"
+            4 -> jsonFileNamePart = "50000_S4"
+            5 -> jsonFileNamePart = "100000_S5"
+        }
+
+        // modify this to change .json file based on variant by replacing numbers in string
+        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A${jsonFileNamePart}.json")
+
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+        val listOfEntityDataObjects = room_Mapping.mapMainEntries(listOfDataObjects)
+
+        return listOfEntityDataObjects
+
+        // var ids = room_DAO.insertMainEntries(listOfEntityDataObjects)
+
+    }
+
+
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
@@ -260,8 +250,8 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
-    // UPDATE ENTRY
-     suspend fun updateEntryBenchmark_Room () {
+    // *** CRUD - UPDATE ENTRY
+     suspend fun updateEntryBenchmark_Room (): EntryTable {
 
         var dbSize = countEntriesBenchmark_Room().toInt()
 
@@ -289,14 +279,16 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
             timeMinutes = desiredObject.time
         )
 
+        return entry
 
-        room_DAO.updateEntry(entry)
+
+        // room_DAO.updateEntry(entry)
 
     }
 
 
     // UPDATE ENTRIES BULK
-     suspend fun updateEntriesBenchmark_Room (IdAmount: Int) {
+     suspend fun updateEntriesBenchmark_Room (IdAmount: Int): List<EntryTable> {
 
         var dbSize = countEntriesBenchmark_Room().toInt()
 
@@ -323,7 +315,9 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
             )
         }
 
-        room_DAO.updateEntries(entries)
+        return entries
+
+        // room_DAO.updateEntries(entries)
     }
 
 
@@ -356,19 +350,21 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // GET ENTRY BY ID
-     suspend fun getEntryByIdBenchmark_Room () {
+     suspend fun getEntryByIdBenchmark_Room (): List<Long> {
 
         var dbSize = countEntriesBenchmark_Room().toInt()
 
         var listOfIDs = accessListOfIdsBySize_Room(dbSize)
 
-        room_DAO.getSpecificEntry(listOfIDs[0])
+        return listOfIDs
+
+        // room_DAO.getSpecificEntry(listOfIDs[0])
     }
 
 
 
     // GET ENTRIES BY IDs BULK
-     suspend fun getEntriesByIdsBenchmark_Room (IdVariant: Int) {
+     suspend fun getEntriesByIdsBenchmark_Room (IdVariant: Int): List<Long> {
 
         var dbSize = countEntriesBenchmark_Room().toInt()
 
@@ -381,8 +377,10 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
         var listOfDesiredIDs = listOfIDs.take(IdAmount)
 
-        val results = room_DAO.getEntriesByIDs(listOfDesiredIDs)
-        Log.d("Room_GET", "Requested $IdAmount, returned ${results.size}")
+        return listOfDesiredIDs
+
+        //val results = room_DAO.getEntriesByIDs(listOfDesiredIDs)
+        // Log.d("Room_GET", "Requested $IdAmount, returned ${results.size}")
     }
 
 
@@ -394,7 +392,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     // _____________________________________________________________________________________________
 
     // DELETE ENTRY BY ID
-     suspend fun deleteEntryByIdBenchmark_Room () {
+     suspend fun deleteEntryByIdBenchmark_Room (): EntryTable  {
 
         var dbSize = countEntriesBenchmark_Room().toInt()
 
@@ -407,13 +405,15 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
             timeMinutes = null
         )
 
-        room_DAO.deleteEntry(entry)
+        return entry
+
+        // room_DAO.deleteEntry(entry)
 
     }
 
 
     // DELETE ENTRIES BY IDs
-     suspend fun deleteEntriesByIdsBenchmark_Room(IdVariant: Int) {
+     suspend fun deleteEntriesByIdsBenchmark_Room(IdVariant: Int): List<EntryTable> {
 
         var dbSize = countEntriesBenchmark_Room().toInt()
 
@@ -433,9 +433,11 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
             )
         }
 
+        return entries
 
 
-        room_DAO.deleteEntries(entries)
+
+        // room_DAO.deleteEntries(entries)
     }
 
 
@@ -469,40 +471,52 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Find entries in date, order by time
-     suspend fun findEntriesInSpecificDateBenchmarking_Room () {
+     suspend fun findEntriesInSpecificDateBenchmarking_Room (): String {
 
         var date = "2026-10-05"
 
-        var result = room_DAO.findEntriesInSpecificDate(date)
+        return date
+
+        // var result = room_DAO.findEntriesInSpecificDate(date)
     }
 
 
     // Find entries in date range, order by time
-     suspend fun findEntriesInDateRangeBenchmarking_Room () {
+     suspend fun findEntriesInDateRangeBenchmarking_Room (): List<String> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
 
-        var result = room_DAO.findEntriesInDateRange(startDate, endDate)
+        var arguments = listOf(startDate, endDate)
+
+        return arguments
+
+        // var result = room_DAO.findEntriesInDateRange(startDate, endDate)
     }
 
 
     // FIND next X entries from date to date with reminder (not null)
-     suspend fun findNextEntriesBenchmarking_Room () {
+     suspend fun findNextEntriesBenchmarking_Room (): List<Any> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
         var amount: Int = 15
 
-        var result = room_DAO.findNextEntries(startDate, endDate, amount)
+        var arguments = listOf(startDate, endDate, amount)
+
+        return arguments
+
+        //var result = room_DAO.findNextEntries(startDate, endDate, amount)
     }
 
 
     // Find entries with a specific reminder
-     suspend fun findEntriesWithSpecificReminderBenchmarking_Room () {
+     suspend fun findEntriesWithSpecificReminderBenchmarking_Room (): String {
         var specificReminder = "10 mins before"
 
-        var result = room_DAO.findEntriesWithSpecificReminder(specificReminder)
+        return specificReminder
+
+        // var result = room_DAO.findEntriesWithSpecificReminder(specificReminder)
     }
 
 
@@ -535,7 +549,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
-     suspend fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_Room () {
+     suspend fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_Room (): List<Any> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -546,6 +560,11 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
         var specificRepeat1 = "Weekly"
         var specificRepeat2 = "Monthly"
 
+        var arguments = listOf(startDate, endDate, specificReminder, specificRepeat1, specificRepeat2, limit)
+
+        return arguments
+
+        /*
         var result = room_DAO.findEntriesInDateRangeReminderRepeat1OrRepeat2(
             startDate,
             endDate,
@@ -554,16 +573,21 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
             specificRepeat2,
             limit
         )
+         */
     }
 
 
     // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
-     suspend fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_Room () {
+     suspend fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_Room (): List<Int> {
 
         var limit: Int = 15
         var offset: Int = 10
 
-        var result = room_DAO.findEntriesReminderNullRepeatNotNullLimitOffset(limit, offset)
+        var arguments = listOf(limit, offset)
+
+        return arguments
+
+        // var result = room_DAO.findEntriesReminderNullRepeatNotNullLimitOffset(limit, offset)
 
     }
 
@@ -577,17 +601,23 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // Earliest and latest event time among events in a date range with a specific reminder
-     suspend fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_Room () {
+     suspend fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_Room (): List<String> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
         var specificReminder = "10 mins before"
 
+        var arguments = listOf(startDate, endDate, specificReminder)
+
+        return arguments
+
+        /*
         var result = room_DAO.findEarliestEventsInRangeWithReminder(
             startDate,
             endDate,
             specificReminder
         )
+         */
 
     }
 
@@ -595,12 +625,17 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
     // Find all entries whose title contains a specified text fragment
     // and whose event time is later than a specified time.
-     suspend fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_Room () {
+     suspend fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_Room (): List<Any> {
 
         var textFragment = "abc"
         var timeFloor = 500
 
-        var result = room_DAO.findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(textFragment, timeFloor)
+        var arguments = listOf(textFragment, timeFloor)
+
+        return arguments
+
+
+        // var result = room_DAO.findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTime(textFragment, timeFloor)
 
     }
 

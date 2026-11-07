@@ -8,7 +8,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
+// logcat filer "DB_BENCHMARK"
 // Run with ".\gradlew.bat :app:connectedDebugAndroidTest" in terminal for debug build
 // Run with ".\gradlew.bat :app:connectedBenchmarkAndroidTest" in terminal for benhcmark build
 @RunWith(AndroidJUnit4::class)

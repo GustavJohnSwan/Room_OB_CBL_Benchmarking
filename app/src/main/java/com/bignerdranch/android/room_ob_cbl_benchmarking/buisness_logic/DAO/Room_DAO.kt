@@ -119,6 +119,9 @@ interface Room_DAO {
     @Query("SELECT * FROM EntryTable WHERE id = :entryId")
     suspend fun getSpecificEntry(entryId: Long): EntryTable?
 
+
+    // TODO: Need to change the dataset of IDs for this query benchmarking
+    // TODO: so that it is below SQLite’s maximum number of bound parameters per SQL statement
     // *** CRUD - GET ENTRIES BY IDs
     @Query("SELECT * FROM EntryTable WHERE id IN (:entryId)")
     suspend fun getEntriesByIDs(entryId: List<Long>): List<EntryTable>

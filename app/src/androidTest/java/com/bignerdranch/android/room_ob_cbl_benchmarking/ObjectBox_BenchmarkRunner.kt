@@ -345,13 +345,13 @@ class ObjectBox_BenchmarkRunner(application: Application) {
             var specificRepeat26 = arguments6[4] as String
             var limit6 = arguments6[5] as Long
             val results6 = benchmark("ObjectBox: date range & repeat1 OR repeat2 | datasetVariant=$i") {
-                room_DAO.findEntriesInDateRangeReminderRepeat1OrRepeat2(
-                    startDate,
-                    endDate,
-                    specificReminder,
-                    specificRepeat1,
-                    specificRepeat2,
-                    limit
+                ob_DAO.findEntriesInDateRangeReminderRepeat1OrRepeat2(
+                    startDate6,
+                    endDate6,
+                    specificReminder6,
+                    specificRepeat16,
+                    specificRepeat26,
+                    limit6
                 )
             }
         }

@@ -7,6 +7,7 @@ import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.CBL_
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.DAO.OB_DAO
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.data_mapping.CBL_Mapping
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.data_mapping.OB_Mapping
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.CouchbaseLite.CBL_EntryWithExtraData
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.helper_classes.ObjectBox.UpdateEntries_ObjectBox
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetDeserializer
 import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.json_Operations.JsonAssetReader
@@ -78,19 +79,18 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
-
-    fun createFreshDatabaseAndDataSet_CouchbaseLite (variant: Int) {
+    // RE-CREATE A FRESH DATABASE
+    fun createFreshDatabase_CouchbaseLite () {
 
         CouchbaseLiteProvider.reset()
 
         cbl_DAO = CBL_DAO()
         cbl_Mapping = CBL_Mapping()
 
-        insertDataSet_CouchbaseLite(variant)
 
     }
 
-
+    // *** INSERT DATA SET - INSERT FULL DATA SET
     fun insertDataSet_CouchbaseLite (variant: Int) {
 
         // default value
@@ -115,23 +115,72 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
 
     }
 
+
+    // ***** BENCHMARKING - INSERT DATA SET - INSERT FULL DATA SET
+    fun insertDataSetBenchmarking_CouchbaseLite (variant: Int): List<CBL_EntryWithExtraData> {
+
+        // default value
+        var jsonFileNamePart = "100_S1"
+
+        when (variant) {
+            1 -> jsonFileNamePart = "100_S1"
+            2 -> jsonFileNamePart = "1000_S2"
+            3 -> jsonFileNamePart = "10000_S3"
+            4 -> jsonFileNamePart = "50000_S4"
+            5 -> jsonFileNamePart = "100000_S5"
+        }
+
+        // modify this to change .json file based on variant by replacing numbers in string
+        val jsonString = jsonAssetReader.loadJsonFromAssets("events_A${jsonFileNamePart}.json")
+
+        val listOfDataObjects = jsonAssetDeserializer.deserializeJson(jsonString)
+
+        val listOfEntityDataObjects = cbl_Mapping.map(listOfDataObjects, 1L)
+
+        return listOfEntityDataObjects
+
+        // var ids = cbl_DAO.insertDocuments(listOfEntityDataObjects)
+
+    }
+
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
 
-    fun createFreshDatabaseAndMainDataSet_CouchbaseLite (variant: Int) {
 
-        CouchbaseLiteProvider.reset()
 
-        cbl_DAO = CBL_DAO()
-        cbl_Mapping = CBL_Mapping()
 
-        insertMainDataSet_CouchbaseLite(variant)
+
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+    // _____________________________________________________________________________________________
+
+
+    // INSERT ONE ENTRY
+    fun insertMainEntryBenchmark_CouchbaseLite (): MutableDocument {
+
+        val nextId = cbl_DAO.findNextEntryId()
+
+            val entry = MutableDocument(nextId.toString())
+                .setString("date", "2026-08-27")
+                .setString("entry", "TyOk6EFsIWL6L3YOY15gwiS")
+                .setInt("time_minutes", 1427)
+
+
+        return entry
+
+
+        // cbl_DAO.insertMainDoc(entry)
 
     }
 
 
+    // *** CRUD - INSERT MAIN ENTRIES BULK
+    // ALSO *** INSERT DATA SET - MAIN DATA ONLY
     fun insertMainDataSet_CouchbaseLite (variant: Int) {
 
         // default value
@@ -157,33 +206,10 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
 
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
-    // _____________________________________________________________________________________________
 
-
-    // INSERT ONE ENTRY
-    fun insertEntryBenchmark_CouchbaseLite () {
-
-        val nextId = cbl_DAO.findNextEntryId()
-
-            val entry = MutableDocument(nextId.toString())
-                .setString("date", "2026-08-27")
-                .setString("entry", "TyOk6EFsIWL6L3YOY15gwiS")
-                .setInt("time_minutes", 1427)
-
-
-        cbl_DAO.insertMainDoc(entry)
-
-    }
-
-
-
-    // INSERT ENTRIES BULK
-    fun insertEntriesBenchmark_CouchbaseLite (variant: Int) {
+    // ***** BENCHMARKING - CRUD - INSERT MAIN ENTRIES BULK
+    // ALSO *** INSERT DATA SET - MAIN DATA ONLY
+    fun insertMainDataSetBenchmark_CouchbaseLite (variant: Int): List<MutableDocument> {
 
         // default value
         var jsonFileNamePart = "100_S1"
@@ -207,7 +233,10 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
             listOfDataObjects,
             firstId
         )
-        cbl_DAO.insertMainDocs(listOfEntityDataObjects)
+
+        return listOfEntityDataObjects
+
+        // cbl_DAO.insertMainDocs(listOfEntityDataObjects)
 
     }
 
@@ -220,7 +249,7 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     // _____________________________________________________________________________________________
 
     // UPDATE ENTRY
-    fun updateEntryBenchmark_CouchbaseLite () {
+    fun updateEntryBenchmark_CouchbaseLite (): MutableDocument {
 
         var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
 
@@ -247,14 +276,16 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
             .setString("entry", desiredObject.title)
             .setInt("time_minutes", desiredObject.time)
 
+        return entry
 
-        cbl_DAO.updateDocument(entry)
+
+        // cbl_DAO.updateDocument(entry)
 
     }
 
 
     // UPDATE ENTRIES BULK
-    fun updateEntriesBenchmark_CouchbaseLite (IdAmount: Int) {
+    fun updateEntriesBenchmark_CouchbaseLite (IdAmount: Int): List<MutableDocument> {
 
         var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
 
@@ -281,7 +312,9 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
                 .setInt("time_minutes", event.time)
         }
 
-        cbl_DAO.updateDocuments(entries)
+        return entries
+
+        // cbl_DAO.updateDocuments(entries)
     }
 
     // _____________________________________________________________________________________________
@@ -313,16 +346,19 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     // GET ENTRY BY ID
-    fun getEntryByIdBenchmark_CouchbaseLite () {
+    fun getEntryByIdBenchmark_CouchbaseLite (): List<Long> {
 
         var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
 
         var listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
-        cbl_DAO.getDocumentById(toString(listOfIDs[0]))
+
+        return listOfIDs
+
+        // cbl_DAO.getDocumentById(toString(listOfIDs[0]))
     }
 
     // GET ENTRIES BY IDs BULK
-    fun getEntriesByIdsBenchmark_CouchbaseLite (IdVariant: Int) {
+    fun getEntriesByIdsBenchmark_CouchbaseLite (IdVariant: Int): List<String> {
 
         var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
 
@@ -340,8 +376,10 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
 
         var listOfDesiredIDs = listOfStringIDs.take(IdAmount)
 
-        val results = cbl_DAO.getDocumentsById(listOfDesiredIDs)
-        Log.d("CBL_GET", "Requested $IdAmount, returned ${results.size}")
+        return listOfDesiredIDs
+
+        // val results = cbl_DAO.getDocumentsById(listOfDesiredIDs)
+        // Log.d("CBL_GET", "Requested $IdAmount, returned ${results.size}")
     }
 
 
@@ -354,17 +392,19 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // DELETE ENTRY BY ID
-    fun deleteEntryByIdBenchmark_CouchbaseLite () {
+    fun deleteEntryByIdBenchmark_CouchbaseLite (): String {
 
         var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
 
         var listOfIDs = accessListOfIdsBySize_CouchbaseLite(dbSize)
-        cbl_DAO.deleteDocument(toString(listOfIDs[0]))
+
+        return listOfIDs[0].toString()
+        // cbl_DAO.deleteDocument(toString(listOfIDs[0]))
 
     }
 
     // DELETE ENTRIES BY IDs
-    fun deleteEntriesByIdsBenchmark_CouchbaseLite(IdVariant: Int) {
+    fun deleteEntriesByIdsBenchmark_CouchbaseLite(IdVariant: Int): List<String> {
 
         var dbSize = countEntriesBenchmark_CouchbaseLite().toInt()
 
@@ -379,7 +419,9 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
             it.toString()
         }
 
-        cbl_DAO.deleteDocuments(listOfStringIDs)
+        return listOfStringIDs
+
+        // cbl_DAO.deleteDocuments(listOfStringIDs)
     }
 
 
@@ -411,44 +453,56 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     // MEDIUM QUERIES
 
     // Find entries in date, order by time
-    fun findEntriesInSpecificDateBenchmarking_CouchbaseLite () {
+    fun findEntriesInSpecificDateBenchmarking_CouchbaseLite (): String {
 
         var date = "2026-10-05"
-        var result = cbl_DAO.findDocumentsInSpecificDate(date)
+
+        return date
+        // var result = cbl_DAO.findDocumentsInSpecificDate(date)
     }
 
     // Find entries in date range, order by time
-    fun findEntriesInDateRangeBenchmarking_CouchbaseLite () {
+    fun findEntriesInDateRangeBenchmarking_CouchbaseLite (): List<String> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
 
-        var result = cbl_DAO.findDocumentsInDateRange(startDate, endDate)
+        var arguments = listOf(startDate, endDate)
+
+        return arguments
+
+        // var result = cbl_DAO.findDocumentsInDateRange(startDate, endDate)
     }
 
 
     // FIND next X entries from date to date with reminder (not null)
-    fun findNextEntriesBenchmarking_CouchbaseLite () {
+    fun findNextEntriesBenchmarking_CouchbaseLite (): List<Any> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
         var amount: Int = 15
 
-        var result = cbl_DAO.findNextDocument(startDate, endDate, amount)
+        var arguments = listOf(startDate, endDate, amount)
+
+        return arguments
+
+        // var result = cbl_DAO.findNextDocument(startDate, endDate, amount)
     }
 
 
     // Find entries with a specific reminder
-    fun findEntriesWithSpecificReminderBenchmarking_CouchbaseLite () {
+    fun findEntriesWithSpecificReminderBenchmarking_CouchbaseLite (): String {
         var specificReminder = "10 mins before"
 
-        var result = cbl_DAO.findDocumentsWithSpecificReminder(specificReminder)
+        return specificReminder
+
+        // var result = cbl_DAO.findDocumentsWithSpecificReminder(specificReminder)
     }
 
     // Find entries with any recurrence
     fun findEntriesWithRecurranceBenchmarking_CouchbaseLite () {
 
-        var result = cbl_DAO.findDocumentsWithReccurence()
+        // var result = cbl_DAO.findDocumentsWithReccurence()
     }
 
 
@@ -474,7 +528,7 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // FIND Entries in Date Range with specific Reminder and specific Repeat1 or Repeat2
-    fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_CouchbaseLite () {
+    fun findEntriesInDateRangeReminderRepeat1OrRepeat2Benchmarking_CouchbaseLite (): List<Any> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
@@ -485,6 +539,12 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
         var specificRepeat1 = "Weekly"
         var specificRepeat2 = "Monthly"
 
+        var arguments =
+            listOf(startDate, endDate, specificReminder, specificRepeat1, specificRepeat2, limit)
+
+        return arguments
+
+        /*
         var result = cbl_DAO.findDocInDateRangeReminderRepeatOrRepeat(
             startDate,
             endDate,
@@ -493,16 +553,24 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
             specificRepeat2,
             limit
         )
+
+         */
+
     }
 
 
+
     // FIND Entries with Reminder is Null and Repeat is Not Null + Limit + Offset
-    fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_CouchbaseLite () {
+    fun findEntriesReminderNullRepeatNotNullLimitOffsetBenchmarking_CouchbaseLite (): List<Int> {
 
         var limit: Int = 15
         var offset: Int = 10
 
-        var result = cbl_DAO.findDocumentsReminderNullRepeatNotNullLimitOffset(limit, offset)
+        var arguments = listOf(limit, offset)
+
+        return arguments
+
+        // var result = cbl_DAO.findDocumentsReminderNullRepeatNotNullLimitOffset(limit, offset)
 
     }
 
@@ -517,29 +585,40 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
 
 
     // Earliest and latest event time among events in a date range with a specific reminder
-    fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_CouchbaseLite () {
+    fun findEarliestLatestEventTimesInRangeWithReminderBenchmarking_CouchbaseLite (): List<String> {
 
         var startDate = "2026-02-15"
         var endDate = "2026-10-05"
         var specificReminder = "10 mins before"
 
+        var arguments = listOf(startDate, endDate, specificReminder)
+
+        return arguments
+
+        /*
         var result = cbl_DAO.findEarliestDocumentsInRangeWithReminder(
             startDate,
             endDate,
             specificReminder
         )
 
+         */
+
     }
 
 
     // Find all entries whose title contains a specified text fragment
     // and whose event time is later than a specified time.
-    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_CouchbaseLite () {
+    fun findEntriesContainsSpecificTextTimeIsLaterThanSpecifiedTimeBenchmarking_CouchbaseLite (): List<Any> {
 
         var textFragment = "abc"
         var timeFloor = 500
 
-        var result = cbl_DAO.findDocTitleLikeTextTimeLater(textFragment, timeFloor)
+        var arguments = listOf(textFragment, timeFloor)
+
+        return arguments
+
+        // var result = cbl_DAO.findDocTitleLikeTextTimeLater(textFragment, timeFloor)
 
     }
 

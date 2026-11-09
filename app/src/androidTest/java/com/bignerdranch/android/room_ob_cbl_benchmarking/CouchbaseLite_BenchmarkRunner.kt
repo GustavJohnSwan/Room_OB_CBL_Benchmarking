@@ -109,15 +109,28 @@ class CouchbaseLite_BenchmarkRunner(application: Application) {
 
         // FIND MAIN ENTRIES BENCHMARKING
         for (i in 1.. 5) {
-            for (j in 1.. i) {
-                cblViewModel.createFreshDatabase_CouchbaseLite()
-                cbl_DAO = CBL_DAO()
-                cblViewModel.insertMainDataSet_CouchbaseLite(i)
-                var listOfDesiredIDs = cblViewModel.getEntriesByIdsBenchmark_CouchbaseLite(j)
-                val result = benchmark(
-                    "CouchbaseLite: find main entries | datasetVariant=$i | amount=${listOfDesiredIDs.size}"
-                ) {
-                    cbl_DAO.getDocumentsById(listOfDesiredIDs)
+
+            var databaseSize = 100
+
+            when (i) {
+                1 -> databaseSize = 100
+                2 -> databaseSize = 1000
+                3 -> databaseSize = 10000
+                4 -> databaseSize = 50000
+                5 -> databaseSize = 100000
+            }
+
+            for (j in 1.. 6) {
+                if (databaseSize >= cblViewModel.firstXamountIDs2_CouchbaseLite(j)) {
+                    cblViewModel.createFreshDatabase_CouchbaseLite()
+                    cbl_DAO = CBL_DAO()
+                    cblViewModel.insertMainDataSet_CouchbaseLite(i)
+                    var listOfDesiredIDs = cblViewModel.getEntriesByIdsBenchmark_CouchbaseLite(j)
+                    val result = benchmark(
+                        "CouchbaseLite: find main entries | datasetVariant=$i | amount=${listOfDesiredIDs.size}"
+                    ) {
+                        cbl_DAO.getDocumentsById(listOfDesiredIDs)
+                    }
                 }
             }
         }

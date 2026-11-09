@@ -150,14 +150,27 @@ class ObjectBox_BenchmarkRunner(application: Application) {
 
         // FIND MAIN ENTRIES BENCHMARKING
         for (i in 1.. 5) {
-            for (j in 1.. i) {
-                obViewModel.createFreshDatabase_ObjectBox()
-                store = ObjectBoxProvider.get()
-                ob_DAO = OB_DAO(store)
-                obViewModel.insertMainDataSet_ObjectBox(i)
-                var listOfDesiredIDs = obViewModel.getEntriesByIdsBenchmark_ObjectBox(j)
-                var results = benchmark("ObjectBox: find X amount of main entries | datasetVariant=$i") {
-                    ob_DAO.getMainEntries(listOfDesiredIDs)
+
+            var databaseSize = 100
+
+            when (i) {
+                1 -> databaseSize = 100
+                2 -> databaseSize = 1000
+                3 -> databaseSize = 10000
+                4 -> databaseSize = 50000
+                5 -> databaseSize = 100000
+            }
+
+            for (j in 1.. 6) {
+                if (databaseSize >= obViewModel.firstXamountIDs2_ObjectBox(j)) {
+                    obViewModel.createFreshDatabase_ObjectBox()
+                    store = ObjectBoxProvider.get()
+                    ob_DAO = OB_DAO(store)
+                    obViewModel.insertMainDataSet_ObjectBox(i)
+                    var listOfDesiredIDs = obViewModel.getEntriesByIdsBenchmark_ObjectBox(j)
+                    var results = benchmark("ObjectBox: find X amount of main entries | datasetVariant=$i") {
+                        ob_DAO.getMainEntries(listOfDesiredIDs)
+                    }
                 }
             }
         }

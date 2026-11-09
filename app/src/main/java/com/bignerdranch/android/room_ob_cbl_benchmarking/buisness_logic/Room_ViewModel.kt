@@ -93,6 +93,24 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
     }
 
 
+    fun firstXamountIDs2_Room (IdVariant: Int): Int {
+
+        var IdAmount = 100
+
+        when (IdVariant) {
+            1 -> IdAmount = 100
+            2 -> IdAmount = 1000
+            3 -> IdAmount = 10000
+            4 -> IdAmount = 20000
+            5 -> IdAmount = 30000
+            6 -> IdAmount = 32766
+        }
+
+        return IdAmount
+
+    }
+
+
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
@@ -369,7 +387,7 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
         var dbSize = countEntriesBenchmark_Room().toInt()
 
         var listOfIDs = accessListOfIdsBySize_Room(dbSize)
-        var IdAmount = firstXamountIDs_Room(IdVariant)
+        var IdAmount = firstXamountIDs2_Room(IdVariant)
 
         require(IdAmount <= listOfIDs.size) {
             "Requested $IdAmount IDs, but the file contains ${listOfIDs.size}"

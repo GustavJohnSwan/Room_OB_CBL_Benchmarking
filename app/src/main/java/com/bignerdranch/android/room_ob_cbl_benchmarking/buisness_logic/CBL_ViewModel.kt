@@ -75,6 +75,24 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
     }
 
 
+    fun firstXamountIDs2_CouchbaseLite (IdVariant: Int): Int {
+
+        var IdAmount = 100
+
+        when (IdVariant) {
+            1 -> IdAmount = 100
+            2 -> IdAmount = 1000
+            3 -> IdAmount = 10000
+            4 -> IdAmount = 20000
+            5 -> IdAmount = 30000
+            6 -> IdAmount = 32766
+        }
+
+        return IdAmount
+
+    }
+
+
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
@@ -368,7 +386,7 @@ class CBL_ViewModel (application: Application) : AndroidViewModel(application) {
             it.toString()
         }
 
-        var IdAmount = firstXamountIDs_CouchbaseLite(IdVariant)
+        var IdAmount = firstXamountIDs2_CouchbaseLite(IdVariant)
 
         require(IdAmount <= listOfIDs.size) {
             "Requested $IdAmount IDs, but the file contains ${listOfIDs.size}"

@@ -119,13 +119,26 @@ class Room_BenchmarkRunner(application: Application) {
 
         // FIND MAIN ENTRIES BENCHMARKING
         for (i in 1.. 5) {
-            for (j in 1.. i) {
-                roomViewModel.createFreshDatabase_Room()
-                room_DAO = roomViewModel.room_DAO
-                roomViewModel.insertMainDataSet_Room(i)
-                var listOfIDs = roomViewModel.getEntriesByIdsBenchmark_Room(j)
-                var results = benchmark("Room: find X amount of main entries | datasetVariant=$i") {
-                    room_DAO.getEntriesByIDs(listOfIDs)
+
+            var databaseSize = 100
+
+            when (i) {
+                1 -> databaseSize = 100
+                2 -> databaseSize = 1000
+                3 -> databaseSize = 10000
+                4 -> databaseSize = 50000
+                5 -> databaseSize = 100000
+            }
+
+            for (j in 1.. 6) {
+                if (databaseSize >= roomViewModel.firstXamountIDs2_Room(j)) {
+                    roomViewModel.createFreshDatabase_Room()
+                    room_DAO = roomViewModel.room_DAO
+                    roomViewModel.insertMainDataSet_Room(i)
+                    var listOfIDs = roomViewModel.getEntriesByIdsBenchmark_Room(j)
+                    var results = benchmark("Room: find X amount of main entries | datasetVariant=$i") {
+                            room_DAO.getEntriesByIDs(listOfIDs)
+                        }
                 }
             }
         }

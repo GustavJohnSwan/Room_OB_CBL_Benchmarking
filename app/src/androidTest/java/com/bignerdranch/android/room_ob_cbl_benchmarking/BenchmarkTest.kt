@@ -28,34 +28,34 @@ class BenchmarkTest {
             .targetContext
             .applicationContext as Application
 
-
+        /*
         ObjectBoxProvider.init(application)
 
         // OB benchmark
-        /*
+
         val runner = ObjectBox_BenchmarkRunner(application)
             runner.runBenchmarking_OB()
 
          */
 
         // Room benchmark
-        /*
+
         val roomRunner = Room_BenchmarkRunner(application)
         roomRunner.runBenchmarking_Room()
-         */
 
 
-        CouchbaseLiteProvider.init(application)
+/*
+CouchbaseLiteProvider.init(application)
 
-        // CBL benchmark
-        val cblRunner = CouchbaseLite_BenchmarkRunner(application)
-        cblRunner.runBenchmarking_CBL()
-
-
-
-
+// CBL benchmark
+val cblRunner = CouchbaseLite_BenchmarkRunner(application)
+cblRunner.runBenchmarking_CBL()
+*/
 
 
 
-    }
+
+
+
+}
 }

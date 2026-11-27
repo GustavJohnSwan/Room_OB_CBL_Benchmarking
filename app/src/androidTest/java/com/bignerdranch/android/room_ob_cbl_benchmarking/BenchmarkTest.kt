@@ -32,7 +32,7 @@ class BenchmarkTest {
         ObjectBoxProvider.init(application)
 
         // OB benchmark
-
+        // outdated
         val runner = ObjectBox_BenchmarkRunner(application)
             runner.runBenchmarking_OB()
 
@@ -40,8 +40,17 @@ class BenchmarkTest {
 
         // Room benchmark
 
+        /*
         val roomRunner = Room_BenchmarkRunner(application)
         roomRunner.runBenchmarking_Room()
+
+         */
+
+        // OB benchmark
+        ObjectBoxProvider.init(application)
+        val obRunner = ObjectBox_BenchmarkRunner_1(application)
+        obRunner.runBenchmarking_ObjectBox()
+
 
 
 /*

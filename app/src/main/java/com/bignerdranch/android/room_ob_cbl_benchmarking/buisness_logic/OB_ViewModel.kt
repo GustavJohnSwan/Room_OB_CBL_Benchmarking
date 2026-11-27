@@ -475,7 +475,7 @@ class OB_ViewModel (application: Application) : AndroidViewModel(application) {
     // Find entries in date, order by time in ObjectBox database
     fun findEntriesInSpecificDateBenchmarking_ObjectBox (): String {
 
-        var date = "2026-11-30"
+        var date = "2026-10-05"
 
         return date
 

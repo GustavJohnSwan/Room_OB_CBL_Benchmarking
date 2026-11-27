@@ -306,9 +306,13 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // UPDATE ENTRIES BULK
-     suspend fun updateEntriesBenchmark_Room (IdAmount: Int): List<EntryTable> {
+    suspend fun updateEntriesBenchmark_Room(
+        IdAmount: Int,
+        databaseSize: Int
+    ): List<EntryTable> {
 
-        var dbSize = countEntriesBenchmark_Room().toInt()
+        val dbSize = databaseSize
+
 
         var listOfIDs = accessListOfIdsBySize_Room(dbSize)
 
@@ -431,9 +435,14 @@ class Room_ViewModel (application: Application) : AndroidViewModel(application) 
 
 
     // DELETE ENTRIES BY IDs
-     suspend fun deleteEntriesByIdsBenchmark_Room(IdVariant: Int): List<EntryTable> {
+    suspend fun deleteEntriesByIdsBenchmark_Room(
+        IdVariant: Int,
+        databaseSize: Int
+    ): List<EntryTable> {
 
-        var dbSize = countEntriesBenchmark_Room().toInt()
+        val dbSize = databaseSize
+
+
 
         var listOfIDs = accessListOfIdsBySize_Room(dbSize)
         val IdAmount = firstXamountIDs_Room(IdVariant)

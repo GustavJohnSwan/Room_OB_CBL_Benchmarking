@@ -9,6 +9,7 @@ import android.os.ParcelFileDescriptor
 import androidx.test.platform.app.InstrumentationRegistry
 import com.bignerdranch.android.room_ob_cbl_benchmarking.database.database_setup.AppDatabase
 
+import com.bignerdranch.android.room_ob_cbl_benchmarking.buisness_logic.PreparedBenchmarkData_4
 
 
 class Room_BenchmarkRunner(private val application: Application) {
@@ -21,6 +22,8 @@ class Room_BenchmarkRunner(private val application: Application) {
     private var iterPos = 0
     private var repPos = 0
     private var timingCollector: TimingCollector? = null
+
+    private lateinit var dataObject4: PreparedBenchmarkData_4
 
 
 
@@ -258,8 +261,8 @@ class Room_BenchmarkRunner(private val application: Application) {
          */
 
 
-            var iterations = 1000
-            var repetitions = 10
+            var iterations = 10
+            var repetitions = 1
 
             val pilotTimings = TimingCollector(iterations, repetitions)
             timingCollector = pilotTimings
@@ -363,8 +366,8 @@ class Room_BenchmarkRunner(private val application: Application) {
                         else -> error("Unknown dataset variant: $i")
                     }
 
-                    var iterations = 1000
-                    var repetitions = 10
+                    var iterations = 10
+                    var repetitions = 1
 
                     val pilotTimings = TimingCollector(iterations, repetitions)
                     timingCollector = pilotTimings
@@ -530,8 +533,8 @@ class Room_BenchmarkRunner(private val application: Application) {
          */
 
 
-            var iterations = 1000
-            var repetitions = 10
+            var iterations = 10
+            var repetitions = 1
 
             val pilotTimings = TimingCollector(iterations, repetitions)
             timingCollector = pilotTimings
@@ -608,6 +611,53 @@ class Room_BenchmarkRunner(private val application: Application) {
     // _____________________________________________________________________________________________
     // _____________________________________________________________________________________________
 
+    private suspend fun prepareBenchmarkData_4() {
+
+        dataObject4 = PreparedBenchmarkData_4("DataSets_4")
+
+        val databaseSizes = listOf(100, 1000, 10000, 50000, 100000)
+
+        for (j in 1..5) {
+            dataObject4.amount.add(
+                roomViewModel.firstXamountIDs_Room(j)
+            )
+        }
+
+        for (i in 1..5) {
+
+            val databaseSize = databaseSizes[i - 1]
+
+            // Add empty containers for this dataset's batches.
+            dataObject4.entries.add(mutableListOf())
+            dataObject4.entriesToDelete.add(mutableListOf())
+
+            dataObject4.mainEntries.add(
+                roomViewModel.insertMainDataSetBenchmarking_Room(i)
+            )
+
+            for (j in 1..5) {
+
+                val amount = dataObject4.amount[j - 1]
+
+                if (databaseSize >= amount) {
+
+                    dataObject4.entries[i - 1].add(
+                        roomViewModel.updateEntriesBenchmark_Room(
+                            amount,
+                            databaseSize
+                        )
+                    )
+
+                    dataObject4.entriesToDelete[i - 1].add(
+                        roomViewModel.deleteEntriesByIdsBenchmark_Room(
+                            j,
+                            databaseSize
+                        )
+                    )
+                }
+            }
+        }
+    }
 
     private suspend fun iteratorFunction_4 (benchmarkType: Int) {
 
@@ -616,7 +666,8 @@ class Room_BenchmarkRunner(private val application: Application) {
 
         // var i = 3
 
-        for (i in 1.. 5) {
+        //for (i in 1.. 5) {
+        for (i in 5..5) {
 
             var databaseSize = 100
 
@@ -639,8 +690,10 @@ class Room_BenchmarkRunner(private val application: Application) {
                         // UPDATE MAIN ENTRIES
                         19 -> {
                             prepare = {
-                                var amount = roomViewModel.firstXamountIDs_Room(j)
-                                var entries = roomViewModel.updateEntriesBenchmark_Room(amount)
+                                // var amount = roomViewModel.firstXamountIDs_Room(j)
+                                // var entries = roomViewModel.updateEntriesBenchmark_Room(amount)
+
+                                val entries = dataObject4.entries[i - 1][j - 1]
                                 query = {
                                     room_DAO.updateEntries(entries)
                                 }
@@ -650,7 +703,9 @@ class Room_BenchmarkRunner(private val application: Application) {
                         // DELETE MAIN ENTRIES
                         22 -> {
                             prepare = {
-                                val entriesToDelete = roomViewModel.deleteEntriesByIdsBenchmark_Room(j)
+                                // val entriesToDelete = roomViewModel.deleteEntriesByIdsBenchmark_Room(j)
+
+                                val entriesToDelete = dataObject4.entriesToDelete[i - 1][j - 1]
                                 query = {
                                     room_DAO.deleteEntries(entriesToDelete)
                                 }
@@ -670,12 +725,14 @@ class Room_BenchmarkRunner(private val application: Application) {
                         else -> error("Unknown dataset variant: $i")
                     }
 
-                    var iterations = 1000
-                    var repetitions = 10
+                    var iterations = 10
+                    var repetitions = 1
 
                     val pilotTimings = TimingCollector(iterations, repetitions)
                     timingCollector = pilotTimings
                     repPos = 0
+
+
 
                     for (x in 1..repetitions) {
 
@@ -684,9 +741,30 @@ class Room_BenchmarkRunner(private val application: Application) {
 
                         for (y in 1..(iterations + (l ?: 0))) {
 
+                            /*
                             roomViewModel.createFreshDatabase_Room()
                             room_DAO = roomViewModel.room_DAO
-                            roomViewModel.insertMainDataSet_Room(i)
+                            room_DAO.insertMainEntries(
+                                dataObject4.mainEntries[i - 1]
+                            )
+                             */
+
+                            val startReset = System.nanoTime()
+
+                            roomViewModel.createFreshDatabase_Room()
+                            room_DAO = roomViewModel.room_DAO
+
+                            val resetNs = System.nanoTime() - startReset
+
+                            val startPopulation = System.nanoTime()
+
+                            room_DAO.insertMainEntries(
+                                dataObject4.mainEntries[i - 1]
+                            )
+
+                            val populationNs = System.nanoTime() - startPopulation
+
+
 
 
                             prepare()
@@ -704,6 +782,16 @@ class Room_BenchmarkRunner(private val application: Application) {
                                     query()
                                 }
                             }
+                            Log.d(
+                                "BENCHMARK_SETUP",
+                                "query=$benchmarkType" +
+                                        " | datasetVariant=$i" +
+                                        " | amount=${dataObject4.amount[j - 1]}" +
+                                        " | repetition=$x" +
+                                        " | iteration=$y" +
+                                        " | reset_ms=${resetNs / 1_000_000.0}" +
+                                        " | population_ms=${populationNs / 1_000_000.0}"
+                            )
                         }
 
                         repPos++
@@ -747,6 +835,10 @@ class Room_BenchmarkRunner(private val application: Application) {
         iteratorFunction(12)
         iteratorFunction_2(13)
         iteratorFunction(14)
+
+        // CRUD - WRITES
+        // testing postponed - need to implement a overhead reduction solution using snapshots for Q19 and Q22
+        /*
         iteratorFunction_3(15)
         iteratorFunction_3(16)
         iteratorFunction_3(17)
@@ -755,6 +847,8 @@ class Room_BenchmarkRunner(private val application: Application) {
         iteratorFunction_3(20)
         iteratorFunction_3(21)
         iteratorFunction_4(22)
+
+         */
 
         // MEDIUM QUERIES
         iteratorFunction(1)
@@ -771,5 +865,43 @@ class Room_BenchmarkRunner(private val application: Application) {
         iteratorFunction(10)
 
 
+    }
 
+
+    suspend fun runBenchmarking_Room_2 () {
+
+        // pre-setup data set for Q19 and Q22 to reduce overhead
+        prepareBenchmarkData_4()
+
+
+        // CRUD
+        iteratorFunction(11)
+        iteratorFunction(12)
+        iteratorFunction_2(13)
+        iteratorFunction(14)
+
+        // CRUD - WRITES
+        iteratorFunction_3(15)
+        iteratorFunction_3(16)
+        iteratorFunction_3(17)
+        iteratorFunction_3(18)
+        iteratorFunction_4(19)
+        iteratorFunction_3(20)
+        iteratorFunction_3(21)
+        iteratorFunction_4(22)
+
+
+
+    }
+
+    suspend fun runBenchmarking_Room_3() {
+
+        prepareBenchmarkData_4()
+
+        // UPDATE MAIN ENTRIES
+        iteratorFunction_4(19)
+
+        // DELETE MAIN ENTRIES
+        iteratorFunction_4(22)
+    }
 }

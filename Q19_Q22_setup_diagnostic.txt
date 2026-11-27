@@ -1,0 +1,111 @@
+﻿--------- beginning of main
+11-26 21:49:30.155 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=1 | reset_ms=6.9707 | population_ms=3084.2722
+11-26 21:49:33.113 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=2 | reset_ms=1.6331 | population_ms=2940.1549
+11-26 21:49:36.079 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=3 | reset_ms=1.012 | population_ms=2949.4145
+11-26 21:49:39.011 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=4 | reset_ms=1.4637 | population_ms=2915.0585
+11-26 21:49:42.024 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=5 | reset_ms=1.2583 | population_ms=2995.6099
+11-26 21:49:44.941 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=6 | reset_ms=1.4368 | population_ms=2900.5743
+11-26 21:49:47.834 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=7 | reset_ms=1.1077 | population_ms=2875.863
+11-26 21:49:50.705 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=8 | reset_ms=1.285 | population_ms=2855.6265
+11-26 21:49:53.706 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=9 | reset_ms=1.0287 | population_ms=2983.7065
+11-26 21:49:56.646 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100 | repetition=1 | iteration=10 | reset_ms=1.223 | population_ms=2924.3717
+11-26 21:49:56.667 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query19_Pilot_variant5_amount100_warmup0_1795722596662.tsv
+11-26 21:49:59.626 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=1 | reset_ms=1.4665 | population_ms=2900.7102
+11-26 21:50:02.578 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=2 | reset_ms=1.5278 | population_ms=2892.1817
+11-26 21:50:05.513 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=3 | reset_ms=1.4913 | population_ms=2872.1418
+11-26 21:50:08.468 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=4 | reset_ms=1.5311 | population_ms=2892.684
+11-26 21:50:11.394 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=5 | reset_ms=1.5033 | population_ms=2866.9896
+11-26 21:50:14.328 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=6 | reset_ms=1.6495 | population_ms=2869.585
+11-26 21:50:17.404 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=7 | reset_ms=1.5959 | population_ms=3017.7919
+11-26 21:50:20.314 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=8 | reset_ms=1.4929 | population_ms=2853.3317
+11-26 21:50:23.248 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=9 | reset_ms=1.4281 | population_ms=2875.3465
+11-26 21:50:26.206 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=10 | reset_ms=1.6809 | population_ms=2900.301
+11-26 21:50:26.209 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query19_Pilot_variant5_amount1000_warmup0_1795722626208.tsv
+11-26 21:50:29.542 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=1 | reset_ms=1.5731 | population_ms=2980.3433
+11-26 21:50:32.775 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=2 | reset_ms=1.9282 | population_ms=2883.0023
+11-26 21:50:36.006 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=3 | reset_ms=2.0835 | population_ms=2875.563
+11-26 21:50:39.238 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=4 | reset_ms=2.0367 | population_ms=2879.2552
+11-26 21:50:42.469 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=5 | reset_ms=2.2833 | population_ms=2881.4618
+11-26 21:50:45.696 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=6 | reset_ms=1.6299 | population_ms=2872.1596
+11-26 21:50:48.926 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=7 | reset_ms=2.0493 | population_ms=2880.7116
+11-26 21:50:52.138 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=8 | reset_ms=1.5042 | population_ms=2866.1553
+11-26 21:50:55.361 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=9 | reset_ms=1.7132 | population_ms=2873.3557
+11-26 21:50:58.574 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=10 | reset_ms=1.8163 | population_ms=2861.8763
+11-26 21:50:58.576 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query19_Pilot_variant5_amount10000_warmup0_1795722658576.tsv
+11-26 21:51:03.093 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=1 | reset_ms=1.6692 | population_ms=2886.6312
+11-26 21:51:07.616 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=2 | reset_ms=1.7076 | population_ms=2881.0602
+11-26 21:51:12.105 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=3 | reset_ms=1.5383 | population_ms=2853.4554
+11-26 21:51:16.602 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=4 | reset_ms=1.6149 | population_ms=2868.7575
+11-26 21:51:21.213 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=5 | reset_ms=1.4553 | population_ms=2951.3751
+11-26 21:51:25.728 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=6 | reset_ms=1.6088 | population_ms=2882.5023
+11-26 21:51:30.178 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=7 | reset_ms=1.6953 | population_ms=2823.916
+11-26 21:51:34.673 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=8 | reset_ms=1.7077 | population_ms=2861.5323
+11-26 21:51:39.173 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=9 | reset_ms=1.5449 | population_ms=2869.9553
+11-26 21:51:43.692 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=10 | reset_ms=1.7802 | population_ms=2863.4073
+11-26 21:51:43.695 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query19_Pilot_variant5_amount50000_warmup0_1795722703694.tsv
+11-26 21:51:49.801 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=1 | reset_ms=1.8277 | population_ms=2867.7026
+11-26 21:51:55.923 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=2 | reset_ms=1.6221 | population_ms=2883.7639
+11-26 21:52:02.098 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=3 | reset_ms=2.0728 | population_ms=2880.1235
+11-26 21:52:08.315 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=4 | reset_ms=1.4501 | population_ms=2952.7671
+11-26 21:52:14.431 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=5 | reset_ms=1.844 | population_ms=2882.1936
+11-26 21:52:20.555 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=6 | reset_ms=1.9665 | population_ms=2868.0581
+11-26 21:52:26.649 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=7 | reset_ms=1.8768 | population_ms=2855.9157
+11-26 21:52:32.758 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=8 | reset_ms=1.8242 | population_ms=2859.2501
+11-26 21:52:38.908 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=9 | reset_ms=1.474 | population_ms=2879.232
+11-26 21:52:45.631 D/BENCHMARK_SETUP( 4456): query=19 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=10 | reset_ms=1.3525 | population_ms=2856.4849
+11-26 21:52:45.633 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query19_Pilot_variant5_amount100000_warmup0_1795722765633.tsv
+11-26 21:52:48.465 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=1 | reset_ms=1.3094 | population_ms=2825.4416
+11-26 21:52:51.380 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=2 | reset_ms=9.389 | population_ms=2900.9777
+11-26 21:52:54.278 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=3 | reset_ms=9.1846 | population_ms=2884.4315
+11-26 21:52:57.156 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=4 | reset_ms=9.2019 | population_ms=2863.7279
+11-26 21:53:00.046 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=5 | reset_ms=8.792 | population_ms=2875.1784
+11-26 21:53:02.932 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=6 | reset_ms=8.9557 | population_ms=2872.8466
+11-26 21:53:05.855 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=7 | reset_ms=9.5165 | population_ms=2907.9418
+11-26 21:53:08.747 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=8 | reset_ms=10.1054 | population_ms=2876.8421
+11-26 21:53:11.640 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=9 | reset_ms=8.9975 | population_ms=2879.5008
+11-26 21:53:14.562 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100 | repetition=1 | iteration=10 | reset_ms=8.903 | population_ms=2908.0197
+11-26 21:53:14.564 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query22_Pilot_variant5_amount100_warmup0_1795722794564.tsv
+11-26 21:53:17.506 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=1 | reset_ms=9.4568 | population_ms=2879.5069
+11-26 21:53:20.507 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=2 | reset_ms=1.4976 | population_ms=2947.0441
+11-26 21:53:23.391 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=3 | reset_ms=1.4714 | population_ms=2829.2671
+11-26 21:53:26.287 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=4 | reset_ms=1.8635 | population_ms=2841.1609
+11-26 21:53:29.203 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=5 | reset_ms=1.8118 | population_ms=2861.124
+11-26 21:53:32.109 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=6 | reset_ms=1.4955 | population_ms=2851.2733
+11-26 21:53:35.020 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=7 | reset_ms=1.2806 | population_ms=2856.4125
+11-26 21:53:37.937 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=8 | reset_ms=1.5479 | population_ms=2861.6942
+11-26 21:53:40.835 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=9 | reset_ms=1.2524 | population_ms=2844.3117
+11-26 21:53:43.711 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=1000 | repetition=1 | iteration=10 | reset_ms=1.5744 | population_ms=2820.7948
+11-26 21:53:43.713 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query22_Pilot_variant5_amount1000_warmup0_1795722823713.tsv
+11-26 21:53:46.899 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=1 | reset_ms=1.4363 | population_ms=2873.3849
+11-26 21:53:50.054 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=2 | reset_ms=1.546 | population_ms=2842.8447
+11-26 21:53:53.220 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=3 | reset_ms=1.3989 | population_ms=2854.6779
+11-26 21:53:56.406 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=4 | reset_ms=1.4888 | population_ms=2860.1561
+11-26 21:53:59.573 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=5 | reset_ms=1.5053 | population_ms=2854.4182
+11-26 21:54:02.774 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=6 | reset_ms=1.4341 | population_ms=2822.1063
+11-26 21:54:05.929 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=7 | reset_ms=1.581 | population_ms=2831.1054
+11-26 21:54:09.106 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=8 | reset_ms=1.5648 | population_ms=2864.2661
+11-26 21:54:12.279 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=9 | reset_ms=1.42 | population_ms=2862.8394
+11-26 21:54:15.433 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=10000 | repetition=1 | iteration=10 | reset_ms=1.6192 | population_ms=2845.1593
+11-26 21:54:15.441 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query22_Pilot_variant5_amount10000_warmup0_1795722855435.tsv
+11-26 21:54:19.772 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=1 | reset_ms=1.5117 | population_ms=2843.1421
+11-26 21:54:24.075 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=2 | reset_ms=1.556 | population_ms=2831.4628
+11-26 21:54:28.393 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=3 | reset_ms=1.8758 | population_ms=2848.0992
+11-26 21:54:32.751 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=4 | reset_ms=1.5853 | population_ms=2888.8436
+11-26 21:54:37.061 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=5 | reset_ms=1.8636 | population_ms=2834.1046
+11-26 21:54:41.361 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=6 | reset_ms=1.4483 | population_ms=2835.0181
+11-26 21:54:45.800 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=7 | reset_ms=1.417 | population_ms=2837.2242
+11-26 21:54:50.679 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=8 | reset_ms=1.4233 | population_ms=3020.1531
+11-26 21:54:55.058 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=9 | reset_ms=1.5315 | population_ms=2881.0329
+11-26 21:54:59.426 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=50000 | repetition=1 | iteration=10 | reset_ms=1.4856 | population_ms=2884.0351
+11-26 21:54:59.429 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query22_Pilot_variant5_amount50000_warmup0_1795722899428.tsv
+11-26 21:55:05.194 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=1 | reset_ms=1.6923 | population_ms=2863.9216
+11-26 21:55:10.947 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=2 | reset_ms=1.3366 | population_ms=2867.0276
+11-26 21:55:16.639 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=3 | reset_ms=1.3768 | population_ms=2850.3256
+11-26 21:55:22.459 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=4 | reset_ms=1.5418 | population_ms=2907.3087
+11-26 21:55:28.203 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=5 | reset_ms=1.7766 | population_ms=2858.6031
+11-26 21:55:33.965 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=6 | reset_ms=1.3138 | population_ms=2854.6081
+11-26 21:55:39.713 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=7 | reset_ms=1.4731 | population_ms=2861.5543
+11-26 21:55:45.497 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=8 | reset_ms=1.2094 | population_ms=2894.8434
+11-26 21:55:51.285 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=9 | reset_ms=1.2469 | population_ms=2884.0474
+11-26 21:55:57.067 D/BENCHMARK_SETUP( 4456): query=22 | datasetVariant=5 | amount=100000 | repetition=1 | iteration=10 | reset_ms=1.1912 | population_ms=2887.7028
+11-26 21:55:57.069 D/BENCHMARK_FILE( 4456): Saved: /storage/emulated/0/Android/data/com.bignerdranch.android.room_ob_cbl_benchmarking/files/benchmark_results/Room_Query22_Pilot_variant5_amount100000_warmup0_1795722957069.tsv
